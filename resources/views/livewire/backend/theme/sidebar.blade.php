@@ -1,0 +1,305 @@
+<div class="sidebar" data-background-color="dark">
+    <div class="sidebar-logo">
+        <!-- Logo Header -->
+        <div class="logo-header" data-background-color="dark">
+            <a href="{{ route('admin.home') }}" class="logo">
+                <img
+                    src="{{ asset('assets/img/kaiadmin/logo_light.svg') }}"
+                    alt="navbar brand"
+                    class="navbar-brand"
+                    height="20" />
+            </a>
+            <div class="nav-toggle">
+                <button class="btn btn-toggle toggle-sidebar">
+                    <i class="gg-menu-right"></i>
+                </button>
+                <button class="btn btn-toggle sidenav-toggler">
+                    <i class="gg-menu-left"></i>
+                </button>
+            </div>
+            <button class="topbar-toggler more">
+                <i class="gg-more-vertical-alt"></i>
+            </button>
+        </div>
+        <!-- End Logo Header -->
+    </div>
+    <div class="sidebar-wrapper scrollbar scrollbar-inner">
+        <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+                <li class="nav-item {{ request()->routeIs('admin.home') ? 'active' : '' }}">
+                    <a href="{{ route('admin.home') }}" wire:navigate>
+                        <i class="fas fa-chart-line"></i> <!-- Changed from fa-home to fa-chart-line for dashboard -->
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">Management</h4>
+                </li>
+
+                <li class="nav-item {{ request()->routeIs('admin.product.*') ? 'active submenu' : '' }}">
+                    <a data-bs-toggle="collapse" href="#productsManagement" class="collapsed" aria-expanded="{{ request()->routeIs('admin.product.*') ? 'true' : 'false' }}">
+                        <i class="fas fa-boxes"></i> <!-- Changed from fa-cubes to fa-boxes for Product Catalog -->
+                        <p>Product Catalog</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('admin.product.*') ? 'show' : '' }}" id="productsManagement">
+                        <ul class="nav nav-collapse">
+
+                            <!-- products -->
+                            <li class="{{ request()->routeIs('admin.product.products.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.product.products.index') }}" wire:navigate>
+                                    <span class="sub-item">Products</span>
+                                </a>
+                            </li>
+
+                            <!-- categories -->
+                            <li class="{{ request()->routeIs('admin.product.categories.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.product.categories.index') }}" wire:navigate>
+                                    <span class="sub-item">Categories</span>
+                                </a>
+                            </li>
+                            <!-- brands -->
+                            <li class="{{ request()->routeIs('admin.product.brands.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.product.brands.index') }}" wire:navigate>
+                                    <span class="sub-item">Brands</span>
+                                </a>
+                            </li>
+                            <!-- coupons -->
+                            <li class="{{ request()->routeIs('admin.product.coupons.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.product.coupons.index') }}" wire:navigate>
+                                    <span class="sub-item">Coupons</span>
+                                </a>
+                            </li>
+
+                            <!-- tags -->
+                            <li class="{{ request()->routeIs('admin.product.tags.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.product.tags.index') }}" wire:navigate>
+                                    <span class="sub-item">Tags</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Attributes -->
+                <li class="nav-item {{ request()->routeIs('admin.attribute.*') ? 'active submenu' : '' }}">
+                    <a data-bs-toggle="collapse" href="#attributeManagement" class="collapsed" aria-expanded="{{ request()->routeIs('admin.attribute.*') ? 'true' : 'false' }}">
+                        <i class="fas fa-tags"></i> <!-- Changed from fa-cubes to fa-tags for Attributes -->
+                        <p>Attributes</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('admin.attribute.*') ? 'show' : '' }}" id="attributeManagement">
+                        <ul class="nav nav-collapse">
+                            <!-- attributes -->
+                            <li class="{{ request()->routeIs('admin.attribute.attributes.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.attribute.attributes.index') }}" wire:navigate>
+                                    <span class="sub-item">Attributes</span>
+                                </a>
+                            </li>
+                            <!-- attribute values -->
+                            <li class="{{ request()->routeIs('admin.attribute.attribute-values.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.attribute.attribute-values.index') }}" wire:navigate>
+                                    <span class="sub-item">Attribute Values</span>
+                                </a>
+                            </li>
+                            <!-- attribute sets -->
+                            <li class="{{ request()->routeIs('admin.attribute.attribute-sets.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.attribute.attribute-sets.index') }}" wire:navigate>
+                                    <span class="sub-item">Attribute Sets</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item {{ request()->routeIs('admin.order.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.order.index') }}" wire:navigate>
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Orders</p>
+                    </a>
+                </li>
+                <li class="nav-item {{ request()->routeIs('admin.deal.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.deal.index') }}" wire:navigate>
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Deals</p>
+                    </a>
+                </li>
+                <li class="nav-item {{ request()->routeIs('admin.collection.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.collection.index') }}" wire:navigate>
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Collections</p>
+                    </a>
+                </li>
+
+                <!-- users -->
+                <li class="nav-item {{ request()->routeIs('admin.users.*') ? 'active submenu' : '' }}">
+                    <a data-bs-toggle="collapse" href="#userManagement" class="collapsed" aria-expanded="{{ request()->routeIs('admin.users.*') ? 'true' : 'false' }}">
+                        <i class="fas fa-users"></i> <!-- Changed from fa-cubes to fa-users for Users -->
+                        <p>Users</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('admin.users.*') ? 'show' : '' }}" id="userManagement">
+                        <ul class="nav nav-collapse">
+                            <!-- customers -->
+                            <li class="{{ request()->routeIs('admin.users.customers.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.users.customers.index') }}" wire:navigate>
+                                    <span class="sub-item">Customers</span>
+                                </a>
+                            </li>
+                            <!-- investors -->
+                            <li class="{{ request()->routeIs('admin.users.investors.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.users.investors.index') }}" wire:navigate>
+                                    <span class="sub-item">Investors</span>
+                                </a>
+                            </li>
+                            <!-- vendors -->
+                            <li class="{{ request()->routeIs('admin.users.vendors.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.users.vendors.index') }}" wire:navigate>
+                                    <span class="sub-item">Vendors</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+
+                <!-- blog -->
+                <li class="nav-item {{ request()->routeIs('admin.blog.*') ? 'active submenu' : '' }}">
+                    <a data-bs-toggle="collapse" href="#blogManagement" class="collapsed" aria-expanded="{{ request()->routeIs('admin.blog.*') ? 'true' : 'false' }}">
+                        <i class="fas fa-users"></i> <!-- Changed from fa-cubes to fa-users for Users -->
+                        <p>Blog</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('admin.blog.*') ? 'show' : '' }}" id="blogManagement">
+                        <ul class="nav nav-collapse">
+                            <!-- category -->
+                            <li class="{{ request()->routeIs('admin.blog.category.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.blog.category.index') }}" wire:navigate>
+                                    <span class="sub-item">Category</span>
+                                </a>
+                            </li>
+
+                            <!-- tag -->
+                            <li class="{{ request()->routeIs('admin.blog.tag.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.blog.tag.index') }}" wire:navigate>
+                                    <span class="sub-item">Tag</span>
+                                </a>
+                            </li>
+
+                            <!-- post.index -->
+                            <li class="{{ request()->routeIs('admin.blog.post.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.blog.post.index') }}" wire:navigate>
+                                    <span class="sub-item">Post</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- locations -->
+                <li class="nav-item {{ request()->routeIs('admin.locations.*') ? 'active submenu' : '' }}">
+                    <a data-bs-toggle="collapse" href="#locationManagement" class="collapsed" aria-expanded="{{ request()->routeIs('admin.locations.*') ? 'true' : 'false' }}">
+                        <i class="fas fa-globe-americas"></i> <!-- Changed from fa-cubes to fa-globe-americas for Locations -->
+                        <p>Locations</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('admin.locations.*') ? 'show' : '' }}" id="locationManagement">
+                        <ul class="nav nav-collapse">
+                            <!-- countries -->
+                            <li class="{{ request()->routeIs('admin.locations.countries') ? 'active' : '' }}">
+                                <a href="{{ route('admin.locations.countries') }}" wire:navigate>
+                                    <span class="sub-item">Countries</span>
+                                </a>
+                            </li>
+                            <!-- states -->
+                            <li class="{{ request()->routeIs('admin.locations.states') ? 'active' : '' }}">
+                                <a href="{{ route('admin.locations.states') }}" wire:navigate>
+                                    <span class="sub-item">States</span>
+                                </a>
+                            </li>
+                            <!-- cities -->
+                            <li class="{{ request()->routeIs('admin.locations.cities') ? 'active' : '' }}">
+                                <a href="{{ route('admin.locations.cities') }}" wire:navigate>
+                                    <span class="sub-item">Cities</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+
+                <!-- Investment -->
+                <li class="nav-item {{ request()->routeIs('admin.investment.*') ? 'active submenu' : '' }}">
+                    <a data-bs-toggle="collapse" href="#investmentManagement" class="collapsed" aria-expanded="{{ request()->routeIs('admin.investment.*') ? 'true' : 'false' }}">
+                        <i class="fas fa-hand-holding-usd"></i> <!-- Changed from fa-cubes to fa-hand-holding-usd for Investment -->
+                        <p>Investment</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('admin.investment.*') ? 'show' : '' }}" id="investmentManagement">
+                        <ul class="nav nav-collapse">
+                            <!-- projects -->
+                            <li class="{{ request()->routeIs('admin.investment.projects.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.investment.projects.index') }}" wire:navigate>
+                                    <span class="sub-item">Projects</span>
+                                </a>
+                            </li>
+                            <!-- projects -->
+                            <li class="{{ request()->routeIs('admin.investment.investments.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.investment.investments.index') }}" wire:navigate>
+                                    <span class="sub-item">Investments</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+
+
+                <!-- Website -->
+                <li class="nav-item {{ request()->routeIs('admin.website.*') ? 'active submenu' : '' }}">
+                    <a data-bs-toggle="collapse" href="#websiteManagement" class="collapsed" aria-expanded="{{ request()->routeIs('admin.website.*') ? 'true' : 'false' }}">
+                        <i class="fas fa-globe"></i> <!-- Changed from fa-cubes to fa-globe for Website -->
+                        <p>Website</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('admin.website.*') ? 'show' : '' }}" id="websiteManagement">
+                        <ul class="nav nav-collapse">
+                            <!-- banner -->
+                            <li class="{{ request()->routeIs('admin.website.banner.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.website.banner.index') }}" wire:navigate>
+                                    <span class="sub-item">Banner</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+
+
+                {{-- Add other management sections as needed --}}
+
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">System</h4>
+                </li>
+
+                <li class="nav-item {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.settings.index') }}" wire:navigate>
+                        <i class="fas fa-cogs"></i>
+                        <p>Settings</p>
+                    </a>
+                </li>
+
+
+            </ul>
+        </div>
+    </div>
+</div>
