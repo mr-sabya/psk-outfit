@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Coupon;
+namespace App\Livewire\Backend\Coupon;
 
 use Livewire\Component;
 use App\Models\Coupon;
@@ -137,6 +137,6 @@ class Manage extends Component
     public function render()
     {
         // No need to fetch any relational data here.
-        return view('livewire.coupon.manage');
+        return view('livewire.backend.coupon.manage');
     }
 }

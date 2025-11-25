@@ -18,7 +18,7 @@
     <div class="card shadow-sm mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Coupons List</h5>
-            <a href="{{ route('product.coupons.create') }}" class="btn btn-primary" wire:navigate>
+            <a href="{{ route('admin.product.coupons.create') }}" class="btn btn-primary" wire:navigate>
                 <i class="fas fa-plus"></i> Add New Coupon
             </a>
         </div>
@@ -152,7 +152,7 @@
 
 
     {{-- Include the assignment modals --}}
-    <livewire:coupon.product-assignment />
-    <livewire:coupon.category-assignment />
-    <livewire:coupon.user-assignment />
+    <livewire:backend.coupon.product-assignment />
+    <livewire:backend.coupon.category-assignment />
+    <livewire:backend.coupon.user-assignment />
 </div>

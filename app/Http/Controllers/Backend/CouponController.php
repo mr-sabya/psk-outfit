@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
 
@@ -10,19 +11,19 @@ class CouponController extends Controller
     // coupons page
     public function index()
     {
-        return view('pages.coupon.index');
+        return view('backend.pages.coupon.index');
     }
 
     // create coupon
     public function create()
     {
-        return view('pages.coupon.create');
+        return view('backend.pages.coupon.create');
     }
 
     // edit coupon
     public function edit($id)
     {
         $coupon = Coupon::findOrFail($id);
-        return view('pages.coupon.edit', compact('coupon'));
+        return view('backend.pages.coupon.edit', compact('coupon'));
     }
 }

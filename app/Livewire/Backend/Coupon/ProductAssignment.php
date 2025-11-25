@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Coupon;
+namespace App\Livewire\Backend\Coupon;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -84,7 +84,7 @@ class ProductAssignment extends Component
             ->orderBy('name')
             ->paginate(10);
 
-        return view('livewire.coupon.product-assignment', [
+        return view('livewire.backend.coupon.product-assignment', [
             'products' => $products,
         ]);
     }

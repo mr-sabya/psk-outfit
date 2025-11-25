@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Tag;
+namespace App\Livewire\Backend\Tag;
 
 use Livewire\Component;
 use App\Models\Tag;
@@ -148,7 +148,7 @@ class TagManager extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.tag.tag-manager', [
+        return view('livewire.backend.tag.tag-manager', [
             'tags' => $tags,
         ]);
     }

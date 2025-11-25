@@ -61,6 +61,14 @@ class Product extends Model
         'type' => ProductType::class, // Cast to ProductType Enum
     ];
 
+
+    // Inside Product.php class
+    protected $attributes = [
+        'type' => ProductType::Normal, // Assuming 'Normal' is a case in your Enum
+        'is_active' => true,
+        'quantity' => 0,
+    ];
+
     /**
      * The "booting" method of the model.
      * Automatically generate slug.
@@ -210,7 +218,8 @@ class Product extends Model
      */
     public function isNormal(): bool
     {
-        return $this->type->isNormal();
+        // Use the null-safe operator (?->) and null coalescing operator (??)
+        return $this->type?->isNormal() ?? false;
     }
 
     /**
@@ -218,7 +227,7 @@ class Product extends Model
      */
     public function isVariable(): bool
     {
-        return $this->type->isVariable();
+        return $this->type?->isVariable() ?? false;
     }
 
     /**
@@ -226,7 +235,7 @@ class Product extends Model
      */
     public function isAffiliate(): bool
     {
-        return $this->type->isAffiliate();
+        return $this->type?->isAffiliate() ?? false;
     }
 
     /**
@@ -234,7 +243,7 @@ class Product extends Model
      */
     public function isDigital(): bool
     {
-        return $this->type->isDigital();
+        return $this->type?->isDigital() ?? false;
     }
 
     /**
@@ -243,11 +252,13 @@ class Product extends Model
     public function getCurrentStockAttribute(): int
     {
         if ($this->isVariable()) {
-            return $this->variants()->sum('quantity');
+            // sum() returns numeric, but casting ensures it's strictly an integer
+            return (int) $this->variants()->sum('quantity');
         }
-        return $this->quantity;
-    }
 
+        // Cast to int ensures 'null' becomes 0
+        return (int) $this->quantity;
+    }
 
     /**
      * Get the main thumbnail image URL for the product.

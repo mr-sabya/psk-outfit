@@ -250,7 +250,7 @@
 
 
 
-                            @if ($type === \App\Enums\ProductType::Normal->value && $is_manage_stock)
+                            @if ($type === \App\Enums\ProductType::Normal->value)
                             <!-- Stock Management -->
                             <div class="col-md-6 mb-3">
                                 <label for="is_manage_stock" class="form-label">Manage Stock</label>
@@ -262,13 +262,13 @@
                                 </div>
                                 @error('is_manage_stock') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                             </div>
-
-
+                            @if ($is_manage_stock)
                             <div class="col-md-6 mb-3">
                                 <label for="quantity" class="form-label">Quantity <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity" wire:model="quantity" placeholder="0">
                                 @error('quantity') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
+                            @endif
 
                             @else
                             <div class="col-md-12 mb-3">

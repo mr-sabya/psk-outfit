@@ -17,9 +17,9 @@ Route::middleware('auth:admin')->group(function () {
 
         // categories
         Route::prefix('categories')->name('categories.')->group(function () {
-            Route::get('/', [App\Http\Controllers\CategoryController::class, 'index'])->name('index');
-            Route::get('/create', [App\Http\Controllers\CategoryController::class, 'create'])->name('create');
-            Route::get('/{category}/edit', [App\Http\Controllers\CategoryController::class, 'edit'])->name('edit');
+            Route::get('/', [App\Http\Controllers\Backend\CategoryController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Backend\CategoryController::class, 'create'])->name('create');
+            Route::get('/{category}/edit', [App\Http\Controllers\Backend\CategoryController::class, 'edit'])->name('edit');
         });
 
         // brands
@@ -27,9 +27,9 @@ Route::middleware('auth:admin')->group(function () {
 
         // coupons
         Route::prefix('coupons')->name('coupons.')->group(function () {
-            Route::get('/', [App\Http\Controllers\CouponController::class, 'index'])->name('index');
-            Route::get('/create', [App\Http\Controllers\CouponController::class, 'create'])->name('create');
-            Route::get('/{coupon}/edit', [App\Http\Controllers\CouponController::class, 'edit'])->name('edit');
+            Route::get('/', [App\Http\Controllers\Backend\CouponController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Backend\CouponController::class, 'create'])->name('create');
+            Route::get('/{coupon}/edit', [App\Http\Controllers\Backend\CouponController::class, 'edit'])->name('edit');
         });
 
         // tags
@@ -37,9 +37,9 @@ Route::middleware('auth:admin')->group(function () {
 
         // products
         Route::prefix('products')->name('products.')->group(function () {
-            Route::get('/', [App\Http\Controllers\ProductController::class, 'index'])->name('index');
-            Route::get('/create', [App\Http\Controllers\ProductController::class, 'create'])->name('create');
-            Route::get('/{product}/edit', [App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
+            Route::get('/', [App\Http\Controllers\Backend\ProductController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Backend\ProductController::class, 'create'])->name('create');
+            Route::get('/{product}/edit', [App\Http\Controllers\Backend\ProductController::class, 'edit'])->name('edit');
         });
     });
 
@@ -86,9 +86,9 @@ Route::middleware('auth:admin')->group(function () {
 
     // attributes
     Route::prefix('attributes')->name('attribute.')->group(function () {
-        Route::get('/', [App\Http\Controllers\AttributeController::class, 'attributes'])->name('attributes.index');
-        Route::get('/attribute-values', [App\Http\Controllers\AttributeController::class, 'attributeValues'])->name('attribute-values.index');
-        Route::get('/attribute-sets', [App\Http\Controllers\AttributeController::class, 'attributeSets'])->name('attribute-sets.index');
+        Route::get('/', [App\Http\Controllers\Backend\AttributeController::class, 'attributes'])->name('attributes.index');
+        Route::get('/attribute-values', [App\Http\Controllers\Backend\AttributeController::class, 'attributeValues'])->name('attribute-values.index');
+        Route::get('/attribute-sets', [App\Http\Controllers\Backend\AttributeController::class, 'attributeSets'])->name('attribute-sets.index');
     });
 
     // website

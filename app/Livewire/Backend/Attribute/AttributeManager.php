@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Attribute;
+namespace App\Livewire\Backend\Attribute;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -211,7 +211,7 @@ class AttributeManager extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.attribute.attribute-manager', [
+        return view('livewire.backend.attribute.attribute-manager', [
             'attributes' => $attributes,
         ]);
     }

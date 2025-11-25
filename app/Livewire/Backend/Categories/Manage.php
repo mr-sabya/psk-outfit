@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Categories;
+namespace App\Livewire\Backend\Categories;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -163,7 +163,7 @@ class Manage extends Component
             ->orderBy('name')
             ->get();
 
-        return view('livewire.categories.manage', [
+        return view('livewire.backend.categories.manage', [
             'parentCategories' => $parentCategories,
         ]);
     }

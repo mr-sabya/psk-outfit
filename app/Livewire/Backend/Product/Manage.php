@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Product;
+namespace App\Livewire\Backend\Product;
 
 use App\Models\Brand;
 use App\Models\Category;
@@ -246,11 +246,11 @@ class Manage extends Component
         session()->flash('message', 'Product ' . ($this->product->wasRecentlyCreated ? 'created' : 'updated') . ' successfully!');
 
         // Redirect or emit event
-        return redirect()->route('products.edit', $this->product->id); // Example redirection
+        return redirect()->route('admin.product.products.edit', $this->product->id); // Example redirection
     }
 
     public function render()
     {
-        return view('livewire.product.manage');
+        return view('livewire.backend.product.manage');
     }
 }

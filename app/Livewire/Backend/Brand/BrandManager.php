@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Brand;
+namespace App\Livewire\Backend\Brand;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -229,7 +229,7 @@ class BrandManager extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.brand.brand-manager', [
+        return view('livewire.backend.brand.brand-manager', [
             'brands' => $brands,
         ]);
     }

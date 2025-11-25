@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Product;
+namespace App\Livewire\Backend\Product;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -172,7 +172,7 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.product.index', [
+        return view('livewire.backend.product.index', [
             'products' => $products,
         ]);
     }

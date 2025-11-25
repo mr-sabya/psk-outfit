@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Coupon;
+namespace App\Livewire\Backend\Coupon;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -96,7 +96,7 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.coupon.index', [
+        return view('livewire.backend.coupon.index', [
             'coupons' => $coupons,
         ]);
     }
