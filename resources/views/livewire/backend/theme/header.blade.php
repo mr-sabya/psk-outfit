@@ -4,7 +4,7 @@
         <div class="logo-header" data-background-color="dark">
             <a href="index.html" class="logo">
                 <img
-                    src="assets/img/kaiadmin/logo_light.svg"
+                    src="{{ url('assets/backend/img/kaiadmin/logo_light.svg') }}"
                     alt="navbar brand"
                     class="navbar-brand"
                     height="20" />
@@ -194,7 +194,7 @@
                                     <a href="#">
                                         <div class="notif-img">
                                             <img
-                                                src="assets/img/profile2.jpg"
+                                                src="{{ url('assets/backend/img/profile2.jpg') }}"
                                                 alt="Img Profile" />
                                         </div>
                                         <div class="notif-content">
@@ -304,7 +304,7 @@
                         aria-expanded="false">
                         <div class="avatar-sm">
                             <img
-                                src="{{ url('assets/img/profile.jpg') }}"
+                                src="{{ url('assets/backend/img/profile.jpg') }}"
                                 alt="..."
                                 class="avatar-img rounded-circle" />
                         </div>
@@ -319,7 +319,7 @@
                                 <div class="user-box">
                                     <div class="avatar-lg">
                                         <img
-                                            src="assets/img/profile.jpg"
+                                            src="{{ url('assets/backend/img/profile.jpg') }}"
                                             alt="image profile"
                                             class="avatar-img rounded" />
                                     </div>
