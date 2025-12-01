@@ -73,9 +73,9 @@ Route::middleware('auth:admin')->group(function () {
 
     // locations
     Route::prefix('locations')->name('locations.')->group(function () {
-        Route::get('/countries', [App\Http\Controllers\LocationController::class, 'countries'])->name('countries');
-        Route::get('/states', [App\Http\Controllers\LocationController::class, 'states'])->name('states');
-        Route::get('/cities', [App\Http\Controllers\LocationController::class, 'cities'])->name('cities');
+        Route::get('/countries', [App\Http\Controllers\Backend\LocationController::class, 'countries'])->name('countries');
+        Route::get('/states', [App\Http\Controllers\Backend\LocationController::class, 'states'])->name('states');
+        Route::get('/cities', [App\Http\Controllers\Backend\LocationController::class, 'cities'])->name('cities');
     });
 
     // investment

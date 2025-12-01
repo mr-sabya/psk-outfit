@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Locations;
+namespace App\Livewire\Backend\Locations;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -160,7 +160,7 @@ class States extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.locations.states', [
+        return view('livewire.backend.locations.states', [
             'states' => $states,
         ]);
     }

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
@@ -9,18 +10,18 @@ class LocationController extends Controller
     //country
     public function countries()
     {
-        return view('pages.locations.countries');
+        return view('backend.pages.locations.countries');
     }
 
     // state
     public function states()
     {
-        return view('pages.locations.states');
+        return view('backend.pages.locations.states');
     }
 
     // city
     public function cities()
     {
-        return view('pages.locations.cities');
+        return view('backend.pages.locations.cities');
     }
 }

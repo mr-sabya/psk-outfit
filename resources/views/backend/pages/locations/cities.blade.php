@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('backend.layouts.app')
 
 @section('content')
-<livewire:locations.cities />
+<livewire:backend.locations.cities />
 @endsection
