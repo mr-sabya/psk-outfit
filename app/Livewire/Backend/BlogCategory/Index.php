@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\BlogCategory;
+namespace App\Livewire\Backend\BlogCategory;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -175,7 +175,7 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.blog-category.index', [
+        return view('livewire.backend.blog-category.index', [
             'categories' => $categories,
         ]);
     }

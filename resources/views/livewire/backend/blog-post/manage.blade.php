@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">
-                    <a href="{{ route('blog.post.index') }}" class="btn btn-secondary">Cancel</a>
+                    <a href="{{ route('admin.blog.post.index') }}" class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-primary">
                         <span wire:loading wire:target="savePost" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         {{ $isEditing ? 'Update Post' : 'Create Post' }}

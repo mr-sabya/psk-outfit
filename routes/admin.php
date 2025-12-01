@@ -118,14 +118,14 @@ Route::middleware('auth:admin')->group(function () {
     // blog
     Route::prefix('blog')->name('blog.')->group(function () {
         // category
-        Route::get('/category', [App\Http\Controllers\Blog\CategoryController::class, 'index'])->name('category.index');
+        Route::get('/category', [App\Http\Controllers\Backend\Blog\CategoryController::class, 'index'])->name('category.index');
 
         // tag
-        Route::get('/tag', [App\Http\Controllers\Blog\TagController::class, 'index'])->name('tag.index');
+        Route::get('/tag', [App\Http\Controllers\Backend\Blog\TagController::class, 'index'])->name('tag.index');
 
         // blog post
-        Route::get('/blog-post', [App\Http\Controllers\Blog\BlogPostController::class, 'index'])->name('post.index');
-        Route::get('/blog-post/create', [App\Http\Controllers\Blog\BlogPostController::class, 'create'])->name('post.create');
-        Route::get('/blog-post/{id}/edit', [App\Http\Controllers\Blog\BlogPostController::class, 'edit'])->name('post.edit');
+        Route::get('/blog-post', [App\Http\Controllers\Backend\Blog\BlogPostController::class, 'index'])->name('post.index');
+        Route::get('/blog-post/create', [App\Http\Controllers\Backend\Blog\BlogPostController::class, 'create'])->name('post.create');
+        Route::get('/blog-post/{id}/edit', [App\Http\Controllers\Backend\Blog\BlogPostController::class, 'edit'])->name('post.edit');
     });
 });

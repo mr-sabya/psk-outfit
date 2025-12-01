@@ -18,7 +18,7 @@
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Blog Posts</h5>
-            <a href="{{ route('blog.post.create') }}" class="btn btn-primary btn-sm" wire:navigate>
+            <a href="{{ route('admin.blog.post.create') }}" class="btn btn-primary btn-sm" wire:navigate>
                 <i class="fas fa-plus me-1"></i> Create New Post
             </a>
         </div>

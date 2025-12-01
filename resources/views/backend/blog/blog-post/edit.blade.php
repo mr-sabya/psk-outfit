@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('backend.layouts.app')
 
 @section('content')
-<livewire:blog-post.manage blogPostId="{{ $blogPostId  }}" />
+<livewire:backend.blog-post.manage blogPostId="{{ $blogPostId  }}" />
 @endsection

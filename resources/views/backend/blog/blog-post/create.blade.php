@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('backend.layouts.app')
 
 @section('content')
-<livewire:blog-post.manage/>
+<livewire:backend.blog-post.manage/>
 @endsection
