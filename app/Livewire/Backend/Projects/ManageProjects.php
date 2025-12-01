@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Projects;
+namespace App\Livewire\Backend\Projects;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -168,7 +168,7 @@ class ManageProjects extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.projects.manage-projects', [
+        return view('livewire.backend.projects.manage-projects', [
             'projects' => $projects,
         ]);
     }

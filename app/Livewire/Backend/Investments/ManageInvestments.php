@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Investments;
+namespace App\Livewire\Backend\Investments;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -208,7 +208,7 @@ class ManageInvestments extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.investments.manage-investments', [
+        return view('livewire.backend.investments.manage-investments', [
             'investments' => $investments,
         ]);
     }

@@ -80,8 +80,8 @@ Route::middleware('auth:admin')->group(function () {
 
     // investment
     Route::prefix('investment')->name('investment.')->group(function () {
-        Route::get('/projects', [App\Http\Controllers\ProjectController::class, 'index'])->name('projects.index');
-        Route::get('/investments', [App\Http\Controllers\InvestmentController::class, 'index'])->name('investments.index');
+        Route::get('/projects', [App\Http\Controllers\Backend\ProjectController::class, 'index'])->name('projects.index');
+        Route::get('/investments', [App\Http\Controllers\Backend\InvestmentController::class, 'index'])->name('investments.index');
     });
 
     // attributes

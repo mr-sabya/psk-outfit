@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('backend.layouts.app')
 
 @section('content')
-<livewire:projects.manage-projects />
+<livewire:backend.projects.manage-projects />
 @endsection
