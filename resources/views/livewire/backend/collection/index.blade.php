@@ -18,7 +18,7 @@
     <div class="card shadow-sm mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">All Collections</h5>
-            <a href="{{ route('collection.create') }}" class="btn btn-primary" wire:navigate>
+            <a href="{{ route('admin.collection.create') }}" class="btn btn-primary" wire:navigate>
                 <i class="fas fa-plus"></i> Create New Collection
             </a>
         </div>

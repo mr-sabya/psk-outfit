@@ -47,25 +47,25 @@ Route::middleware('auth:admin')->group(function () {
     Route::name('users.')->group(function () {
         // customers
         Route::prefix('customers')->name('customers.')->group(function () {
-            Route::get('/', [App\Http\Controllers\UserController::class, 'customers'])->name('index');
-            Route::get('/create', [App\Http\Controllers\UserController::class, 'createCustomer'])->name('create');
-            Route::get('/{id}/edit', [App\Http\Controllers\UserController::class, 'editCustomer'])->name('edit');
+            Route::get('/', [App\Http\Controllers\Backend\UserController::class, 'customers'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Backend\UserController::class, 'createCustomer'])->name('create');
+            Route::get('/{id}/edit', [App\Http\Controllers\Backend\UserController::class, 'editCustomer'])->name('edit');
         });
 
 
         // investors
         Route::prefix('investors')->name('investors.')->group(function () {
-            Route::get('/', [App\Http\Controllers\UserController::class, 'investors'])->name('index');
-            Route::get('/create', [App\Http\Controllers\UserController::class, 'createInvestor'])->name('create');
-            Route::get('/{id}/edit', [App\Http\Controllers\UserController::class, 'editInvestor'])->name('edit');
+            Route::get('/', [App\Http\Controllers\Backend\UserController::class, 'investors'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Backend\UserController::class, 'createInvestor'])->name('create');
+            Route::get('/{id}/edit', [App\Http\Controllers\Backend\UserController::class, 'editInvestor'])->name('edit');
         });
 
 
         // vendors
         Route::prefix('vendors')->name('vendors.')->group(function () {
-            Route::get('/', [App\Http\Controllers\UserController::class, 'vendors'])->name('index');
-            Route::get('/create', [App\Http\Controllers\UserController::class, 'createVendors'])->name('create');
-            Route::get('/{id}/edit', [App\Http\Controllers\UserController::class, 'editVendors'])->name('edit');
+            Route::get('/', [App\Http\Controllers\Backend\UserController::class, 'vendors'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Backend\UserController::class, 'createVendors'])->name('create');
+            Route::get('/{id}/edit', [App\Http\Controllers\Backend\UserController::class, 'editVendors'])->name('edit');
         });
     });
 
@@ -98,20 +98,20 @@ Route::middleware('auth:admin')->group(function () {
     });
 
     // orders
-    Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('order.index');
+    Route::get('/orders', [App\Http\Controllers\Backend\OrderController::class, 'index'])->name('order.index');
 
     // deals
     Route::prefix('deals')->name('deal.')->group(function () {
-        Route::get('/', [App\Http\Controllers\DealController::class, 'index'])->name('index');
-        Route::get('/create', [App\Http\Controllers\DealController::class, 'create'])->name('create');
-        Route::get('/{id}/edit', [App\Http\Controllers\DealController::class, 'edit'])->name('edit');
+        Route::get('/', [App\Http\Controllers\Backend\DealController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Backend\DealController::class, 'create'])->name('create');
+        Route::get('/{id}/edit', [App\Http\Controllers\Backend\DealController::class, 'edit'])->name('edit');
     });
 
     // collection
     Route::prefix('collection')->name('collection.')->group(function () {
-        Route::get('/', [App\Http\Controllers\CollectionController::class, 'index'])->name('index');
-        Route::get('/create', [App\Http\Controllers\CollectionController::class, 'create'])->name('create');
-        Route::get('/{id}/edit', [App\Http\Controllers\CollectionController::class, 'edit'])->name('edit');
+        Route::get('/', [App\Http\Controllers\Backend\CollectionController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Backend\CollectionController::class, 'create'])->name('create');
+        Route::get('/{id}/edit', [App\Http\Controllers\Backend\CollectionController::class, 'edit'])->name('edit');
     });
 
 

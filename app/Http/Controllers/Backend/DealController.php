@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class DealController extends Controller
@@ -9,18 +10,18 @@ class DealController extends Controller
     //
     public function index()
     {
-        return view('pages.deal.index');    
+        return view('backend.pages.deal.index');    
     }
     
     // create
     public function create()
     {
-        return view('pages.deal.create');    
+        return view('backend.pages.deal.create');    
     }
 
     // edit
     public function edit($id)
     {
-        return view('pages.deal.edit', ['dealId' => $id]);    
+        return view('backend.pages.deal.edit', ['dealId' => $id]);    
     }
 }

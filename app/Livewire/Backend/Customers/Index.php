@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Customers; // Changed namespace
+namespace App\Livewire\Backend\Customers; // Changed namespace
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -105,7 +105,7 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.customers.index', [ // Changed view path
+        return view('livewire.backend.customers.index', [ // Changed view path
             'customers' => $customers,
         ]);
     }

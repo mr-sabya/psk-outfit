@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Deal;
+namespace App\Livewire\Backend\Deal;
 
 use App\Models\Deal;
 use App\Models\Product;
@@ -181,6 +181,6 @@ class Manage extends Component
 
     public function render()
     {
-        return view('livewire.deal.manage');
+        return view('livewire.backend.deal.manage');
     }
 }

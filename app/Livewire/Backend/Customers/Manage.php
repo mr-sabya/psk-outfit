@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Customers;
+namespace App\Livewire\Backend\Customers;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -251,11 +251,11 @@ class Manage extends Component
             session()->flash('message', 'Customer created successfully!');
         }
 
-        return redirect()->route('customers.index');
+        return redirect()->route('admin.users.customers.index');
     }
 
     public function render()
     {
-        return view('livewire.customers.manage');
+        return view('livewire.backend.customers.manage');
     }
 }

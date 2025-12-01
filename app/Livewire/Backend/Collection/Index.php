@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Collection;
+namespace App\Livewire\Backend\Collection;
 
 use App\Models\Collection;
 use Livewire\Component;
@@ -57,7 +57,7 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.collection.index', [
+        return view('livewire.backend.collection.index', [
             'collections' => $collections,
         ]);
     }

@@ -18,7 +18,7 @@
     <div class="card shadow-sm mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">{{ $collectionId ? 'Edit Collection Details' : 'New Collection Details' }}</h5>
-            <a href="{{ route('collection.index') }}" class="btn btn-secondary" wire:navigate>
+            <a href="{{ route('admin.collection.index') }}" class="btn btn-secondary" wire:navigate>
                 <i class="fas fa-arrow-left"></i> Back to Collections
             </a>
         </div>
@@ -111,7 +111,7 @@
                         <span wire:loading wire:target="saveCollection, imageFile" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         {{ $collectionId ? 'Update Collection' : 'Create Collection' }}
                     </button>
-                    <a href="{{ route('collection.index') }}" class="btn btn-secondary" wire:navigate>Cancel</a>
+                    <a href="{{ route('admin.collection.index') }}" class="btn btn-secondary" wire:navigate>Cancel</a>
                 </div>
             </form>
         </div>

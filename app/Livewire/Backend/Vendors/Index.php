@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Vendors;
+namespace App\Livewire\Backend\Vendors;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -93,7 +93,7 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.vendors.index', [ // Changed view path
+        return view('livewire.backend.vendors.index', [ // Changed view path
             'vendors' => $vendors,
         ]);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Vendors;
+namespace App\Livewire\Backend\Vendors;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -301,11 +301,11 @@ class Manage extends Component
             session()->flash('message', 'Vendor Profile created successfully!');
         }
 
-        return redirect()->route('vendors.index');
+        return redirect()->route('admin.users.vendors.index');
     }
 
     public function render()
     {
-        return view('livewire.vendors.manage');
+        return view('livewire.backend.vendors.manage');
     }
 }

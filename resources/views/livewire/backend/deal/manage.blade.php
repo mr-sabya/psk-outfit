@@ -18,7 +18,7 @@
     <div class="card shadow-sm mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">{{ $dealId ? 'Edit Deal Details' : 'New Deal Details' }}</h5>
-            <a href="{{ route('deal.index') }}" class="btn btn-secondary" wire:navigate>
+            <a href="{{ route('admin.deal.index') }}" class="btn btn-secondary" wire:navigate>
                 <i class="fas fa-arrow-left"></i> Back to Deals
             </a>
         </div>
@@ -166,7 +166,7 @@
                         <span wire:loading wire:target="saveDeal, imageFile" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         {{ $dealId ? 'Update Deal' : 'Create Deal' }}
                     </button>
-                    <a href="{{ route('deal.index') }}" class="btn btn-secondary" wire:navigate>Cancel</a>
+                    <a href="{{ route('admin.deal.index') }}" class="btn btn-secondary" wire:navigate>Cancel</a>
                 </div>
             </form>
         </div>

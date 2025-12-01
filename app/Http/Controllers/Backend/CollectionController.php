@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class CollectionController extends Controller
@@ -9,19 +10,19 @@ class CollectionController extends Controller
     //
     public function index()
     {
-        return view('pages.collection.index');    
+        return view('backend.pages.collection.index');    
     }
     
     // create
     public function create()
     {
-        return view('pages.collection.create');
+        return view('backend.pages.collection.create');
     }
 
 
     // edit
     public function edit($id)
     {
-        return view('pages.collection.edit', ['collectionId' => $id]);
+        return view('backend.pages.collection.edit', ['collectionId' => $id]);
     }
 }

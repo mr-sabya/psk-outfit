@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Collection;
+namespace App\Livewire\Backend\Collection;
 
 use App\Models\Collection;
 use App\Models\Product;
@@ -125,6 +125,6 @@ class Manage extends Component
 
     public function render()
     {
-        return view('livewire.collection.manage');
+        return view('livewire.backend.collection.manage');
     }
 }

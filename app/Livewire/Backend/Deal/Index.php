@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Deal;
+namespace App\Livewire\Backend\Deal;
 
 use App\Models\Deal;
 use Livewire\Component;
@@ -50,7 +50,7 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.deal.index', [
+        return view('livewire.backend.deal.index', [
             'deals' => $deals,
         ]);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Investors;
+namespace App\Livewire\Backend\Investors;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -253,11 +253,11 @@ class Manage extends Component
             session()->flash('message', 'Investor Profile created successfully!');
         }
 
-        return redirect()->route('investors.index');
+        return redirect()->route('admin.users.investors.index');
     }
 
     public function render()
     {
-        return view('livewire.investors.manage');
+        return view('livewire.backend.investors.manage');
     }
 }

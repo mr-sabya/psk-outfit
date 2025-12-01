@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('backend.layouts.app')
 
 @section('content')
-<livewire:deal.index />
+<livewire:backend.deal.index />
 @endsection

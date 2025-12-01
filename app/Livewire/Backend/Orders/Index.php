@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Orders;
+namespace App\Livewire\Backend\Orders;
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
@@ -110,7 +110,7 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.orders.index', [
+        return view('livewire.backend.orders.index', [
             'orders' => $orders,
             'orderStatuses' => OrderStatus::cases(), // For dropdowns
             'paymentStatuses' => PaymentStatus::cases(), // For dropdowns

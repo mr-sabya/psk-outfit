@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Orders;
+namespace App\Livewire\Backend\Orders;
 
 use App\Models\Order;
 use Livewire\Component;
@@ -26,6 +26,6 @@ class Manage extends Component
 
     public function render()
     {
-        return view('livewire.orders.manage');
+        return view('livewire.backend.orders.manage');
     }
 }

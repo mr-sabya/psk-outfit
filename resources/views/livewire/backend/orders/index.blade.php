@@ -140,7 +140,7 @@
                     @if ($showOrderDetailsModal && $selectedOrderId)
                     {{-- Here we'll embed the OrderDetails component --}}
                     {{-- This is a pattern for dynamic component loading within a modal --}}
-                    <livewire:orders.manage :orderId="$selectedOrderId" wire:key="order-{{ $selectedOrderId }}" />
+                    <livewire:backend.orders.manage :orderId="$selectedOrderId" wire:key="order-{{ $selectedOrderId }}" />
                     @else
                     <p>Select an order to view details.</p>
                     @endif

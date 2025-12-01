@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('backend.layouts.app')
 
 @section('content')
-<livewire:deal.manage dealId="{{ $dealId }}" />
+<livewire:backend.deal.manage dealId="{{ $dealId }}" />
 @endsection

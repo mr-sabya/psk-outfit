@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('backend.layouts.app')
 
 @section('content')
-<livewire:investors.manage userId="{{ $userId }}" />
+<livewire:backend.investors.manage userId="{{ $userId }}" />
 @endsection

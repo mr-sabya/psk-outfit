@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -9,55 +10,55 @@ class UserController extends Controller
     // customers
     public function customers()
     {
-        return view('users.customers.index');
+        return view('backend.users.customers.index');
     }
 
     // create customer
     public function createCustomer()
     {
-        return view('users.customers.create');
+        return view('backend.users.customers.create');
     }
 
     // edit customer
     public function editCustomer($id)
     {
-        return view('users.customers.edit', ['userId' => $id]);
+        return view('backend.users.customers.edit', ['userId' => $id]);
     }
 
     // investors
     public function investors()
     {
-        return view('users.investors.index');
+        return view('backend.users.investors.index');
     }
 
     // create investor
     public function createInvestor()
     {
-        return view('users.investors.create');
+        return view('backend.users.investors.create');
     }
 
     // edit investor
     public function editInvestor($id)
     {
-        return view('users.investors.edit', ['userId' => $id]);
+        return view('backend.users.investors.edit', ['userId' => $id]);
     }
 
 
     // vendors
     public function vendors()
     {
-        return view('users.investors.index');
+        return view('backend.users.investors.index');
     }
 
     // create vendors
     public function createVendors()
     {
-        return view('users.vendors.create');
+        return view('backend.users.vendors.create');
     }
 
     // edit vendors
     public function editVendors($id)
     {
-        return view('users.vendors.edit', ['userId' => $id]);
+        return view('backend.users.vendors.edit', ['userId' => $id]);
     }
 }

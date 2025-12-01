@@ -1,7 +1,7 @@
 <div>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>{{ $pageTitle }}</h3>
-        <a href="{{ route('users.investors.index') }}" wire:navigate class="btn btn-secondary">
+        <a href="{{ route('admin.users.investors.index') }}" wire:navigate class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Back to Investors
         </a>
     </div>
@@ -225,7 +225,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end gap-2 mt-4">
-                    <a href="{{ route('users.investors.index') }}" wire:navigate class="btn btn-secondary">Cancel</a>
+                    <a href="{{ route('admin.users.investors.index') }}" wire:navigate class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-primary">
                         <span wire:loading wire:target="saveInvestor" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         {{ $isEditing ? 'Update Investor Profile' : 'Create Investor Profile' }}
