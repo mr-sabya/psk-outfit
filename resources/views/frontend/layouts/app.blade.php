@@ -6,7 +6,7 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densityDpi=device-dpi" />
     <title>Zenis- Multipurpose eCommerce HTML Template</title>
-    
+
     <link rel="icon" type="image/png" href="{{ asset('assets/frontend/images/favicon.png') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/bootstrap.min.css') }}">
@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/custom_spacing.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/responsive.css') }}">
+    @livewireStyles
 </head>
 
 <body class="default_home">
@@ -128,7 +129,7 @@
             el.style.backgroundRepeat = "no-repeat";
         });
     </script>
-
+    @livewireScripts
 
 </body>
 

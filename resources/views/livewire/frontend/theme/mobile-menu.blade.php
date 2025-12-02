@@ -159,67 +159,8 @@
                     </div>
                     <div class="tab-pane fade" id="pills-profile" role="tabpanel"
                         aria-labelledby="pills-profile-tab" tabindex="0">
-                        <ul class="main_mobile_menu">
-                            <li class="mobile_dropdown">
-                                <a href="#">home</a>
-                                <ul class="inner_menu">
-                                    <li><a href="index.html">clothing fashion 01</a></li>
-                                    <li><a href="home_fashion_2.html">clothing fashion 02</a></li>
-                                    <li><a href="home_grocery.html">Grocery Store</a></li>
-                                    <li><a href="home_beauty.html">Beauty & Cosmetics</a></li>
-                                </ul>
-                            </li>
-                            <li class="mobile_dropdown">
-                                <a href="#">shop</a>
-                                <ul class="inner_menu">
-                                    <li><a href="#">store</a></li>
-                                    <li><a href="#">store details</a></li>
-                                </ul>
-                            </li>
-                            <li class="mobile_dropdown">
-                                <a href="#">store</a>
-                                <ul class="inner_menu">
-                                    <li><a href="vendor.html">store</a></li>
-                                    <li><a href="vendor_details.html">store details</a></li>
-                                    <li><a href="vendor_registration.html">become a vendor</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="flash_deals.html">flash deals</a></li>
-                            <li class="mobile_dropdown">
-                                <a href="#">pages</a>
-                                <ul class="inner_menu">
-                                    <li><a href="about_us.html">about us</a></li>
-                                    <li><a href="category.html">Category</a></li>
-                                    <li><a href="brand.html">Brand</a></li>
-                                    <li><a href="cart.html">cart view</a></li>
-                                    <li><a href="wishlist.html">wishlist</a></li>
-                                    <li><a href="compare.html">compare</a></li>
-                                    <li><a href="checkout.html">checkout</a></li>
-                                    <li><a href="payment_success.html">payment success</a></li>
-                                    <li><a href="payment_cancel.html">payment Cancel</a></li>
-                                    <li><a href="track_order.html">track order</a></li>
-                                    <li><a href="error.html">error/404</a></li>
-                                    <li><a href="faq.html">FAQ's</a></li>
-                                    <li><a href="privacy_policy.html">privacy Policy</a></li>
-                                    <li><a href="terms_condition.html">terms and condition</a></li>
-                                    <li><a href="return_policy.html">return policy</a></li>
-                                    <li><a href="sign_in.html">sign in</a></li>
-                                    <li><a href="sign_up.html">sign up</a></li>
-                                    <li><a href="forgot_password.html">forgot password</a></li>
-                                    <li><a href="dashboard.html">Dashboard</a></li>
-                                </ul>
-                            </li>
-                            <li class="mobile_dropdown">
-                                <a href="#">blog</a>
-                                <ul class="inner_menu">
-                                    <li><a href="blog_classic.html">blog classic</a></li>
-                                    <li><a href="blog_left_sidebar.html">blog right sidebar</a></li>
-                                    <li><a href="blog_left_sidebar.html">blog left sidebar</a></li>
-                                    <li><a href="blog_details.html">blog details</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="contact_us.html">contact</a></li>
-                        </ul>
+                       
+                        <livewire:frontend.theme.menu-item className="main_mobile_menu" />
                     </div>
                 </div>
             </div>

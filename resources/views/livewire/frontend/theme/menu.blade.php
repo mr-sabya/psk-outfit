@@ -194,67 +194,9 @@
                             </li>
                         </ul>
                     </div>
-                    <ul class="menu_item">
-                        <li>
-                            <a class="active" href="#">home <i class="fas fa-chevron-down"></i></a>
-                            <ul class="menu_droapdown">
-                                <li><a class="active" href="index.html">Clothing Fashion 01</a></li>
-                                <li><a href="home_fashion_2.html">Clothing Fashion 02</a></li>
-                                <li><a href="home_grocery.html">Grocery Store</a></li>
-                                <li><a href="home_beauty.html">Beauty & Cosmetics</a></li>
-                                <li><a href="home_gadgets.html">Gadgets Shop</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">shop <i class="fas fa-chevron-down"></i></a>
-                            <ul class="menu_droapdown">
-                                <li><a href="shop.html">Shop</a></li>
-                                <li><a href="shop_details.html">Shop Details</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">Stores <i class="fas fa-chevron-down"></i></a>
-                            <ul class="menu_droapdown">
-                                <li><a href="vendor.html">Store</a></li>
-                                <li><a href="vendor_details.html">Store Details</a></li>
-                                <li><a href="vendor_registration.html">Become a Vendor</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="flash_deals.html">Flash Deals</a></li>
-                        <li><a href="#">pages <i class="fas fa-chevron-down"></i></a>
-                            <ul class="menu_droapdown">
-                                <li><a href="about_us.html">about us</a></li>
-                                <li><a href="category.html">Category</a></li>
-                                <li><a href="brand.html">Brand</a></li>
-                                <li><a href="cart.html">cart view</a></li>
-                                <li><a href="wishlist.html">wishlist</a></li>
-                                <li><a href="compare.html">compare</a></li>
-                                <li><a href="checkout.html">checkout</a></li>
-                                <li><a href="payment_success.html">payment success</a></li>
-                                <li><a href="payment_cancel.html">payment Cancel</a></li>
-                                <li><a href="track_order.html">track order</a></li>
-                                <li><a href="error.html">error/404</a></li>
-                                <li><a href="faq.html">FAQ's</a></li>
-                                <li><a href="privacy_policy.html">privacy Policy</a></li>
-                                <li><a href="terms_condition.html">terms and condition</a></li>
-                                <li><a href="return_policy.html">return policy</a></li>
-                                <li><a href="sign_in.html">sign in</a></li>
-                                <li><a href="sign_up.html">sign up</a></li>
-                                <li><a href="forgot_password.html">forgot password</a></li>
-                                <li><a href="dashboard.html">Dashboard</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">blog <i class="fas fa-chevron-down"></i></a>
-                            <ul class="menu_droapdown">
-                                <li><a href="blog_classic.html">blog classic</a></li>
-                                <li><a href="blog_right_sidebar.html">blog right sidebar</a></li>
-                                <li><a href="blog_left_sidebar.html">blog left sidebar</a></li>
-                                <li><a href="blog_details.html">blog details</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="contact_us.html">contact</a></li>
-                    </ul>
+                    <!-- ?menu item -->
+                    <livewire:frontend.theme.menu-item className="menu_item" />
+                    <!-- ?menu item -->
                     <ul class="menu_icon">
                         <li>
                             <a href="compare.html">
