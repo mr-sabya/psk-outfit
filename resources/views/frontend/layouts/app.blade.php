@@ -81,44 +81,44 @@
 
 
     <!--jquery library js-->
-    <script src="{{ asset('assets/frontend/js/jquery-3.7.1.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/jquery-3.7.1.min.js') }}"></script>
     <!--bootstrap js-->
-    <script src="{{ asset('assets/frontend/js/bootstrap.bundle.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/bootstrap.bundle.min.js') }}"></script>
     <!--font-awesome js-->
     <script src="{{ asset('assets/frontend/js/Font-Awesome.js') }}"></script>
     <!--counter js-->
-    <script src="{{ asset('assets/frontend/js/jquery.waypoints.min.js') }}"></script>
-    <script src="{{ asset('assets/frontend/js/jquery.countup.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/jquery.waypoints.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/jquery.countup.min.js') }}"></script>
     <!--nice select js-->
-    <script src="{{ asset('assets/frontend/js/jquery.nice-select.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/jquery.nice-select.min.js') }}"></script>
     <!--select 2 js-->
-    <script src="{{ asset('assets/frontend/js/select2.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/select2.min.js') }}"></script>
     <!--simply countdown js-->
-    <script src="{{ asset('assets/frontend/js/simplyCountdown.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/simplyCountdown.js') }}"></script>
     <!--slick slider js-->
-    <script src="{{ asset('assets/frontend/js/slick.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/slick.min.js') }}"></script>
     <!--venobox js-->
-    <script src="{{ asset('assets/frontend/js/venobox.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/venobox.min.js') }}"></script>
     <!--wow js-->
-    <script src="{{ asset('assets/frontend/js/wow.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/wow.min.js') }}"></script>
     <!--marquee js-->
-    <script src="{{ asset('assets/frontend/js/jquery.marquee.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/jquery.marquee.min.js') }}"></script>
     <!--pws tabs js-->
-    <script src="{{ asset('assets/frontend/js/jquery.pwstabs.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/jquery.pwstabs.min.js') }}"></script>
     <!--scroll button js-->
-    <script src="{{ asset('assets/frontend/js/scroll_button.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/scroll_button.js') }}"></script>
     <!--youtube background js-->
-    <script src="{{ asset('assets/frontend/js/jquery.youtube-background.min.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/jquery.youtube-background.min.js') }}"></script>
     <!--range slider js-->
-    <script src="{{ asset('assets/frontend/js/range_slider.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/range_slider.js') }}"></script>
     <!--sticky sidebar js-->
-    <script src="{{ asset('assets/frontend/js/sticky_sidebar.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/sticky_sidebar.js') }}"></script>
     <!--multiple image upload js-->
-    <script src="{{ asset('assets/frontend/js/multiple-image-video.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/multiple-image-video.js') }}"></script>
     <!--animated barfiller js-->
-    <script src="{{ asset('assets/frontend/js/animated_barfiller.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/animated_barfiller.js') }}"></script>
     <!--main/custom js-->
-    <script src="{{ asset('assets/frontend/js/custom.js') }}"></script>
+    <script data-navigate-once src="{{ asset('assets/frontend/js/custom.js') }}"></script>
 
     <script>
         document.querySelectorAll("[data-bg]").forEach(el => {
