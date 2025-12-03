@@ -56,18 +56,28 @@ class Manage extends Component
     public $productTypes; // For dropdown options
     public $vendors;
 
-    public function mount(?Product $product = null)
+    public function mount($productId = null)
     {
-        $this->product = $product;
+        // 1. Attempt to find the product by ID if one is passed
+        if ($productId) {
+            $this->product = Product::find($productId);
+            // dd($this->product);
+        }
 
+        // 2. If no ID was passed, or the ID was invalid/not found, create a new instance
+        if (!$this->product) {
+            $this->product = new Product();
+        }
+
+        // 3. Load necessary data for dropdowns
         $this->categories = Category::active()->get();
         $this->brands = Brand::active()->get();
-        $this->productTypes = ProductType::cases(); // Get all enum cases
+        $this->productTypes = ProductType::cases();
+        $this->vendors = User::where('role', UserRole::Vendor)->where('is_active', true)->get();
 
-        // Fetch active users who have the 'vendor' role
-        $this->vendors = User::where('role', UserRole::Vendor)->where('is_active', true)->get(); // <-- Fetch vendors
-
-        if ($this->product) {
+        // 4. Fill the component properties based on whether we found an existing product
+        if ($this->product->exists) {
+            // --- EDIT MODE ---
             $this->fill($this->product->toArray());
 
             // Handle enum type casting for display
@@ -77,20 +87,21 @@ class Manage extends Component
             $this->thumbnail_image_path = $this->product->thumbnail_image_path;
             $this->digital_file_path = $this->product->digital_file;
 
-            // For simplicity, vendor_id will be manually set or derived
-            // In a real app, you'd get this from the authenticated vendor user
+            // Set Vendor
             $this->vendor_id = $this->product->vendor_id;
-            // Load existing categories
-            $this->selectedCategoryIds = $this->product->categories->pluck('id')->toArray(); // <--- ADD THIS
 
+            // Load existing categories (Pivot table)
+            $this->selectedCategoryIds = $this->product->categories->pluck('id')->toArray();
         } else {
-            // We are creating a NEW product
-            $this->product = new Product();
+            // --- CREATE MODE (Defaults) ---
             $this->type = ProductType::Normal->value;
 
-            // Set a default vendor_id for new products if available (e.g., first vendor, or authenticated vendor)
-            // For now, let's assume we want to select one. If no vendors, it will be null.
-            $this->vendor_id = $this->vendors->first()->id ?? null; // <-- Set default for new products
+            // Set default vendor (e.g., first available)
+            $this->vendor_id = $this->vendors->first()->id ?? null;
+
+            // Default booleans
+            $this->is_active = true;
+            $this->is_manage_stock = true;
         }
     }
 

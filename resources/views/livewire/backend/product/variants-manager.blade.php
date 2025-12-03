@@ -158,7 +158,7 @@
             @endif
         </div>
         <div class="card-footer text-end">
-            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-secondary">Back to Product Details</a>
+            <a href="{{ route('admin.product.products.edit', $product->id) }}" class="btn btn-secondary">Back to Product Details</a>
         </div>
     </div>
 </div>

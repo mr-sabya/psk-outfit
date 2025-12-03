@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class WebsiteController extends Controller
@@ -9,6 +10,6 @@ class WebsiteController extends Controller
     // banner page
     public function banners()
     {
-        return view('website.banner.index');
+        return view('backend.banner.index');
     }
 }

@@ -138,7 +138,7 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('product.edit', $product->id) }}" class="btn btn-sm btn-info me-1" title="Edit">
+                                <a href="{{ route('admin.product.products.edit', $product->id) }}" wire:navigate class="btn btn-sm btn-info me-1" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <button class="btn btn-sm btn-danger" wire:click="deleteProduct({{ $product->id }})" wire:confirm="Are you sure you want to delete '{{ $product->name }}' and all its associated data (images, variants, etc.)?" title="Delete">

@@ -34,32 +34,58 @@
             </form>
 
             <h5 class="mb-3">Existing Images (Drag to reorder)</h5>
+
             @if ($existingImages->isEmpty())
-            <p>No images uploaded yet. Please upload some using the form above.</p>
+            <p class="text-muted">No images uploaded yet.</p>
             @else
-            <div wire:sortable="updateImageSortOrder" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-                @foreach ($existingImages as $image)
-                <div wire:sortable.item="{{ $image->id }}" wire:key="image-{{ $image->id }}" class="col">
-                    <div class="card h-100 shadow-sm">
-                        <img src="{{ asset('storage/' . $image->image_path) }}" class="card-img-top" alt="Product Image" style="height: 150px; object-fit: cover;">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <span class="badge bg-light text-dark">#{{ $loop->iteration }}</span>
-                            <button type="button" class="btn btn-danger btn-sm" wire:click="deleteImage({{ $image->id }})" wire:confirm="Are you sure you want to delete this image?">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </div>
-                    </div>
+            <!-- Parent Container -->
+            <!-- 'animation' adds a smooth slide effect when swapping -->
+            <div 
+    class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3"
+    x-data
+    x-init="
+        Sortable.create($el, {
+            animation: 150,
+            handle: '.drag-handle', // Class selector for the handle
+            onEnd: function (evt) {
+                // Get the ordered IDs
+                let orderedIds = Array.from($el.children).map(child => child.getAttribute('data-id'));
+                
+                // Send to Livewire
+                $wire.updateImageSortOrder(orderedIds);
+            }
+        })
+    "
+>
+    @foreach ($existingImages as $image)
+        <!-- Add data-id so JS can read it -->
+        <div data-id="{{ $image->id }}" wire:key="image-{{ $image->id }}" class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <!-- Add the handle class here -->
+                    <button type="button" class="btn btn-secondary btn-sm drag-handle" style="cursor: move;">
+                        <i class="fas fa-arrows-alt"></i> Move
+                    </button>
+                    
+                    <!-- Other content -->
+                    <img src="{{ asset('storage/' . $image->image_path) }}" class="img-fluid mt-2">
                 </div>
-                @endforeach
             </div>
+        </div>
+    @endforeach
+</div>
             @endif
         </div>
         <div class="card-footer text-end">
-            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-secondary">Back to Product Details</a>
+            <a href="{{ route('admin.product.products.edit', $product->id) }}" class="btn btn-secondary">Back to Product Details</a>
         </div>
     </div>
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/@nextapps-be/livewire-sortablejs@latest/dist/livewire-sortablejs.js"></script>
+<!-- 1. Core SortableJS Library -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+<!-- 2. Livewire Adapter -->
+<script src="https://cdn.jsdelivr.net/npm/@nextapps-be/livewire-sortablejs@latest/dist/livewire-sortablejs.min.js"></script>
 @endpush

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Product;
+namespace App\Livewire\Backend\Product;
 
 use App\Models\Product;
 use App\Models\Attribute;
@@ -342,6 +342,6 @@ class VariantsManager extends Component
 
     public function render()
     {
-        return view('livewire.product.variants-manager');
+        return view('livewire.backend.product.variants-manager');
     }
 }

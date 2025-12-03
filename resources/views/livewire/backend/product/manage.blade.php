@@ -326,33 +326,91 @@
 
 
     @if ($product->exists)
-    <div class="card">
-        <div class="card-body">
-            <hr class="my-4">
-            <h4>Additional Product Management</h4>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <a href="{{ route('products.images.index', $product) }}" class="btn btn-outline-secondary w-100">Manage Product Images</a>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <a href="{{ route('products.tags.index', $product) }}" class="btn btn-outline-secondary w-100">Manage Product Tags</a>
-                </div>
+    <div class="card mt-4">
+        <div class="card-header bg-transparent border-bottom-0 pt-3 pb-0">
+            <h5 class="mb-3">Additional Product Management</h5>
 
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                <!-- Images Tab -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="images-tab" data-bs-toggle="tab" data-bs-target="#images" type="button" role="tab" aria-controls="images" aria-selected="true">
+                        <i class="fas fa-images me-1"></i> Images
+                    </button>
+                </li>
+
+                <!-- Specifications Tab -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab" aria-controls="specs" aria-selected="false">
+                        <i class="fas fa-list-ul me-1"></i> Specifications
+                    </button>
+                </li>
+
+                <!-- Variants Tab (Conditional) -->
                 @if ($product->isVariable())
-                <div class="col-md-6 mb-3">
-                    <a href="{{ route('products.variants.index', $product) }}" class="btn btn-outline-secondary w-100">Manage Product Variants</a>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="variants-tab" data-bs-toggle="tab" data-bs-target="#variants" type="button" role="tab" aria-controls="variants" aria-selected="false">
+                        <i class="fas fa-tags me-1"></i> Variants
+                    </button>
+                </li>
+                @endif
+
+                <!-- Tags Tab -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tags-tab" data-bs-toggle="tab" data-bs-target="#tags" type="button" role="tab" aria-controls="tags" aria-selected="false">
+                        <i class="fas fa-tag me-1"></i> Tags
+                    </button>
+                </li>
+
+                <!-- SEO Tab -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab" aria-controls="seo" aria-selected="false">
+                        <i class="fas fa-search me-1"></i> SEO
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+            <div class="tab-content" id="productTabsContent">
+
+                <!-- Images Content -->
+                <div class="tab-pane fade show active" id="images" role="tabpanel" aria-labelledby="images-tab">
+                    <div class="py-2">
+                        <livewire:backend.product.images-manager :product="$product" />
+                    </div>
+                </div>
+
+                <!-- Specifications Content -->
+                <div class="tab-pane fade" id="specs" role="tabpanel" aria-labelledby="specs-tab">
+                    <div class="py-2">
+                        <livewire:backend.product.specifications-manager :product="$product" />
+                    </div>
+                </div>
+
+                <!-- Variants Content (Conditional) -->
+                @if ($product->isVariable())
+                <div class="tab-pane fade" id="variants" role="tabpanel" aria-labelledby="variants-tab">
+                    <div class="py-2">
+                        <livewire:backend.product.variants-manager :product="$product" />
+                    </div>
                 </div>
                 @endif
 
-                @if (!$product->isVariable())
-                <div class="col-md-6 mb-3">
-                    <a href="{{ route('products.specifications.index', $product) }}" class="btn btn-outline-secondary w-100">Manage Product Specifications</a>
+                <!-- Tags Content -->
+                <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
+                    <div class="py-2">
+                        <livewire:backend.product.tags-manager :product="$product" />
+                    </div>
                 </div>
-                @endif
 
-                <div class="col-md-6 mb-3">
-                    <a href="{{ route('products.seo.index', $product) }}" class="btn btn-outline-secondary w-100">Manage SEO</a>
+                <!-- SEO Content -->
+                <div class="tab-pane fade" id="seo" role="tabpanel" aria-labelledby="seo-tab">
+                    <div class="py-2">
+                        <livewire:backend.product.seo-manager :product="$product" />
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>

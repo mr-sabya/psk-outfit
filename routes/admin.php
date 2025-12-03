@@ -94,7 +94,7 @@ Route::middleware('auth:admin')->group(function () {
     // website
     Route::prefix('website')->name('website.')->group(function () {
         // banners
-        Route::get('/banners', [App\Http\Controllers\WebsiteController::class, 'banners'])->name('banner.index');
+        Route::get('/banners', [App\Http\Controllers\Backend\WebsiteController::class, 'banners'])->name('banner.index');
     });
 
     // orders

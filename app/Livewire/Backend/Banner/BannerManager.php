@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Banner;
+namespace App\Livewire\Backend\Banner;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -221,7 +221,7 @@ class BannerManager extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.banner.banner-manager', [
+        return view('livewire.backend.banner.banner-manager', [
             'banners' => $banners,
         ]);
     }

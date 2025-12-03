@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Product;
+namespace App\Livewire\Backend\Product;
 
 use App\Models\Product;
 use App\Models\Attribute;
@@ -19,10 +19,6 @@ class SpecificationsManager extends Component
 
     public function mount(Product $product)
     {
-        if ($product->isVariable()) {
-            abort(404, 'This product is a variable product and does not use static specifications.');
-        }
-
         $this->product = $product;
         $this->availableAttributes = Attribute::active()->orderBy('name')->get();
 
@@ -112,7 +108,7 @@ class SpecificationsManager extends Component
             $attributeOptions[$attribute->id] = $attribute->values()->orderBy('value')->get();
         }
 
-        return view('livewire.product.specifications-manager', [
+        return view('livewire.backend.product.specifications-manager', [
             'attributeOptions' => $attributeOptions,
         ]);
     }

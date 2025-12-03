@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Product;
+namespace App\Livewire\Backend\Product;
 
 use App\Models\Product;
 use App\Models\Tag;
@@ -79,7 +79,7 @@ class TagsManager extends Component
     {
         $currentTags = Tag::whereIn('id', $this->selectedTagIds)->get();
 
-        return view('livewire.product.tags-manager', [
+        return view('livewire.backend.product.tags-manager', [
             'currentTags' => $currentTags,
         ]);
     }

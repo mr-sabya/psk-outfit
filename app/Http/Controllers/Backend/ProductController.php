@@ -23,7 +23,7 @@ class ProductController extends Controller
     // Show the form for editing the specified resource.
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
         return view('backend.product.edit', compact('product'));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Product;
+namespace App\Livewire\Backend\Product;
 
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -75,12 +75,17 @@ class ImagesManager extends Component
         session()->flash('message', 'Images uploaded successfully!');
     }
 
-    public function updateImageSortOrder($sortedIds)
+    public function updateImageSortOrder($orderedIds)
     {
-        foreach ($sortedIds as $index => $id) {
-            ProductImage::where('id', $id)->update(['sort_order' => $index + 1]);
+        // $orderedIds will be like: [15, 2, 8, 4]
+
+        foreach ($orderedIds as $index => $id) {
+            ProductImage::where('id', $id)->update([
+                'sort_order' => $index + 1
+            ]);
         }
-        $this->loadImages(); // Reload to reflect new order
+
+        $this->existingImages = $this->product->images()->orderBy('sort_order')->get();
         session()->flash('message', 'Image order updated successfully!');
     }
 
@@ -97,6 +102,6 @@ class ImagesManager extends Component
 
     public function render()
     {
-        return view('livewire.product.images-manager');
+        return view('livewire.backend.product.images-manager');
     }
 }

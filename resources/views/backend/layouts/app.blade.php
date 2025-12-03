@@ -108,7 +108,7 @@
     <!-- Kaiadmin JS -->
     <script data-navigate-once src="{{ asset('assets/backend/js/kaiadmin.min.js') }}"></script>
 
-
+    
     <script>
         $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
             type: "line",
@@ -138,6 +138,7 @@
         });
     </script>
     @livewireScripts
+    @stack('scripts')
 </body>
 
 </html>
