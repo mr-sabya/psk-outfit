@@ -4,7 +4,13 @@
             <div class="col-lg-2">
                 <div class="header_logo_area">
                     <a href="index.html" class="header_logo">
-                        <img src="{{ url('assets/frontend/images/logo_2.png') }}" alt="Zenis" class="img-fluid w-100">
+                        <img
+                            src="{{ isset($settings['logo']) && $settings['logo'] 
+        ? asset('storage/' . $settings['logo']) 
+        : asset('assets/frontend/images/logo_2.png') 
+    }}"
+                            alt="{{ $settings['website_name'] }}"
+                            class="img-fluid w-100" />
                     </a>
                     <div class="mobile_menu_icon d-block d-lg-none" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
@@ -36,9 +42,12 @@
                         </span>
                         <h3>
                             Hotline:
-                            <a href="callto:1234567890">
-                                <span>+(402) 763 282 46</span>
+                            <a href="tel:{{ isset($settings['phone']) && $settings['phone'] ? $settings['phone'] : '1234567890' }}">
+                                <span>
+                                    {{ isset($settings['phone']) && $settings['phone'] ? $settings['phone'] : '+(402) 763 282 46' }}
+                                </span>
                             </a>
+
                         </h3>
                     </div>
                 </div>

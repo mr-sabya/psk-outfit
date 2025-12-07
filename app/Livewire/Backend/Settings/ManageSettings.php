@@ -8,14 +8,15 @@ use App\Models\Setting;
 use App\Enums\SettingType; // Make sure you have this Enum
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
+use Livewire\WithoutUrlPagination;
 
 class ManageSettings extends Component
 {
-    use WithPagination, WithFileUploads;
+    use WithPagination, WithoutUrlPagination, WithFileUploads;
 
     // Table state
     public $search = '';
-    public $sortField = 'key';
+    public $sortField = 'id';
     public $sortDirection = 'asc';
     public $perPage = 10;
 

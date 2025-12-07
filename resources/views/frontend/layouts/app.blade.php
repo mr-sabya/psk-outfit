@@ -5,9 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densityDpi=device-dpi" />
-    <title>Zenis- Multipurpose eCommerce HTML Template</title>
+    <title>{{ $settings['website_name'] ?? 'Website Name' }} - {{ $settings['website_tag'] ?? 'Website tag here' }}</title>
 
-    <link rel="icon" type="image/png" href="{{ asset('assets/frontend/images/favicon.png') }}">
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="{{ isset($settings['favicon']) && $settings['favicon'] 
+        ? asset('storage/' . $settings['favicon']) 
+        : asset('assets/frontend/images/favicon.png') 
+    }}">
+
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/animate.css') }}">

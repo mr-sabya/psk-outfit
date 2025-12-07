@@ -120,7 +120,7 @@
                 </table>
             </div>
 
-            {{ $settings->links('pagination::bootstrap-5') }}
+            {{ $settings->links() }}
         </div>
     </div>
 
