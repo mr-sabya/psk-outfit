@@ -4,10 +4,13 @@
             <div class="col-xl-3 col-md-6 col-lg-3 wow fadeInUp" data-wow-delay=".7s">
                 <div class="footer_2_logo_area">
                     <a class="footer_logo" href="index.html">
-                        <img src="{{ url('assets/frontend/images/footer_logo_2.png') }}" alt="Zenis" class="img-fluid w-100">
+                        <img src="{{ isset($settings['white_logo']) && $settings['white_logo'] ? asset('storage/' . $settings['white_logo']) : asset('assets/frontend/images/footer_logo_2.png') }}" alt="Zenis" class="img-fluid w-100" />
+
                     </a>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, distinctio molestiae error
-                        ullam obcaecati dolorem inventore.</p>
+                    <p>
+                        {{ isset($settings['footer_about']) && $settings['footer_about'] ? $settings['footer_about'] : 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, distinctio molestiae error ullam obcaecati dolorem inventore.' }}
+                    </p>
+
                     <ul>
                         <li><span>Follow :</span></li>
                         <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
@@ -56,19 +59,32 @@
             <div class="col-xl-3 col-sm-6 col-md-4 col-lg-3 wow fadeInUp" data-wow-delay="1.9s">
                 <div class="footer_link footer_logo_area">
                     <h3>Contact Us</h3>
-                    <p>It is a long established fact that reader distracted looking layout It is a long established
-                        fact.</p>
+                    <p>
+                        {{ isset($settings['footer_contact_text']) && $settings['footer_contact_text'] 
+        ? $settings['footer_contact_text']
+        : 'It is a long established fact that a reader is distracted looking at the layout. It is a long established fact.'
+    }}
+                    </p>
+
                     <span>
-                        <b><img src="{{ url('assets/frontend/images/location_icon_white.png') }}" alt="Map" class="img-fluid"></b>
-                        37 W 24th St, New York, NY</span>
-                    <span>
-                        <b><img src="{{ url('assets/frontend/images/phone_icon_white.png') }}" alt="Call" class="img-fluid"></b>
-                        <a href="callto:+123324587939">+123 324 5879 39</a>
+                        <b><img src="{{ asset('assets/frontend/images/location_icon_white.png') }}" alt="Map" class="img-fluid"></b>
+                        {{ $settings['address'] ?? '37 W 24th St, New York, NY' }}
                     </span>
+
                     <span>
-                        <b><img src="{{ url('assets/frontend/images/mail_icon_white.png') }}" alt="Mail" class="img-fluid"></b>
-                        <a href="mailto:support@mail.com">info@Zenis.com</a>
+                        <b><img src="{{ asset('assets/frontend/images/phone_icon_white.png') }}" alt="Call" class="img-fluid"></b>
+                        <a href="tel:{{ $settings['phone'] ?? '+123324587939' }}">
+                            {{ $settings['phone'] ?? '+123 324 5879 39' }}
+                        </a>
                     </span>
+
+                    <span>
+                        <b><img src="{{ asset('assets/frontend/images/mail_icon_white.png') }}" alt="Mail" class="img-fluid"></b>
+                        <a href="mailto:{{ $settings['email'] ?? 'info@Zenis.com' }}">
+                            {{ $settings['email'] ?? 'info@Zenis.com' }}
+                        </a>
+                    </span>
+
                 </div>
             </div>
         </div>
