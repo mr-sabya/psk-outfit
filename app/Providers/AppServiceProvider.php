@@ -25,14 +25,12 @@ class AppServiceProvider extends ServiceProvider
          * Load all NON-PRIVATE settings from DB
          * and cast their values using the model accessors.
          */
-        $settings = cache()->rememberForever('global_settings', function () {
-            return Setting::public() // Only non-private
-                ->get()
-                ->mapWithKeys(function ($setting) {
-                    return [$setting->key => $setting->value]; // value is auto-casted by your model
-                })
-                ->toArray();
-        });
+        $settings = Setting::public()
+            ->get()
+            ->mapWithKeys(function ($setting) {
+                return [$setting->key => $setting->value];
+            })
+            ->toArray();
 
         /**
          * Share settings with all Blade views
