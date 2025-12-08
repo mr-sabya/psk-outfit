@@ -276,6 +276,12 @@
                                     <span class="sub-item">Banner</span>
                                 </a>
                             </li>
+                            <!-- banner -->
+                            <li class="{{ request()->routeIs('admin.website.feature.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.website.feature.index') }}" wire:navigate>
+                                    <span class="sub-item">Features</span>
+                                </a>
+                            </li>
 
                         </ul>
                     </div>

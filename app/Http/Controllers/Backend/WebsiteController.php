@@ -12,4 +12,9 @@ class WebsiteController extends Controller
     {
         return view('backend.banner.index');
     }
+    // banner page
+    public function features()
+    {
+        return view('backend.feature.index');
+    }
 }

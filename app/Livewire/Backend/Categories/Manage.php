@@ -8,7 +8,6 @@ use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
 
 class Manage extends Component
 {
@@ -20,8 +19,15 @@ class Manage extends Component
     public $slug;
     public $description;
     public $parent_id;
-    public $image; // Stores the image file object temporarily during upload
-    public $currentImage; // Stores the path to the existing image for display
+
+    // Image properties
+    public $image;
+    public $currentImage;
+
+    // Icon properties
+    public $icon; // Temporary file for upload
+    public $currentIcon; // Existing path
+
     public $is_active = true;
     public $show_on_homepage = false;
     public $sort_order = 0;
@@ -31,7 +37,6 @@ class Manage extends Component
     public $isEditing = false;
     public $pageTitle = 'Create New Category';
 
-    // This mount method will receive the Category model if editing
     public function mount($categoryId = null)
     {
         if ($categoryId) {
@@ -39,7 +44,7 @@ class Manage extends Component
         } else {
             $category = null;
         }
-        
+
         if ($category && $category->exists) {
             $this->isEditing = true;
             $this->categoryId = $category->id;
@@ -47,7 +52,11 @@ class Manage extends Component
             $this->slug = $category->slug;
             $this->description = $category->description;
             $this->parent_id = $category->parent_id;
+
+            // Media
             $this->currentImage = $category->image;
+            $this->currentIcon = $category->icon; // Load existing icon
+
             $this->is_active = $category->is_active;
             $this->show_on_homepage = $category->show_on_homepage;
             $this->sort_order = $category->sort_order;
@@ -55,14 +64,13 @@ class Manage extends Component
             $this->seo_description = $category->seo_description;
             $this->pageTitle = 'Edit Category: ' . $category->name;
         } else {
-            // Default values for new category
+            // Default values
             $this->is_active = true;
             $this->sort_order = 0;
             $this->pageTitle = 'Create New Category';
         }
     }
 
-    // Validation rules
     protected function rules()
     {
         return [
@@ -85,7 +93,8 @@ class Manage extends Component
                 },
             ],
             'image' => 'nullable|image|max:1024',
-            'currentImage' => 'nullable|string', // Hidden field to track existing image path (if no new upload)
+            // Icon rule: Allow images AND SVGs
+            'icon' => 'nullable|file|mimes:png,jpg,jpeg,svg,webp|max:1024',
             'is_active' => 'boolean',
             'show_on_homepage' => 'boolean',
             'sort_order' => 'required|integer|min:0',
@@ -93,13 +102,6 @@ class Manage extends Component
             'seo_description' => 'nullable|string|max:500',
         ];
     }
-
-    // Custom validation messages
-    protected $messages = [
-        'slug.unique' => 'This slug is already taken. Please try another one.',
-        'slug.alpha_dash' => 'The slug may only contain letters, numbers, dashes, and underscores.',
-        'parent_id.exists' => 'The selected parent category is invalid.',
-    ];
 
     // Auto-generate slug when name changes
     public function updatedName($value)
@@ -109,7 +111,16 @@ class Manage extends Component
         }
     }
 
-    // Save or update category
+    // Clear validation when new files are selected
+    public function updatedImage()
+    {
+        $this->resetValidation('image');
+    }
+    public function updatedIcon()
+    {
+        $this->resetValidation('icon');
+    }
+
     public function saveCategory()
     {
         $this->validate();
@@ -126,7 +137,7 @@ class Manage extends Component
             'seo_description' => $this->seo_description,
         ];
 
-        // Handle image upload
+        // 1. Handle Image Upload
         if ($this->image) {
             if ($this->currentImage && Storage::disk('public')->exists($this->currentImage)) {
                 Storage::disk('public')->delete($this->currentImage);
@@ -135,7 +146,20 @@ class Manage extends Component
         } elseif (!$this->image && $this->currentImage) {
             $data['image'] = $this->currentImage;
         } else {
-            $data['image'] = null; // Ensure image field is null if no image and no current image
+            $data['image'] = null;
+        }
+
+        // 2. Handle Icon Upload
+        if ($this->icon) {
+            if ($this->currentIcon && Storage::disk('public')->exists($this->currentIcon)) {
+                Storage::disk('public')->delete($this->currentIcon);
+            }
+            // Store icons in a subfolder or same folder
+            $data['icon'] = $this->icon->store('categories/icons', 'public');
+        } elseif (!$this->icon && $this->currentIcon) {
+            $data['icon'] = $this->currentIcon;
+        } else {
+            $data['icon'] = null;
         }
 
         if ($this->isEditing) {
@@ -147,17 +171,14 @@ class Manage extends Component
             session()->flash('message', 'Category created successfully!');
         }
 
-        // Redirect back to the categories index page
-        return redirect()->route('categories.index');
+        return redirect()->route('admin.product.categories.index'); // Ensure route name is correct in your web.php
     }
 
     public function render()
     {
-        // Fetch parent categories for the dropdown (exclude current category)
         $parentCategories = Category::query()
             ->whereNull('parent_id')
             ->when($this->categoryId, function ($query) {
-                // Prevent a category from being its own parent or a child of itself
                 $query->where('id', '!=', $this->categoryId);
             })
             ->orderBy('name')

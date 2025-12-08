@@ -1,50 +1,37 @@
 <section class="features mt_20">
     <div class="container">
         <div class="row">
-            <div class="col-xl-3 col-md-6 wow fadeInUp">
+            @forelse ($features as $feature)
+            <div class="col-xl-3 col-md-6 wow fadeInUp" wire:key="feature-{{ $feature->id }}">
                 <div class="features_item purple">
                     <div class="icon">
-                        <img src="{{ url('assets/frontend/images/feature-icon_1.svg') }}" alt="feature">
+                        {{--
+                                Logic to handle image paths:
+                                1. If it starts with 'assets', it's a seeded static image.
+                                2. Otherwise, it's an uploaded file in the 'storage' folder.
+                            --}}
+                        @php
+                        $iconUrl = Str::startsWith($feature->icon, 'assets')
+                        ? asset($feature->icon)
+                        : asset('storage/' . $feature->icon);
+                        @endphp
+
+                        <img src="{{ $iconUrl }}" alt="{{ $feature->title }}">
                     </div>
                     <div class="text">
-                        <h3>Return & refund</h3>
-                        <p>Money back guarantee</p>
+                        <h3>{{ $feature->title }}</h3>
+                        @if($feature->subtitle)
+                        <p>{{ $feature->subtitle }}</p>
+                        @endif
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 wow fadeInUp">
-                <div class="features_item purple">
-                    <div class="icon">
-                        <img src="{{ url('assets/frontend/images/feature-icon_3.svg') }}" alt="feature">
-                    </div>
-                    <div class="text">
-                        <h3>Quality Support</h3>
-                        <p>Always online 24/7</p>
-                    </div>
-                </div>
+            @empty
+            {{-- Optional: Fallback content if no features are active --}}
+            <div class="col-12 text-center py-4">
+                <p class="text-muted">No features currently listed.</p>
             </div>
-            <div class="col-xl-3 col-md-6 wow fadeInUp">
-                <div class="features_item purple">
-                    <div class="icon">
-                        <img src="{{ url('assets/frontend/images/feature-icon_2.svg') }}" alt="feature">
-                    </div>
-                    <div class="text">
-                        <h3>Secure Payment</h3>
-                        <p>30% off by subscribing</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6 wow fadeInUp">
-                <div class="features_item purple">
-                    <div class="icon">
-                        <img src="{{ url('assets/frontend/images/feature-icon_4.svg') }}" alt="feature">
-                    </div>
-                    <div class="text">
-                        <h3>Daily Offers</h3>
-                        <p>20% off by subscribing</p>
-                    </div>
-                </div>
-            </div>
+            @endforelse
         </div>
     </div>
 </section>

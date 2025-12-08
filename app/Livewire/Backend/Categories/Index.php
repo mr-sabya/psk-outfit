@@ -13,7 +13,7 @@ class Index extends Component
 
     // Table state
     public $search = '';
-    public $sortField = 'name';
+    public $sortField = 'sort_order';
     public $sortDirection = 'asc';
     public $perPage = 10;
 

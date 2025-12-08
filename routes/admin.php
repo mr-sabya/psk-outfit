@@ -95,6 +95,9 @@ Route::middleware('auth:admin')->group(function () {
     Route::prefix('website')->name('website.')->group(function () {
         // banners
         Route::get('/banners', [App\Http\Controllers\Backend\WebsiteController::class, 'banners'])->name('banner.index');
+
+        // feature
+        Route::get('/features', [App\Http\Controllers\Backend\WebsiteController::class, 'features'])->name('feature.index');
     });
 
     // orders

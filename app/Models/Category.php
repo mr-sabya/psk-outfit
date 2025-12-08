@@ -17,6 +17,7 @@ class Category extends Model
         'description',
         'parent_id',
         'image',
+        'icon',
         'is_active',
         'show_on_homepage',
         'sort_order',
@@ -128,8 +129,38 @@ class Category extends Model
     /**
      * Get the URL to the category image.
      */
+    /**
+     * Get the URL to the category image.
+     */
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image ? asset('storage/' . $this->image) : null;
+        if (empty($this->image)) {
+            return null;
+        }
+        // Handle both seeded assets and uploaded storage files
+        if (str_starts_with($this->image, 'assets/')) {
+            return asset($this->image);
+        }
+        return asset('storage/' . $this->image);
+    }
+
+    /**
+     * Get the URL to the category icon.
+     * Usage: $category->icon_url
+     */
+    public function getIconUrlAttribute(): ?string
+    {
+        if (empty($this->icon)) {
+            // Optional: Return a default placeholder icon if null
+            // return asset('assets/frontend/images/default-icon.svg'); 
+            return null;
+        }
+
+        // Handle both seeded assets and uploaded storage files
+        if (str_starts_with($this->icon, 'assets/')) {
+            return asset($this->icon);
+        }
+
+        return asset('storage/' . $this->icon);
     }
 }

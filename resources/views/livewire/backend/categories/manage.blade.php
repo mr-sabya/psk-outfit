@@ -1,6 +1,7 @@
 <div>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>{{ $pageTitle }}</h3>
+        {{-- Ensure route exists, otherwise change to appropriate route --}}
         <a href="{{ route('admin.product.categories.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Back to Categories
         </a>
@@ -15,6 +16,7 @@
 
     <form wire:submit.prevent="saveCategory">
         <div class="row">
+            <!-- Left Column: Main Info -->
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header">
@@ -33,7 +35,7 @@
                                 <div class="mb-3">
                                     <label for="slug" class="form-label">Slug <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" wire:model.defer="slug">
-                                    <small class="form-text text-muted">SEO-friendly URL identifier (e.g., `electronics-accessories`).</small>
+                                    <small class="form-text text-muted">SEO-friendly URL identifier.</small>
                                     @error('slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
@@ -71,10 +73,12 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Right Column: Settings & Media -->
             <div class="col-md-4">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header">
-                        <h5 class="m-0">Category Info</h5>
+                        <h5 class="m-0">Relationships & Media</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
@@ -88,25 +92,59 @@
                             @error('parent_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
-                        <div class="">
-                            <label for="image" class="form-label">Category Image</label>
-                            <div class="image-preview">
-                                @if ($image)
-                                <img src="{{ $image->temporaryUrl() }}" class="upload-image">
-                                @elseif ($currentImage)
-                                <img src="{{ asset('storage/' . $currentImage) }}" alt="Current Category Image" class="upload-image">
-                                @endif
-                            </div>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" wire:model.live="image">
-                            <small class="form-text text-muted">Max 1MB. Accepted formats: JPG, PNG, GIF.</small>
-                            @error('image') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <hr>
 
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <!-- IMAGE UPLOAD -->
+                                <div class="mb-3">
+                                    <label for="image" class="form-label">Category Image</label>
+                                    <div class="image-preview border p-2 mb-2 rounded bg-light text-center">
+                                        @if ($image)
+                                        <img src="{{ $image->temporaryUrl() }}" class="img-fluid" style="max-height: 150px;">
+                                        @elseif ($currentImage)
+                                        <img src="{{ asset('storage/' . $currentImage) }}" alt="Current Image" class="img-fluid" style="max-height: 150px;">
+                                        @else
+                                        <span class="text-muted small">No image uploaded</span>
+                                        @endif
+                                    </div>
+                                    <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" wire:model.live="image">
+                                    <small class="form-text text-muted">Max 1MB. JPG, PNG.</small>
+                                    @error('image') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <!-- ICON UPLOAD (New Section) -->
+                                <div class="mb-3">
+                                    <label for="icon" class="form-label">Category Icon</label>
+                                    <div class="image-preview border p-2 mb-2 rounded bg-light text-center">
+                                        @if ($icon)
+                                        <img src="{{ $icon->temporaryUrl() }}" class="img-fluid" style="max-height: 64px;">
+                                        @elseif ($currentIcon)
+                                        {{-- Handle both seeded assets and storage files logic implicitly via asset helper or explicit logic --}}
+                                        @php
+                                        $iconUrl = Str::startsWith($currentIcon, 'assets') ? asset($currentIcon) : asset('storage/' . $currentIcon);
+                                        @endphp
+                                        <img src="{{ $iconUrl }}" alt="Current Icon" class="img-fluid" style="max-height: 64px;">
+                                        @else
+                                        <span class="text-muted small">No icon uploaded</span>
+                                        @endif
+                                    </div>
+                                    <input type="file" class="form-control @error('icon') is-invalid @enderror" id="icon" wire:model.live="icon">
+                                    <small class="form-text text-muted">Max 1MB. PNG, SVG preferred.</small>
+                                    @error('icon') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
+                            </div>
                         </div>
+
+
 
 
                     </div>
                 </div>
             </div>
+
+            <!-- Bottom: SEO -->
             <div class="col-md-12">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header">
@@ -140,6 +178,4 @@
             </div>
         </div>
     </form>
-
-
 </div>

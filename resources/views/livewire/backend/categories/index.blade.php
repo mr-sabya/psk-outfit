@@ -50,6 +50,7 @@
                                 <i class="fas fa-{{ $sortDirection == 'asc' ? 'sort-up' : 'sort-down' }}"></i>
                                 @endif
                             </th>
+                            <th>Icon</th>
                             <th>Image</th>
                             <th>Parent</th>
                             <th wire:click="sortBy('is_active')" style="cursor: pointer;">
@@ -83,6 +84,13 @@
                             <td>
                                 @if ($category->image_url)
                                 <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                                @else
+                                <span class="text-muted">No Image</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if ($category->icon)
+                                <img src="{{ $category->icon_url }}" alt="{{ $category->name }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                 <span class="text-muted">No Image</span>
                                 @endif
