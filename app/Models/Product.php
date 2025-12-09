@@ -266,7 +266,9 @@ class Product extends Model
     // Add this accessor for convenience
     public function getThumbnailUrlAttribute()
     {
-        return $this->thumbnail_image_path ? Storage::disk('public')->url($this->thumbnail_image_path) : null;
+        return $this->thumbnail_image_path
+            ? url('storage/' . $this->thumbnail_image_path)
+            : null;
     }
 
 

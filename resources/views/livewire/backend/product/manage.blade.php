@@ -84,10 +84,10 @@
                             <div class="col-md-12 mb-3">
                                 <label for="new_thumbnail_image" class="form-label">Thumbnail Image</label>
                                 <div class="image-preview">
-                                    @if ($thumbnail_image_path)
-                                    <img src="{{ asset('storage/' . $thumbnail_image_path) }}" alt="Current Thumbnail" class="upload-image">
-                                    @elseif($new_thumbnail_image)
+                                    @if ($new_thumbnail_image)
                                     <img src="{{ $new_thumbnail_image->temporaryUrl() }}" alt="Current Thumbnail" class="upload-image">
+                                    @elseif($thumbnail_image_path)
+                                    <img src="{{ asset('storage/' . $thumbnail_image_path) }}" alt="Current Thumbnail" class="upload-image">
                                     @endif
                                 </div>
                                 <input type="file" class="form-control @error('new_thumbnail_image') is-invalid @enderror" id="new_thumbnail_image" wire:model="new_thumbnail_image">

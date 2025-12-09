@@ -108,9 +108,7 @@ class Manage extends Component
     protected function rules()
     {
         $rules = [
-            'vendor_id' => ['nullable', 'exists:users,id', Rule::exists('users', 'id')->where(function ($query) {
-                $query->where('role', UserRole::Vendor->value);
-            })], // <-- Add/update rule for vendor_id
+            'vendor_id' => ['nullable'], // <-- Add/update rule for vendor_id
             'selectedCategoryIds' => ['required', 'array', 'min:1'], // <--- ADD THIS
             'selectedCategoryIds.*' => ['exists:categories,id'], // Validate each ID in the array
             'brand_id' => ['nullable', 'exists:brands,id'],
@@ -223,6 +221,12 @@ class Manage extends Component
             $this->digital_file_path = null;
         }
 
+        // Determine quantity based on type (Must be integer, not null)
+        $quantityToSave = 0;
+        if ($this->type === ProductType::Normal->value) {
+            $quantityToSave = $this->quantity ?? 0;
+        }
+
         $this->product->fill([
             'vendor_id' => $this->vendor_id,
             'brand_id' => $this->brand_id,
@@ -236,7 +240,7 @@ class Manage extends Component
             'price' => $this->price,
             'compare_at_price' => $this->compare_at_price,
             'cost_price' => $this->cost_price,
-            'quantity' => ($this->type === ProductType::Variable->value || $this->type === ProductType::Affiliate->value || $this->type === ProductType::Digital->value) ? null : $this->quantity, // Quantity nullified for variable/affiliate/digital parent products
+            'quantity' => $quantityToSave, // Quantity nullified for variable/affiliate/digital parent products
             'weight' => $this->weight,
             'is_active' => $this->is_active,
             'is_featured' => $this->is_featured,
@@ -257,7 +261,7 @@ class Manage extends Component
         session()->flash('message', 'Product ' . ($this->product->wasRecentlyCreated ? 'created' : 'updated') . ' successfully!');
 
         // Redirect or emit event
-        return redirect()->route('admin.product.products.edit', $this->product->id); // Example redirection
+        return $this->redirect(route('admin.product.products.edit', $this->product->id), navigate:true); // Example redirection
     }
 
     public function render()
