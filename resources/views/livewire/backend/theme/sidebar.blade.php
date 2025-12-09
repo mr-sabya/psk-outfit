@@ -2,12 +2,13 @@
     <div class="sidebar-logo">
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
-            <a href="{{ route('admin.home') }}" class="logo">
+            <a href="{{ route('admin.home') }}" class="logo" style="width: 120px;">
                 <img
-                    src="{{ asset('assets/backend/img/kaiadmin/logo_light.svg') }}"
+                    src="{{ isset($settings['white_logo']) && $settings['white_logo'] 
+        ? asset('storage/' . $settings['white_logo']) 
+        : asset('assets/backend/img/kaiadmin/logo_light.svg') }}"
                     alt="navbar brand"
-                    class="navbar-brand"
-                    height="20" />
+                    class="navbar-brand w-100" />
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
@@ -197,7 +198,7 @@
                                     <span class="sub-item">Post</span>
                                 </a>
                             </li>
-                            
+
                         </ul>
                     </div>
                 </li>

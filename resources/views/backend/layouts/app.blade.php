@@ -7,10 +7,14 @@
     <meta
         content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
         name="viewport" />
+
     <link
         rel="icon"
-        href="{{ asset('assets/img/kaiadmin/favicon.ico') }}"
-        type="image/x-icon" />
+        type="image/x-icon"
+        href="{{ isset($settings['favicon']) && $settings['favicon'] 
+        ? asset('storage/' . $settings['favicon']) 
+        : asset('assets/img/kaiadmin/favicon.ico')
+    }}">
 
     <!-- Fonts and icons -->
     <script src="{{ asset('assets/backend/js/plugin/webfont/webfont.min.js') }}"></script>
@@ -67,7 +71,6 @@
                 </div>
             </div>
 
-            <livewire:backend.theme.footer />
         </div>
 
 
@@ -108,7 +111,7 @@
     <!-- Kaiadmin JS -->
     <script data-navigate-once src="{{ asset('assets/backend/js/kaiadmin.min.js') }}"></script>
 
-    
+
     <script>
         $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
             type: "line",

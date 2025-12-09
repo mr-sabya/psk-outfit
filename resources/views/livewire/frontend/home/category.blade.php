@@ -17,7 +17,7 @@
                         <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="img-fluid w-100">
                         @else
                         {{-- Fallback placeholder if no image exists --}}
-                        <img src="{{ asset('assets/frontend/images/category_img_1.png') }}" alt="Default" class="img-fluid w-100">
+                        <img src="{{ asset('assets/frontend/images/nno-image.jpg') }}" alt="Default" class="img-fluid w-100">
                         @endif
                     </div>
                     <h3>{{ $category->name }}</h3>
