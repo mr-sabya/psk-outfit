@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/jquery.pwstabs.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/range_slider.css') }}">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/multiple-image-video.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/animated_barfiller.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/custom_spacing.css') }}">
@@ -119,6 +120,7 @@
     <script data-navigate-once src="{{ asset('assets/frontend/js/jquery.youtube-background.min.js') }}"></script>
     <!--range slider js-->
     <script data-navigate-once src="{{ asset('assets/frontend/js/range_slider.js') }}"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <!--sticky sidebar js-->
     <script data-navigate-once src="{{ asset('assets/frontend/js/sticky_sidebar.js') }}"></script>
     <!--multiple image upload js-->
@@ -137,6 +139,8 @@
             el.style.backgroundRepeat = "no-repeat";
         });
     </script>
+
+    @stack('scripts')
     @livewireScripts
 
 </body>

@@ -705,10 +705,7 @@ document.addEventListener('livewire:navigated', () => {
             theme: "dark",
         };
 
-        $('.range_slider').alRangeSlider(options);
-        const options2 = {
-            orientation: "vertical"
-        };
+       
 
 
         //======PRODUCT FILTER====== 

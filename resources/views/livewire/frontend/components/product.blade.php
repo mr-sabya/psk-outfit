@@ -41,7 +41,7 @@
     <div class="product_text">
         {{-- Link to details page (Adjust route name 'product.details' as needed) --}}
         <a class="title" href="#">
-            {{ $product->name }}
+            {{ Str::limit($product->name, 20) }}
         </a>
 
         <p class="price">
@@ -54,7 +54,7 @@
                 @endif
         </p>
 
-        <p class="rating">
+        <p class="rating mb-0">
             {{-- dynamic star rating calculation based on loaded reviews --}}
             @php
             $avgRating = $product->reviews->avg('rating') ?? 0;
@@ -78,30 +78,5 @@
                     <span>({{ $product->reviews->count() }} reviews)</span>
         </p>
 
-        {{--
-            Color Logic: 
-            This attempts to find unique colors from the variants.
-            It assumes your AttributeValue has a 'value' that is a hex code or name.
-            If your data structure is different, you might need to adjust the pluck key.
-        --}}
-        @if($isColor && $product->isVariable())
-        @php
-        // Get unique attribute values from all variants (assuming specific naming)
-        // You might need to filter by Attribute name = 'Color' if you have the Attribute model
-        $colors = $product->variants
-        ->flatMap(fn($v) => $v->attributeValues)
-        ->unique('id')
-        ->take(4); // Limit to 4 circles
-        @endphp
-
-        @if($colors->isNotEmpty())
-        <ul class="color">
-            @foreach($colors as $color)
-            {{-- Assuming 'value' contains the hex code or color name --}}
-            <li style="background: {{ $color->value }}" title="{{ $color->value }}"></li>
-            @endforeach
-        </ul>
-        @endif
-        @endif
     </div>
 </div>

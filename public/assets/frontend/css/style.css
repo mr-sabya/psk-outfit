@@ -7951,9 +7951,9 @@ footer {
     background: var(--themeColorTwo);
 }
 
-.sidebar_color ul {
+/* .sidebar_color ul {
     height: 225px;
-}
+} */
 
 .sidebar_color ul li {
     padding: 0;
