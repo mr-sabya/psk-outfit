@@ -10,18 +10,7 @@
             @forelse ($categories as $category)
             <div class="col-2 wow fadeInUp" wire:key="category-{{ $category->id }}">
                 {{-- Update href to your actual shop route, passing the slug --}}
-                <a href="#" class="category_item">
-                    <div class="img">
-                        {{-- Use the accessor created in the Model for the image URL --}}
-                        @if($category->image_url)
-                        <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="img-fluid w-100">
-                        @else
-                        {{-- Fallback placeholder if no image exists --}}
-                        <img src="{{ asset('assets/frontend/images/nno-image.jpg') }}" alt="Default" class="img-fluid w-100">
-                        @endif
-                    </div>
-                    <h3>{{ $category->name }}</h3>
-                </a>
+                <livewire:frontend.components.category :category="$category" />
             </div>
             @empty
             <div class="col-12 text-center">
