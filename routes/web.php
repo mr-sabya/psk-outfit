@@ -42,3 +42,8 @@ Route::middleware('auth')->group(function () {
         return 'admin dashboard';
     })->name('profile');
 });
+
+// user dashboard route
+Route::prefix('user')->name('user.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Frontend\User\DashboardController::class, 'index'])->name('dashboard');
+});
