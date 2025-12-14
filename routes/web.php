@@ -13,6 +13,9 @@ Route::get('/', [App\Http\Controllers\Frontend\HomeController::class, 'index'])-
 // shop page
 Route::get('/shop', [App\Http\Controllers\Frontend\ShopController::class, 'index'])->name('shop');
 
+// product details page
+Route::get('/product/{slug}', [App\Http\Controllers\Frontend\ShopController::class, 'show'])->name('product.show');
+
 // category page
 Route::get('/category', [App\Http\Controllers\Frontend\CategoryController::class, 'index'])->name('category');
 

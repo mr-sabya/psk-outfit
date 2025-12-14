@@ -40,7 +40,7 @@
 
     <div class="product_text">
         {{-- Link to details page (Adjust route name 'product.details' as needed) --}}
-        <a class="title" href="#">
+        <a class="title" href="{{ route('product.show', $product->slug) }}" wire:navigate>
             {{ Str::limit($product->name, 20) }}
         </a>
 
