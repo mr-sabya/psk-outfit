@@ -16,7 +16,7 @@
                     <p>dashboard</p>
                 </li>
                 <li>
-                    <a class="active" href="dashboard.html">
+                    <a class="{{ Route::is('user.dashboard') ? 'active' : '' }}" href="{{ route('user.dashboard') }}" wire:navigate>
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -28,7 +28,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="dashboard_order.html">
+                    <a class="{{ Route::is('user.orders') ? 'active' : '' }}" href="{{ route('user.orders') }}" wire:navigate>
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -40,7 +40,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="dashboard_download.html">
+                    <a class="{{ Route::is('user.invoice') ? 'active' : '' }}" href="{{ route('user.invoice') }}" wire:navigate>
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -48,11 +48,11 @@
                                     d="m9 13.5 3 3m0 0 3-3m-3 3v-6m1.06-4.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
                             </svg>
                         </span>
-                        download
+                        invoice
                     </a>
                 </li>
                 <li>
-                    <a href="dashboard_return_request.html">
+                    <a class="{{ Route::is('user.returns') ? 'active' : '' }}" href="{{ route('user.returns') }}" wire:navigate>
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -60,14 +60,14 @@
                                     d="M8.25 9.75h4.875a2.625 2.625 0 0 1 0 5.25H12M8.25 9.75 10.5 7.5M8.25 9.75 10.5 12m9-7.243V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185Z" />
                             </svg>
                         </span>
-                        return policy
+                        returns
                     </a>
                 </li>
                 <li>
                     <p>Account settings</p>
                 </li>
                 <li>
-                    <a href="dashboard_profile.html">
+                    <a class="{{ Route::is('user.profile') ? 'active' : '' }}" href="{{ route('user.profile') }}" wire:navigate>
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -79,7 +79,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="dashboard_address.html">
+                    <a class="{{ Route::is('user.address') ? 'active' : '' }}" href="{{ route('user.address') }}" wire:navigate>
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -105,7 +105,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="dashboard_reviews.html">
+                    <a class="{{ Route::is('user.reviews') ? 'active' : '' }}" href="{{ route('user.reviews') }}" wire:navigate>
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -117,7 +117,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="dashboard_change_password.html">
+                    <a class="{{ Route::is('user.password') ? 'active' : '' }}" href="{{ route('user.password') }}" wire:navigate>
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="size-6">

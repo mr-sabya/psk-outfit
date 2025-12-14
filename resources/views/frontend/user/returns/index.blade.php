@@ -36,7 +36,7 @@
                 <livewire:frontend.user.sidebar />
             </div>
             <div class="col-lg-9 wow fadeInRight">
-                <livewire:frontend.user.order />
+                <livewire:frontend.user.returns />
             </div>
         </div>
     </div>

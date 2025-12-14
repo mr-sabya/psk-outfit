@@ -12,4 +12,22 @@ class DashboardController extends Controller
     {
         return view('frontend.user.dashboard.index');
     }
+
+    // profile
+    public function profile()
+    {
+        return view('frontend.user.profile.index');
+    }
+
+    // reviews
+    public function reviews()
+    {
+        return view('frontend.user.reviews.index');
+    }
+
+    // password
+    public function password()
+    {
+        return view('frontend.user.password.index');
+    }
 }

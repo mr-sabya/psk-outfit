@@ -36,14 +36,29 @@ Route::get('/login', [App\Http\Controllers\Frontend\AuthController::class, 'logi
 Route::get('/register', [App\Http\Controllers\Frontend\AuthController::class, 'register'])->name('register');
 
 
-// check middleware
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', function () {
-        return 'admin dashboard';
-    })->name('profile');
-});
 
 // user dashboard route
-Route::prefix('user')->name('user.')->group(function () {
+Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Frontend\User\DashboardController::class, 'index'])->name('dashboard');
+
+    // user orders route
+    Route::get('/orders', [App\Http\Controllers\Frontend\User\OrderController::class, 'index'])->name('orders');
+
+    // user invoice route
+    Route::get('/invoice', [App\Http\Controllers\Frontend\User\OrderController::class, 'invoice'])->name('invoice');
+
+    // user returns route
+    Route::get('/returns', [App\Http\Controllers\Frontend\User\OrderController::class, 'returns'])->name('returns');
+
+    // user profile route
+    Route::get('/profile', [App\Http\Controllers\Frontend\User\DashboardController::class, 'profile'])->name('profile');
+
+    // user address route
+    Route::get('/address', [App\Http\Controllers\Frontend\User\AddressController::class, 'index'])->name('address');
+
+    // user reviews route
+    Route::get('/reviews', [App\Http\Controllers\Frontend\User\DashboardController::class, 'reviews'])->name('reviews');
+
+    // user password route
+    Route::get('/change-password', [App\Http\Controllers\Frontend\User\DashboardController::class, 'password'])->name('password');
 });
