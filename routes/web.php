@@ -28,11 +28,17 @@ Route::get('/blog', [App\Http\Controllers\Frontend\BlogController::class, 'index
 // contact page
 Route::get('/contact', [App\Http\Controllers\Frontend\ContactController::class, 'index'])->name('contact');
 
+
+// auth routes
+Route::get('/login', [App\Http\Controllers\Frontend\AuthController::class, 'login'])->name('login');
+
+// register route
+Route::get('/register', [App\Http\Controllers\Frontend\AuthController::class, 'register'])->name('register');
+
+
 // check middleware
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function () {
         return 'admin dashboard';
     })->name('profile');
 });
-
-

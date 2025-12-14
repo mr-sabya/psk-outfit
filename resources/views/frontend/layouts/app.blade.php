@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/custom_spacing.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/custom.css') }}">
     @livewireStyles
 </head>
 

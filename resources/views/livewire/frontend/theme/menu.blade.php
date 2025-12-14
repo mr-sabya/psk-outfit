@@ -47,6 +47,7 @@
                                 <span>3</span>
                             </a>
                         </li>
+                        @auth
                         <li>
                             <a class="user" href="dashboard.html">
                                 <b>
@@ -107,6 +108,16 @@
                                 </li>
                             </ul>
                         </li>
+                        @else
+                        <li>
+                            <a class="user" href="{{ route('login') }}" wire:navigate>
+                                <b>
+                                    <img src="{{ url('assets/frontend/images/user_icon_black.svg') }}" alt="cart" class="img-fluid">
+                                </b>
+                                <h5> Login </h5>
+                            </a>
+                        </li>
+                        @endauth
                     </ul>
                 </div>
             </div>

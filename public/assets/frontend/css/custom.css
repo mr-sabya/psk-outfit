@@ -1,0 +1,83 @@
+/* Add this to your main CSS file if styling is missing */
+.login_wrap {
+    background: #fff;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.07);
+    padding: 40px;
+    border-radius: 10px;
+}
+
+.login_wrap h3 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.login_input_group {
+    margin-bottom: 20px;
+}
+
+.login_input_group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.login_input_group input {
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    border-radius: 5px;
+    outline: none;
+}
+
+.login_input_group input:focus {
+    border-color: #ddd;
+    /* Replace with your primary color */
+}
+
+.forgot_link {
+    font-size: 14px;
+    color: #666;
+}
+
+.create_account {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Container to align checkbox and text */
+.custom-checkbox-container {
+    display: flex;
+    align-items: center; /* Vertically center the items */
+    gap: 8px; /* Space between checkbox and text */
+    padding-left: 0; /* Bootstrap often adds padding, this resets it if needed */
+    margin-bottom: 10px;
+}
+
+/* Style the checkbox itself */
+.custom-checkbox-container .form-check-input {
+    width: 18px;
+    height: 18px;
+    margin-top: 0; /* Reset default margins */
+    border: 1px solid #ced4da; /* Light gray border like the image */
+    border-radius: 4px; /* Slight rounded corners */
+    cursor: pointer;
+    margin-left: 0;
+    padding: 0;
+}
+
+/* Style the Label text */
+.custom-checkbox-container .form-check-label {
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 400;
+    user-select: none; /* Prevents text highlighting when clicking repeatedly */
+}
+
+
+
+/* Optional: Focus state for accessibility */
+.custom-checkbox-container .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+}
