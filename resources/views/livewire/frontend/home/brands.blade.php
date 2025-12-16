@@ -20,7 +20,7 @@
                     @forelse($brands as $brand)
                     <li class="wow fadeInUp">
                         {{-- Link to Shop filtered by this brand --}}
-                        <a href="{{ route('shop.index', ['brand' => $brand->slug]) }}" title="{{ $brand->name }}">
+                        <a href="#" title="{{ $brand->name }}">
 
                             {{--
                                     Using the accessor getLogoUrlAttribute().
