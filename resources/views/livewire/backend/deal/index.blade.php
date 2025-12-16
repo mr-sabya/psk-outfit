@@ -80,7 +80,7 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('admin.deals.edit', $deal->id) }}" class="btn btn-sm btn-info" title="Edit Deal">
+                                <a href="{{ route('admin.deal.edit', $deal->id) }}" wire:navigate class="btn btn-sm btn-info" title="Edit Deal">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <button class="btn btn-sm btn-danger" wire:click="deleteDeal({{ $deal->id }})" title="Delete Deal" onclick="return confirm('Are you sure you want to delete this deal?')">

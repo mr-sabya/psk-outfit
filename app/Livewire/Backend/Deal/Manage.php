@@ -176,7 +176,7 @@ class Manage extends Component
         $deal->products()->sync($this->selectedProducts);
 
         // Redirect back to the index page after saving
-        return $this->redirectRoute('admin.deals.index', navigate: true);
+        return $this->redirectRoute('admin.deal.index', navigate: true);
     }
 
     public function render()

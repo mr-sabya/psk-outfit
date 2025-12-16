@@ -47,10 +47,10 @@
         <p class="price">
             {{-- Logic to show discounted price --}}
             @if($product->effective_price < $product->price)
-                <span class="text-danger">${{ number_format($product->effective_price, 2) }}</span>
+                <span class="text-danger">৳{{ number_format($product->effective_price, 2) }}</span>
                 <del class="text-muted" style="font-size: 0.9em;">${{ number_format($product->price, 2) }}</del>
                 @else
-                ${{ number_format($product->price, 2) }}
+                ৳{{ number_format($product->price, 2) }}
                 @endif
         </p>
 

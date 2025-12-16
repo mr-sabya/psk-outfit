@@ -47,7 +47,9 @@
 
                 <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control @error('description') is-invalid @enderror" id="description" rows="3" wire:model.defer="description"></textarea>
+                    <livewire:quill-text-editor
+                        wire:model.live="description"
+                        theme="snow" />
                     @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 

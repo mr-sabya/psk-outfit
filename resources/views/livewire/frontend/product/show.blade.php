@@ -75,9 +75,9 @@
                             </div>
 
                             <h3 class="price">
-                                ${{ number_format($product->effective_price, 2) }}
+                                ৳{{ number_format($product->effective_price, 2) }}
                                 @if($product->compare_at_price > $product->effective_price)
-                                <del>${{ number_format($product->compare_at_price, 2) }}</del>
+                                <del>৳{{ number_format($product->compare_at_price, 2) }}</del>
                                 @endif
                             </h3>
 
