@@ -4,8 +4,14 @@
             <div class="col-12 d-flex flex-wrap">
                 <div class="main_menu_area">
                     <div class="menu_category_area">
-                        <a href="index.html" class="menu_logo d-none">
-                            <img src="{{ url('assets/frontend/images/logo_2.png') }}" alt="Zenis" class="img-fluid w-100">
+                        <a href="{{ route('home') }}" wire:navigate class="menu_logo d-none">
+                            <img
+                                src="{{ isset($settings['logo']) && $settings['logo'] 
+        ? asset('storage/' . $settings['logo']) 
+        : asset('assets/frontend/images/logo_2.png') 
+    }}"
+                                alt="{{ $settings['website_name'] }}"
+                                class="img-fluid w-100" />
                         </a>
                         <div class="menu_category_bar">
                             <p>

@@ -3,7 +3,7 @@
         <div class="row align-items-center">
             <div class="col-lg-2">
                 <div class="header_logo_area">
-                    <a href="index.html" class="header_logo">
+                    <a href="{{ route('home') }}" wire:navigate class="header_logo">
                         <img
                             src="{{ isset($settings['logo']) && $settings['logo'] 
         ? asset('storage/' . $settings['logo']) 
@@ -19,20 +19,7 @@
                 </div>
             </div>
             <div class="col-xxl-6 col-xl-5 col-lg-5 d-none d-lg-block">
-                <form action="#">
-                    <select class="select_2">
-                        <option>All Categories</option>
-                        <option>Fashion</option>
-                        <option>Elentronics</option>
-                        <option>Fashion & Beauty</option>
-                        <option>Jewelry</option>
-                        <option>Grocery</option>
-                    </select>
-                    <div class="input">
-                        <input type="text" placeholder="Search your product...">
-                        <button type="submit"><i class="far fa-search"></i></button>
-                    </div>
-                </form>
+                <livewire:frontend.theme.search />
             </div>
             <div class="col-xxl-4 col-xl-5 col-lg-5 d-none d-lg-flex">
                 <div class="header_support_user d-flex flex-wrap">

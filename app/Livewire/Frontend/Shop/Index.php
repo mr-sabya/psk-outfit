@@ -18,15 +18,20 @@ class Index extends Component
     // Sidebar Data
     public $categories;
     public $colors;
-    public $sizes; // <--- ADD THIS
+    public $sizes;
     public $topRatedProducts;
 
     // Filters
     public $minPrice = 0;
     public $maxPrice = 1000;
+    
+    // Limits for the slider UI (to know the absolute bounds)
+    public $priceRangeMin = 0;
+    public $priceRangeMax = 1000;
+
     public $selectedCategory = null;
     public $selectedColors = [];
-    public $selectedSizes = []; // <--- ADD THIS
+    public $selectedSizes = [];
     public $selectedRating = null;
     public $isOnSale = false;
     public $isInStock = false;
@@ -40,41 +45,47 @@ class Index extends Component
         'maxPrice' => ['except' => 1000],
         'selectedCategory' => ['except' => null],
         'selectedColors' => ['except' => []],
-        'selectedSizes' => ['except' => []], // <--- ADD THIS
+        'selectedSizes' => ['except' => []],
         'isOnSale' => ['except' => false],
         'sortBy' => ['except' => 'default'],
     ];
 
     public function mount()
     {
-        // 1. Categories
+        // 1. DYNAMIC PRICE: Get actual min/max from DB to ensure products aren't hidden
+        $this->priceRangeMin = floor(Product::min('price') ?? 0);
+        $this->priceRangeMax = ceil(Product::max('price') ?? 1000);
+        
+        // If URL doesn't have custom price, use DB limits
+        if (!request()->has('minPrice')) {
+            $this->minPrice = $this->priceRangeMin;
+        }
+        if (!request()->has('maxPrice')) {
+            $this->maxPrice = $this->priceRangeMax;
+        }
+
+        // 2. Categories
         $this->categories = Category::active()
             ->withCount(['products' => function (Builder $query) {
                 $query->active();
             }])
             ->get();
 
-        // 2. GET COLORS: Where Attribute slug is 'color' AND has variants
+        // 3. Colors
         $this->colors = AttributeValue::whereHas('attribute', function ($query) {
-            $query->where('slug', 'color')
-                ->orWhere('name', 'Color'); // Fallback for safety
-        })
-            ->whereHas('productVariants') // Only show colors attached to products
-            ->get();
+            $query->where('slug', 'color')->orWhere('name', 'Color');
+        })->get();
 
-        // 3. GET SIZES: Where Attribute slug is 'size' AND has variants
+        // 4. Sizes
         $this->sizes = AttributeValue::whereHas('attribute', function ($query) {
-            $query->where('slug', 'size')
-                ->orWhere('name', 'Size');
-        })
-            ->whereHas('productVariants')
-            ->get();
+            $query->where('slug', 'size')->orWhere('name', 'Size');
+        })->get();
 
-        // 4. Top Rated
+        // 5. Top Rated
         $this->topRatedProducts = Product::active()
             ->withAvg('reviews', 'rating')
             ->orderByDesc('reviews_avg_rating')
-            ->take(4)
+            ->take(3)
             ->get();
 
         if (request()->has('category')) {
@@ -89,7 +100,6 @@ class Index extends Component
 
     public function resetFilters()
     {
-        // Reset all filter properties to their default values
         $this->reset([
             'selectedCategory',
             'selectedColors',
@@ -100,67 +110,93 @@ class Index extends Component
             'sortBy'
         ]);
 
-        // Manually reset price to default range
-        $this->minPrice = 0;
-        $this->maxPrice = 1000;
+        // Reset price to the DB limits calculated in mount
+        $this->minPrice = $this->priceRangeMin;
+        $this->maxPrice = $this->priceRangeMax;
 
-        // Reset pagination to page 1
         $this->resetPage();
 
-        // Dispatch event to JavaScript to reset the UI Slider visually
-        $this->dispatch('reset-price-slider', min: 0, max: 1000);
+        // Dispatch event for UI Slider (if you are using one)
+        $this->dispatch('reset-price-slider', min: $this->minPrice, max: $this->maxPrice);
     }
 
     public function render()
     {
         $products = Product::active()
-            ->with(['reviews', 'variants.attributeValues']);
+            // Eager load necessary relationships
+            ->with(['reviews', 'variants', 'categories']);
 
-        // ... Price Filter ...
+        // --- 1. Price Filter ---
+        // Use whereBetween on the price column
         $products->whereBetween('price', [$this->minPrice, $this->maxPrice]);
 
-        // ... Category Filter ...
+        // --- 2. Category Filter ---
         if ($this->selectedCategory) {
             $products->whereHas('categories', function ($query) {
-                $query->where('slug', $this->selectedCategory)
-                    ->orWhere('id', $this->selectedCategory);
+                $query->where('categories.slug', $this->selectedCategory)
+                      ->orWhere('categories.id', $this->selectedCategory);
             });
         }
 
-        // ... Color Filter ...
+        // --- 3. Color Filter ---
         if (!empty($this->selectedColors)) {
-            $products->whereHas('variants.attributeValues', function ($query) {
-                $query->whereIn('attribute_values.id', $this->selectedColors);
+            $products->where(function ($query) {
+                // Check Simple Product attributes
+                $query->whereHas('attributeValues', function ($q) {
+                    $q->whereIn('attribute_values.id', $this->selectedColors);
+                })
+                // OR Check Variable Product attributes
+                ->orWhereHas('variants.attributeValues', function ($q) {
+                    $q->whereIn('attribute_values.id', $this->selectedColors);
+                });
             });
         }
 
-        // ... Size Filter (ADD THIS) ...
+        // --- 4. Size Filter ---
         if (!empty($this->selectedSizes)) {
-            $products->whereHas('variants.attributeValues', function ($query) {
-                $query->whereIn('attribute_values.id', $this->selectedSizes);
+            $products->where(function ($query) {
+                // Check Simple Product attributes
+                $query->whereHas('attributeValues', function ($q) {
+                    $q->whereIn('attribute_values.id', $this->selectedSizes);
+                })
+                // OR Check Variable Product attributes
+                ->orWhereHas('variants.attributeValues', function ($q) {
+                    $q->whereIn('attribute_values.id', $this->selectedSizes);
+                });
             });
         }
 
-        // ... Rating, Status, Sorting ...
+        // --- 5. Rating Filter ---
         if ($this->selectedRating) {
-            $products->whereHas('reviews', function ($query) {
-                $query->selectRaw('avg(rating) as avg_rating')
-                    ->groupBy('product_id')
-                    ->havingRaw('avg_rating >= ?', [$this->selectedRating]);
-            });
+            // Filter by calculating average rating
+            $products->withAvg('reviews', 'rating')
+                     ->having('reviews_avg_rating', '>=', $this->selectedRating);
         }
 
+        // --- 6. On Sale Filter ---
         if ($this->isOnSale) {
-            $products->whereColumn('compare_at_price', '>', 'price');
+            $products->whereNotNull('compare_at_price')
+                     ->whereColumn('compare_at_price', '>', 'price');
         }
 
+        // --- 7. In Stock Filter ---
         if ($this->isInStock) {
             $products->where(function ($query) {
+                // Case A: Stock management disabled (always in stock)
                 $query->where('is_manage_stock', false)
-                    ->orWhere('quantity', '>', 0);
+                // Case B: Simple Product with quantity > 0
+                    ->orWhere(function($q) {
+                        $q->where('is_manage_stock', true)
+                          ->where('quantity', '>', 0);
+                    })
+                // Case C: Variable Product (check sum of variants)
+                    ->orWhereHas('variants', function($q) {
+                        $q->where('quantity', '>', 0);
+                    });
             });
         }
 
+        // --- 8. Sorting ---
         switch ($this->sortBy) {
             case 'low_high':
                 $products->orderBy('price', 'asc');
