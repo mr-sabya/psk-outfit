@@ -50,7 +50,7 @@
                     <ul>
                         <li><a href="{{ route('page.show', ['slug' => 'privacy-policy']) }}">Privacy Ploicy</a></li>
                         <li><a href="{{ route('page.show', ['slug' => 'terms-and-conditions']) }}">Terms and Condition</a></li>
-                        <li><a href="{{ route('page.show', ['slug' => 'return-policy']) }}">Return Policy</a></li>
+                        <li><a href="{{ route('page.show', ['slug' => 'return-exchange-policy']) }}">Return Policy</a></li>
                         <li><a href="{{ route('page.show', ['slug' => 'faq']) }}">FAQ's</a></li>
                         <li><a href="#">Become a Vendor</a></li>
                     </ul>
