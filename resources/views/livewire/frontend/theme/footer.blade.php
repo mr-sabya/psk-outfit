@@ -1,4 +1,4 @@
-<footer class="footer_2 pt_100" style="background: url({{ url('assets/frontend/images/footer_2_bg_2.jpg') }});">
+<footer class="footer_2 pt_100" data-bg="{{ url('assets/frontend/images/footer_2_bg_2.jpg') }}">
     <div class="container">
         <div class="row justify-content-between">
             <div class="col-xl-3 col-md-6 col-lg-3 wow fadeInUp" data-wow-delay=".7s">
@@ -24,7 +24,7 @@
                 <div class="footer_link">
                     <h3>Company</h3>
                     <ul>
-                        <li><a href="#about">About us</a></li>
+                        <li><a href="{{ route('about') }}" wire:navigate>About us</a></li>
                         <li><a href="#">Contact Us</a></li>
                         <li><a href="#">Affiliate</a></li>
                         <li><a href="#">Career</a></li>
@@ -48,10 +48,10 @@
                 <div class="footer_link">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#">Privacy Ploicy</a></li>
-                        <li><a href="#">Terms and Condition</a></li>
-                        <li><a href="#">Return Policy</a></li>
-                        <li><a href="#">FAQ's</a></li>
+                        <li><a href="{{ route('page.show', ['slug' => 'privacy-policy']) }}">Privacy Ploicy</a></li>
+                        <li><a href="{{ route('page.show', ['slug' => 'terms-and-conditions']) }}">Terms and Condition</a></li>
+                        <li><a href="{{ route('page.show', ['slug' => 'return-policy']) }}">Return Policy</a></li>
+                        <li><a href="{{ route('page.show', ['slug' => 'faq']) }}">FAQ's</a></li>
                         <li><a href="#">Become a Vendor</a></li>
                     </ul>
                 </div>

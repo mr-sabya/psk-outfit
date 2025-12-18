@@ -28,6 +28,9 @@ Route::get('/blog', [App\Http\Controllers\Frontend\BlogController::class, 'index
 // contact page
 Route::get('/contact', [App\Http\Controllers\Frontend\ContactController::class, 'index'])->name('contact');
 
+// about page
+Route::get('/about', [App\Http\Controllers\Frontend\AboutController::class, 'index'])->name('about');
+
 
 // auth routes
 Route::get('/login', [App\Http\Controllers\Frontend\AuthController::class, 'login'])->name('login');
@@ -62,3 +65,9 @@ Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
     // user password route
     Route::get('/change-password', [App\Http\Controllers\Frontend\User\DashboardController::class, 'password'])->name('password');
 });
+
+
+// dynamic pages
+Route::get('/{slug}', [App\Http\Controllers\Frontend\PageController::class, 'show'])
+    ->name('page.show')
+    ->where('slug', '^(?!admin|login|register|dashboard).*$');

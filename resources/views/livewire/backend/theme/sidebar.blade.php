@@ -235,33 +235,6 @@
                 </li>
 
 
-                <!-- Investment -->
-                <li class="nav-item {{ request()->routeIs('admin.investment.*') ? 'active submenu' : '' }}">
-                    <a data-bs-toggle="collapse" href="#investmentManagement" class="collapsed" aria-expanded="{{ request()->routeIs('admin.investment.*') ? 'true' : 'false' }}">
-                        <i class="fas fa-hand-holding-usd"></i> <!-- Changed from fa-cubes to fa-hand-holding-usd for Investment -->
-                        <p>Investment</p>
-                        <span class="caret"></span>
-                    </a>
-                    <div class="collapse {{ request()->routeIs('admin.investment.*') ? 'show' : '' }}" id="investmentManagement">
-                        <ul class="nav nav-collapse">
-                            <!-- projects -->
-                            <li class="{{ request()->routeIs('admin.investment.projects.index') ? 'active' : '' }}">
-                                <a href="{{ route('admin.investment.projects.index') }}" wire:navigate>
-                                    <span class="sub-item">Projects</span>
-                                </a>
-                            </li>
-                            <!-- projects -->
-                            <li class="{{ request()->routeIs('admin.investment.investments.index') ? 'active' : '' }}">
-                                <a href="{{ route('admin.investment.investments.index') }}" wire:navigate>
-                                    <span class="sub-item">Investments</span>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </li>
-
-
                 <!-- Website -->
                 <li class="nav-item {{ request()->routeIs('admin.website.*') ? 'active submenu' : '' }}">
                     <a data-bs-toggle="collapse" href="#websiteManagement" class="collapsed" aria-expanded="{{ request()->routeIs('admin.website.*') ? 'true' : 'false' }}">
