@@ -1,164 +1,131 @@
-<div class="container mt-4">
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Manage Variants for "{{ $product->name }}"</h3>
+<div class="container mt-4 pb-5">
+    @if (session()->has('message')) <div class="alert alert-success border-0 shadow-sm">{{ session('message') }}</div> @endif
+    @if (session()->has('error')) <div class="alert alert-danger border-0 shadow-sm">{{ session('error') }}</div> @endif
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Product Variants: {{ $product->name }}</h5>
+            <button wire:click="saveVariants" wire:loading.attr="disabled" class="btn btn-sm btn-success fw-bold px-4">
+                <span wire:loading.remove wire:target="saveVariants">SAVE CHANGES</span>
+                <span wire:loading wire:target="saveVariants">SAVING...</span>
+            </button>
         </div>
+
         <div class="card-body">
-            @if (session()->has('message'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('message') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
-            @if (session()->has('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
-            @error('selectedAttributeIds')
-            <div class="alert alert-danger">{{ $message }}</div>
-            @enderror
-
-            <h5 class="mb-3">1. Select Variation Attributes</h5>
-            <div class="mb-4 p-3 border rounded">
-                <div class="form-group">
-                    <label for="selectedAttributeIds" class="form-label">Attributes used for Variations:</label>
-                    <select wire:model.live="selectedAttributeIds" class="form-select" multiple>
-                        @foreach ($availableAttributes as $attribute)
-                        <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
-                        @endforeach
-                    </select>
-                    <small class="form-text text-muted">Select attributes like "Color", "Size" to create product variations.</small>
-                    @error('selectedAttributeIds') <div class="text-danger mt-1">{{ $message }}</div> @enderror
-                </div>
+            <!-- 1. Attribute Selection -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Step 1: Choose Attributes</label>
+                <select wire:model.live="selectedAttributeIds" class="form-select" multiple size="3">
+                    @foreach ($availableAttributes as $attribute)
+                    <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
+                    @endforeach
+                </select>
             </div>
 
-            @if (!empty($selectedAttributeIds))
-            <h5 class="mb-3">2. Define Attribute Values</h5>
-            <div class="mb-4 p-3 border rounded">
-                @foreach ($selectedAttributeIds as $attributeId)
-                @php
-                $attribute = $availableAttributes->find($attributeId);
-                @endphp
-                @if ($attribute)
-                <div class="mb-3 border-bottom pb-3">
-                    <strong>{{ $attribute->name }} Values:</strong>
-                    <div class="d-flex flex-wrap my-2">
-                        @forelse ($attributeValuesToManage[$attributeId] ?? [] as $value)
-                        <span class="badge bg-secondary text-white fs-6 p-2 me-2 mb-2">
-                            {{ $value->value }}
-                            <button type="button" class="btn-close btn-close-white ms-1" wire:click="removeAttributeValue({{ $attributeId }}, {{ $value->id }})" aria-label="Remove"></button>
+            <!-- 2. Value Management -->
+            @if(count($selectedAttributeIds) > 0)
+            <div class="mb-4 p-3 bg-light rounded border">
+                @foreach ($selectedAttributeIds as $attrId)
+                @php $attr = $availableAttributes->find($attrId); @endphp
+                @if($attr)
+                <div class="mb-3 border-bottom pb-2">
+                    <span class="text-uppercase small fw-bold text-muted">{{ $attr->name }}</span>
+                    <div class="d-flex flex-wrap gap-2 mt-1">
+                        @foreach ($attributeValuesToManage[$attrId] ?? [] as $val)
+                        <span class="badge bg-white border text-dark d-flex align-items-center p-2 shadow-sm">
+                            {{ is_array($val) ? $val['value'] : $val->value }}
+                            <button wire:click="removeAttributeValue({{ $attrId }}, {{ is_array($val) ? $val['id'] : $val->id }})" class="btn-close ms-2" style="font-size: 0.6rem;"></button>
                         </span>
-                        @empty
-                        <p class="text-muted">No values selected for {{ $attribute->name }}.</p>
-                        @endforelse
+                        @endforeach
                     </div>
-                    <div class="input-group">
-                        <input type="text" class="form-control @error('newAttributeValueNames.'.$attributeId) is-invalid @enderror" wire:model.live="newAttributeValueNames.{{ $attributeId }}" placeholder="Add new {{ $attribute->name }} value">
-                        <button class="btn btn-outline-success" type="button" wire:click="addAttributeValue({{ $attributeId }})">Add Value</button>
-                        @error('newAttributeValueNames.'.$attributeId) <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <div class="input-group input-group-sm mt-2" style="max-width: 300px;">
+                        <input type="text" class="form-control" wire:model="newAttributeValueNames.{{ $attrId }}" placeholder="Add value...">
+                        <button class="btn btn-success" wire:click="addAttributeValue({{ $attrId }})">Add</button>
                     </div>
                 </div>
                 @endif
                 @endforeach
-                <div class="text-end mt-3">
-                    <button type="button" class="btn btn-info" wire:click="generateVariants">
-                        <span wire:loading wire:target="generateVariants" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Generate Variant Combinations
-                    </button>
-                </div>
             </div>
             @endif
 
-            @if (!empty($variants))
-            <h5 class="mb-3">3. Manage Variant Details</h5>
-            <form wire:submit.prevent="saveVariants">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Variant</th>
-                                <th>SKU</th>
-                                <th>Image</th>
-                                <th>Price</th>
-                                <th>Compare Price</th>
-                                <th>Cost Price</th>
-                                <th>Quantity</th>
-                                <th>Weight</th>
-                                <th>Active</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($variants as $index => $variant)
-                            <tr wire:key="variant-row-{{ $variant->id ?? 'new-'.$index }}">
-                                <td>
-                                    <strong>{{ $variant->attributeValues->pluck('value')->implode(', ') }}</strong>
-                                    @if (!$variant->exists)
-                                    <span class="badge bg-warning text-dark ms-2">NEW</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control form-control-sm @error('variantSku.'.$variant->id) is-invalid @enderror" wire:model.live="variantSku.{{ $variant->id ?? 'new-'.$index }}" placeholder="Variant SKU">
-                                    @error('variantSku.'.$variant->id) <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </td>
-                                <td>
-                                    @if ($variant->image_path)
-                                    <img src="{{ asset('storage/' . $variant->image_path) }}" alt="Variant Image" class="img-thumbnail mb-1" style="width: 50px; height: 50px; object-fit: cover;">
-                                    @endif
-                                    <input type="file" class="form-control form-control-sm @error('variantNewImage.'.$index) is-invalid @enderror" wire:model="variantNewImage.{{ $index }}">
-                                    <div wire:loading wire:target="variantNewImage.{{ $index }}" class="text-info">Uploading...</div>
-                                    @error('variantNewImage.'.$index) <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </td>
-                                <td>
-                                    <input type="number" step="0.01" class="form-control form-control-sm @error('variantPrice.'.$variant->id) is-invalid @enderror" wire:model.live="variantPrice.{{ $variant->id ?? 'new-'.$index }}" placeholder="0.00">
-                                    @error('variantPrice.'.$variant->id) <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </td>
-                                <td>
-                                    <input type="number" step="0.01" class="form-control form-control-sm @error('variantCompareAtPrice.'.$variant->id) is-invalid @enderror" wire:model.live="variantCompareAtPrice.{{ $variant->id ?? 'new-'.$index }}" placeholder="0.00">
-                                    @error('variantCompareAtPrice.'.$variant->id) <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </td>
-                                <td>
-                                    <input type="number" step="0.01" class="form-control form-control-sm @error('variantCostPrice.'.$variant->id) is-invalid @enderror" wire:model.live="variantCostPrice.{{ $variant->id ?? 'new-'.$index }}" placeholder="0.00">
-                                    @error('variantCostPrice.'.$variant->id) <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </td>
-                                <td>
-                                    <input type="number" class="form-control form-control-sm @error('variantQuantity.'.$variant->id) is-invalid @enderror" wire:model.live="variantQuantity.{{ $variant->id ?? 'new-'.$index }}" placeholder="0">
-                                    @error('variantQuantity.'.$variant->id) <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </td>
-                                <td>
-                                    <input type="number" step="0.01" class="form-control form-control-sm @error('variantWeight.'.$variant->id) is-invalid @enderror" wire:model.live="variantWeight.{{ $variant->id ?? 'new-'.$index }}" placeholder="0.00">
-                                    @error('variantWeight.'.$variant->id) <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </td>
-                                <td>
-                                    <div class="form-check form-switch d-flex justify-content-center">
-                                        <input class="form-check-input" type="checkbox" wire:model.live="variantIsActive.{{ $variant->id ?? 'new-'.$index }}" id="variantActive-{{ $variant->id ?? 'new-'.$index }}">
-                                    </div>
-                                </td>
-                                <td>
-                                    @if ($variant->exists)
-                                    <button type="button" class="btn btn-danger btn-sm" wire:click="deleteVariant({{ $variant->id }})" wire:confirm="Are you sure you want to delete this variant? This action cannot be undone.">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary">
-                        <span wire:loading wire:target="saveVariants" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Save All Variants
-                    </button>
-                </div>
-            </form>
+            <!-- 3. Table -->
+            <!-- 3. Variant Table -->
+            @php $computedVariants = $this->computedVariants; @endphp
+            @if(count($computedVariants) > 0)
+            <div class="table-responsive mt-4">
+                <table class="table table-sm table-hover align-middle border">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Combination</th>
+                            <th>Status</th> <!-- New Column -->
+                            <th style="width: 220px;">SKU</th>
+                            <th style="width: 120px;">Price</th>
+                            <th style="width: 100px;">Qty</th>
+                            <th class="text-center">Active</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($computedVariants as $v)
+                        @php
+                        // Add a light green background for items already in DB
+                        $rowClass = $v['exists'] ? 'table-success-light' : '';
+                        @endphp
+                        <tr wire:key="row-{{ $v['key'] }}" class="{{ $rowClass }}">
+                            <td>
+                                <div class="fw-bold">{{ $v['display_name'] }}</div>
+                            </td>
+                            <td>
+                                @if($v['exists'])
+                                <span class="badge bg-success shadow-sm">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Already Added
+                                </span>
+                                @else
+                                <span class="badge bg-warning text-dark shadow-sm">
+                                    <i class="bi bi-plus-circle-fill me-1"></i> New / Pending
+                                </span>
+                                @endif
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" wire:model="variantSku.{{ $v['key'] }}">
+                                @error('variantSku.'.$v['key']) <small class="text-danger">{{ $message }}</small> @enderror
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" step="0.01" class="form-control" wire:model="variantPrice.{{ $v['key'] }}">
+                                </div>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm" wire:model="variantQuantity.{{ $v['key'] }}">
+                            </td>
+                            <td class="text-center">
+                                <div class="form-check form-switch d-inline-block">
+                                    <input type="checkbox" class="form-check-input" wire:model="variantIsActive.{{ $v['key'] }}">
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                @if($v['exists'])
+                                <button type="button" wire:click="deleteVariant({{ $v['key'] }})"
+                                    wire:confirm="This variant is saved in the database. Are you sure you want to delete it permanently?"
+                                    class="btn btn-sm btn-outline-danger border-0">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <style>
+                /* Custom style to differentiate existing rows slightly */
+                .table-success-light {
+                    background-color: rgba(25, 135, 84, 0.05) !important;
+                }
+            </style>
             @endif
-        </div>
-        <div class="card-footer text-end">
-            <a href="{{ route('admin.product.products.edit', $product->id) }}" class="btn btn-secondary">Back to Product Details</a>
         </div>
     </div>
 </div>

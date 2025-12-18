@@ -108,7 +108,7 @@
                             </td>
                             <td>{{ $post->published_at ? $post->published_at->format('M d, Y H:i') : 'N/A' }}</td>
                             <td>
-                                <a href="{{ route('admin.blog-posts.edit', $post->id) }}" class="btn btn-sm btn-info" title="Edit">
+                                <a href="{{ route('admin.blog.post.edit', $post->id) }}" wire:navigate class="btn btn-sm btn-info" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <button class="btn btn-sm btn-danger" onclick="confirm('Are you sure you want to delete \'{{ $post->title }}\'? This action cannot be undone.') || event.stopImmediatePropagation()" wire:click="deletePost({{ $post->id }})" title="Delete">

@@ -174,7 +174,7 @@ class Manage extends Component
         }
 
         $this->dispatch('blogPostSaved');
-        return redirect()->route('admin.blog-posts.index');
+        return $this->redirect(route('admin.blog.post.index'), navigate: true);
     }
 
     public function removeImage()
