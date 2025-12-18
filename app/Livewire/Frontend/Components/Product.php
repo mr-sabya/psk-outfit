@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Frontend\Components;
 
+use App\Livewire\Frontend\Traits\CartTrait;
 use Livewire\Component;
 use App\Models\Product as ProductModel; // Alias to avoid conflict with Component name
 
 class Product extends Component
 {
+    use CartTrait;
     public ProductModel $product;
     public $isColor = true;
 
@@ -25,6 +27,12 @@ class Product extends Component
             : ProductModel::with(['reviews', 'variants.attributeValues'])->findOrFail($product);
 
         $this->isColor = $isColor;
+    }
+
+    public function addToCart()
+    {
+        // For simple cards, we usually add 1 qty with no variants
+        $this->handleAddToCart($this->product->id);
     }
 
     public function render()

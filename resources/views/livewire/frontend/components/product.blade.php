@@ -31,7 +31,7 @@
                 </a>
             </li>
             <li>
-                <a href="javascript:void(0);" aria-label="Add to Cart">
+                <a href="javascript:void(0);" wire:click="addToCart" aria-label="Add to Cart">
                     <img src="{{ url('assets/frontend/images/cart_icon_white.svg') }}" alt="Cart" class="img-fluid">
                 </a>
             </li>

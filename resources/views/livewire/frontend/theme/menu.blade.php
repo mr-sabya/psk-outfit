@@ -44,15 +44,7 @@
                                 <span>5</span>
                             </a>
                         </li>
-                        <li>
-                            <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                                aria-controls="offcanvasRight">
-                                <b>
-                                    <img src="{{ url('assets/frontend/images/cart_black.svg') }}" alt="cart" class="img-fluid">
-                                </b>
-                                <span>3</span>
-                            </a>
-                        </li>
+                        <livewire:frontend.theme.cart-icon />
                         @auth
                         <li>
                             <a class="user" href="dashboard.html">
