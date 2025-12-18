@@ -36,11 +36,9 @@
                 <div class="footer_link">
                     <h3>Category</h3>
                     <ul>
-                        <li><a href="#">Men’s Fashion</a></li>
-                        <li><a href="#">denim Collection</a></li>
-                        <li><a href="#">western wear</a></li>
-                        <li><a href="#">sport wear</a></li>
-                        <li><a href="#">fashion jewellery</a></li>
+                        @foreach($categories as $category)
+                        <li><a href="{{ route('shop', ['category' => $category->slug]) }}" wire:navigate>{{ $category->name }}</a></li>
+                        @endforeach
                     </ul>
                 </div>
             </div>
