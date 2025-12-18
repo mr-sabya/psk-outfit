@@ -134,7 +134,9 @@
                                 </div>
                                 <div class="details_btn_area">
                                     <a class="common_btn buy_now" href="#">Buy Now <i class="fas fa-long-arrow-right"></i></a>
-                                    <a class="common_btn" href="#">Add to cart <i class="fas fa-long-arrow-right"></i></a>
+                                    <a class="common_btn" href="javascript:void(0)" wire:click="addToCart">
+                                        Add to cart <i class="fas fa-long-arrow-right"></i>
+                                    </a>
                                 </div>
                             </div>
 

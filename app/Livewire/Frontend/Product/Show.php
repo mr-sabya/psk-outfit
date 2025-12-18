@@ -2,11 +2,14 @@
 
 namespace App\Livewire\Frontend\Product;
 
+use App\Livewire\Frontend\Traits\CartTrait;
 use App\Models\Product;
 use Livewire\Component;
 
 class Show extends Component
 {
+    use CartTrait;
+
     public $product;
     public $slug;
 
@@ -121,6 +124,25 @@ class Show extends Component
             }
         }
         $this->groupedAttributes = $groups;
+    }
+
+    public function addToCart()
+    {
+        // 1. Validate variants if required
+        if ($this->product->isVariable() && count($this->selectedAttributes) < count($this->groupedAttributes)) {
+            session()->flash('error', 'Please select all options.');
+            return;
+        }
+
+        // 2. Map IDs to readable names for the cart
+        $options = [];
+        foreach($this->selectedAttributes as $attrId => $valId) {
+            $val = \App\Models\AttributeValue::find($valId);
+            $attr = \App\Models\Attribute::find($attrId);
+            $options[$attr->name] = $val->value;
+        }
+
+        $this->handleAddToCart($this->product->id, $this->quantity, $options);
     }
 
     public function render()
