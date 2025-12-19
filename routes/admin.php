@@ -139,4 +139,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/create', [App\Http\Controllers\Backend\PageController::class, 'create'])->name('create');
         Route::get('/{id}/edit', [App\Http\Controllers\Backend\PageController::class, 'edit'])->name('edit');
     });
+
+    // shipping methods
+    Route::get('/shipping-methods', [App\Http\Controllers\Backend\ShippingMethodController::class, 'index'])->name('shipping-method.index');
 });

@@ -234,6 +234,26 @@
                     </div>
                 </li>
 
+                <!-- shipping method and payment  -->
+                <li class="nav-item {{ request()->routeIs('admin.shipping-method.*', 'admin.payment-method.*') ? 'active submenu' : '' }}">
+                    <a data-bs-toggle="collapse" href="#shippingPaymentManagement" class="collapsed" aria-expanded="{{ request()->routeIs('admin.shipping-method.*', 'admin.payment-method.*') ? 'true' : 'false' }}">
+                        <i class="fas fa-shipping-fast"></i> <!-- Changed from fa-cubes to fa-shipping-fast for Shipping & Payment -->
+                        <p>Shipping & Payment</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('admin.shipping-method.*', 'admin.payment-method.*') ? 'show' : '' }}" id="shippingPaymentManagement">
+                        <ul class="nav nav-collapse">
+                            <!-- shipping methods -->
+                            <li class="{{ request()->routeIs('admin.shipping-method.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.shipping-method.index') }}" wire:navigate>
+                                    <span class="sub-item">Shipping Methods</span>
+                                </a>
+                            </li>
+                            <!-- payment methods -->
+                        </ul>
+                    </div>
+                </li>
+
 
                 <!-- Website -->
                 <li class="nav-item {{ request()->routeIs('admin.website.*') ? 'active submenu' : '' }}">
