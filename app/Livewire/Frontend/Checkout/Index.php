@@ -157,6 +157,6 @@ class Index extends Component
         });
 
         $this->dispatch('cartUpdated');
-        return redirect()->route('order.success')->with('message', 'Order placed successfully!');
+        return redirect()->route('user.checkout.success')->with('message', 'Order placed successfully!');
     }
 }

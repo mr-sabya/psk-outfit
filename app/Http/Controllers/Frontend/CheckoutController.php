@@ -12,4 +12,10 @@ class CheckoutController extends Controller
     {
         return view('frontend.checkout.index');
     }
+
+    // order success page
+    public function success()
+    {
+        return view('frontend.checkout.success');
+    }
 }

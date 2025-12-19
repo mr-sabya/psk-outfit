@@ -70,6 +70,9 @@ Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
 
     // checkout page
     Route::get('/checkout', [App\Http\Controllers\Frontend\CheckoutController::class, 'index'])->name('checkout');
+
+    // order success page
+    Route::get('/checkout/success', [App\Http\Controllers\Frontend\CheckoutController::class, 'success'])->name('checkout.success');
 });
 
 
