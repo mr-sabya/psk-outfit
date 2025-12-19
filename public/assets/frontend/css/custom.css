@@ -48,9 +48,12 @@
 /* Container to align checkbox and text */
 .custom-checkbox-container {
     display: flex;
-    align-items: center; /* Vertically center the items */
-    gap: 8px; /* Space between checkbox and text */
-    padding-left: 0; /* Bootstrap often adds padding, this resets it if needed */
+    align-items: center;
+    /* Vertically center the items */
+    gap: 8px;
+    /* Space between checkbox and text */
+    padding-left: 0;
+    /* Bootstrap often adds padding, this resets it if needed */
     margin-bottom: 10px;
 }
 
@@ -58,9 +61,12 @@
 .custom-checkbox-container .form-check-input {
     width: 18px;
     height: 18px;
-    margin-top: 0; /* Reset default margins */
-    border: 1px solid #ced4da; /* Light gray border like the image */
-    border-radius: 4px; /* Slight rounded corners */
+    margin-top: 0;
+    /* Reset default margins */
+    border: 1px solid #ced4da;
+    /* Light gray border like the image */
+    border-radius: 4px;
+    /* Slight rounded corners */
     cursor: pointer;
     margin-left: 0;
     padding: 0;
@@ -71,7 +77,8 @@
     font-size: 15px;
     cursor: pointer;
     font-weight: 400;
-    user-select: none; /* Prevents text highlighting when clicking repeatedly */
+    user-select: none;
+    /* Prevents text highlighting when clicking repeatedly */
 }
 
 
@@ -80,4 +87,11 @@
 .custom-checkbox-container .form-check-input:focus {
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     border-color: #86b7fe;
+}
+
+
+.single_input select.form-select {
+    border: none;
+    font-size: 14px;
+    padding: 15px 20px;
 }

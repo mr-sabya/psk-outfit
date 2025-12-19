@@ -12,4 +12,16 @@ class AddressController extends Controller
     {
         return view('frontend.user.address.index');
     }
+
+    // create address
+    public function create()
+    {
+        return view('frontend.user.address.create');
+    }
+
+    // edit address
+    public function edit($id)
+    {
+        return view('frontend.user.address.edit', compact('id'));
+    }
 }

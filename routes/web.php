@@ -59,6 +59,12 @@ Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
     // user address route
     Route::get('/address', [App\Http\Controllers\Frontend\User\AddressController::class, 'index'])->name('address');
 
+    // user create address route
+    Route::get('/address/create', [App\Http\Controllers\Frontend\User\AddressController::class, 'create'])->name('address.create');
+
+    // user edit address route
+    Route::get('/address/edit/{id}', [App\Http\Controllers\Frontend\User\AddressController::class, 'edit'])->name('address.edit');  
+
     // user reviews route
     Route::get('/reviews', [App\Http\Controllers\Frontend\User\DashboardController::class, 'reviews'])->name('reviews');
 
