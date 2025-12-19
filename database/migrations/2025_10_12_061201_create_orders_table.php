@@ -49,7 +49,7 @@ return new class extends Migration
             $table->decimal('shipping_cost', 10, 2)->default(0.00);
             $table->decimal('tax_amount', 10, 2)->default(0.00);
             $table->decimal('total_amount', 10, 2); // Final amount paid
-            $table->string('currency', 3)->default('USD');
+            $table->string('currency', 3)->default('৳');
 
             // Payment & Status
             $table->string('payment_method'); // E.g., 'stripe', 'paypal', 'cash_on_delivery'

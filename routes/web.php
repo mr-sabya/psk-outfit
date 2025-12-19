@@ -47,6 +47,9 @@ Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
     // user orders route
     Route::get('/orders', [App\Http\Controllers\Frontend\User\OrderController::class, 'index'])->name('orders');
 
+    // user order details route
+    Route::get('/orders/{order_number}', [App\Http\Controllers\Frontend\User\OrderController::class, 'show'])->name('orders.show');
+
     // user invoice route
     Route::get('/invoice', [App\Http\Controllers\Frontend\User\OrderController::class, 'invoice'])->name('invoice');
 

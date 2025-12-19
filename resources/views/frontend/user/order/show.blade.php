@@ -36,7 +36,7 @@
                 <livewire:frontend.user.sidebar />
             </div>
             <div class="col-lg-9 wow fadeInRight">
-                <livewire:frontend.order.index />
+                <livewire:frontend.order.show id="{{ $order->id }}" />
             </div>
         </div>
     </div>
