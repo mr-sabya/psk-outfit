@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use App\Enums\PaymentStatus; // We'll create these enums
+use App\Enums\PaymentStatus;
 use App\Enums\OrderStatus;
 
 class Order extends Model
@@ -15,38 +15,50 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'vendor_id',
-        'coupon_id',
         'order_number',
+
+        // Billing
         'billing_first_name',
         'billing_last_name',
         'billing_email',
         'billing_phone',
         'billing_address_line_1',
         'billing_address_line_2',
-        'billing_city',
-        'billing_state',
+        'billing_country_id',
+        'billing_state_id',
+        'billing_city_id',
         'billing_zip_code',
-        'billing_country',
+
+        // Shipping
         'shipping_first_name',
         'shipping_last_name',
         'shipping_email',
         'shipping_phone',
         'shipping_address_line_1',
         'shipping_address_line_2',
-        'shipping_city',
-        'shipping_state',
+        'shipping_country_id',
+        'shipping_state_id',
+        'shipping_city_id',
         'shipping_zip_code',
-        'shipping_country',
+
+        // Money
         'subtotal',
         'discount_amount',
         'shipping_cost',
         'tax_amount',
         'total_amount',
         'currency',
-        'payment_method',
+
+        // Methods (The New Structure)
+        'payment_method_id',
+        'payment_method_name',
+        'transaction_id',
         'payment_status',
+
+        'shipping_method_id',
+        'shipping_method_name',
         'order_status',
-        'shipping_method',
+
         'tracking_number',
         'notes',
         'placed_at',
@@ -61,135 +73,88 @@ class Order extends Model
         'shipping_cost' => 'decimal:2',
         'tax_amount' => 'decimal:2',
         'total_amount' => 'decimal:2',
-        'payment_status' => PaymentStatus::class, // Cast to Enum
-        'order_status' => OrderStatus::class,     // Cast to Enum
+        'payment_status' => PaymentStatus::class,
+        'order_status' => OrderStatus::class,
         'placed_at' => 'datetime',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
         'cancelled_at' => 'datetime',
     ];
 
-    /**
-     * The "booting" method of the model.
-     * Generate unique order number upon creation.
-     */
     protected static function boot()
     {
         parent::boot();
-
         static::creating(function ($order) {
             if (empty($order->order_number)) {
-                // Generate a unique order number, e.g., ORD-YEAR-RANDOM
-                $order->order_number = 'ORD-' . date('Y') . '-' . Str::upper(Str::random(8));
-                // You might want to add a loop to ensure true uniqueness in a high-traffic scenario
-                // while (static::where('order_number', $order->order_number)->exists()) {
-                //     $order->order_number = 'ORD-' . date('Y') . '-' . Str::upper(Str::random(8));
-                // }
+                $order->order_number = 'ORD-' . date('Ymd') . '-' . Str::upper(Str::random(6));
             }
         });
     }
 
-    /*
+    /* 
     |--------------------------------------------------------------------------
     | Relationships
     |--------------------------------------------------------------------------
     */
 
-    /**
-     * Get the customer who placed the order.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
     /**
-     * Get the primary vendor for this order (optional, for single-vendor orders).
+     * Get the vendor assigned to this order.
      */
     public function vendor()
     {
         return $this->belongsTo(User::class, 'vendor_id');
     }
 
-    /**
-     * Get the coupon applied to this order.
-     */
-    public function coupon()
-    {
-        return $this->belongsTo(Coupon::class);
-    }
-
-    /**
-     * Get the order items for the order.
-     */
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    /**
-     * Get the transactions related to this order.
-     */
-    public function transactions()
+    // Method Relationships
+    public function paymentMethod()
     {
-        return $this->hasMany(Transaction::class); // Assuming a Transaction model
+        return $this->belongsTo(PaymentMethod::class);
+    }
+    public function shippingMethod()
+    {
+        return $this->belongsTo(ShippingMethod::class);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Scopes
-    |--------------------------------------------------------------------------
-    */
-
-    public function scopePaid($query)
+    // Address Relationships
+    public function shippingCountry()
     {
-        return $query->where('payment_status', PaymentStatus::Paid);
+        return $this->belongsTo(Country::class, 'shipping_country_id');
+    }
+    public function shippingState()
+    {
+        return $this->belongsTo(State::class, 'shipping_state_id');
+    }
+    public function shippingCity()
+    {
+        return $this->belongsTo(City::class, 'shipping_city_id');
     }
 
-    public function scopePending($query)
-    {
-        return $query->where('order_status', OrderStatus::Pending);
-    }
-
-    // Add more scopes for other statuses as needed
-
-    /*
+    /* 
     |--------------------------------------------------------------------------
-    | Helper Methods
+    | Helpers
     |--------------------------------------------------------------------------
     */
 
-    /**
-     * Check if the order is fully paid.
-     */
-    public function isPaid(): bool
-    {
-        return $this->payment_status === PaymentStatus::Paid;
-    }
-
-    /**
-     * Get the full billing address as a formatted string.
-     */
-    public function getFullBillingAddressAttribute(): string
-    {
-        $address = "{$this->billing_address_line_1}";
-        if ($this->billing_address_line_2) {
-            $address .= ", {$this->billing_address_line_2}";
-        }
-        $address .= ", {$this->billing_city}, {$this->billing_state} {$this->billing_zip_code}, {$this->billing_country}";
-        return $address;
-    }
-
-    /**
-     * Get the full shipping address as a formatted string.
-     */
     public function getFullShippingAddressAttribute(): string
     {
         $address = "{$this->shipping_address_line_1}";
-        if ($this->shipping_address_line_2) {
-            $address .= ", {$this->shipping_address_line_2}";
-        }
-        $address .= ", {$this->shipping_city}, {$this->shipping_state} {$this->shipping_zip_code}, {$this->shipping_country}";
-        return $address;
+        if ($this->shipping_address_line_2) $address .= ", {$this->shipping_address_line_2}";
+
+        // Fetch names safely even if relations are null
+        $city = $this->shippingCity?->name ?? 'Unknown City';
+        $state = $this->shippingState?->name ?? 'Unknown State';
+        $country = $this->shippingCountry?->name ?? 'Unknown Country';
+
+        return "{$address}, {$city}, {$state} {$this->shipping_zip_code}, {$country}";
     }
 }

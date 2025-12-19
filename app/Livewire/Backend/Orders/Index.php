@@ -1,5 +1,6 @@
 <?php
 
+namespace App\Models; // Ensure correct namespace for Enums
 namespace App\Livewire\Backend\Orders;
 
 use App\Enums\OrderStatus;
@@ -17,11 +18,9 @@ class Index extends Component
     public $sortField = 'placed_at';
     public $sortDirection = 'desc';
 
-    // State for viewing details (optional, could be a separate page/component)
     public $showOrderDetailsModal = false;
     public $selectedOrderId;
 
-    // State for quick status update (optional)
     public $showStatusUpdateModal = false;
     public $updateOrderId;
     public $newOrderStatus;
@@ -48,17 +47,9 @@ class Index extends Component
     {
         $this->selectedOrderId = $orderId;
         $this->showOrderDetailsModal = true;
-        $this->dispatch('open-order-details-modal'); // Dispatch event for Bootstrap modal
+        $this->dispatch('open-order-details-modal');
     }
 
-    public function closeOrderDetailsModal()
-    {
-        $this->showOrderDetailsModal = false;
-        $this->selectedOrderId = null;
-        $this->dispatch('close-order-details-modal'); // Dispatch event to close modal
-    }
-
-    // --- Status Update Modal (Optional, for quick edits) ---
     public function openStatusUpdateModal($orderId)
     {
         $order = Order::findOrFail($orderId);
@@ -72,48 +63,57 @@ class Index extends Component
     public function updateOrderStatus()
     {
         $this->validate([
-            'newOrderStatus' => 'required|in:' . implode(',', OrderStatus::values()),
-            'newPaymentStatus' => 'required|in:' . implode(',', PaymentStatus::values()),
+            'newOrderStatus' => 'required',
+            'newPaymentStatus' => 'required',
         ]);
 
         $order = Order::findOrFail($this->updateOrderId);
-        $order->order_status = OrderStatus::from($this->newOrderStatus);
-        $order->payment_status = PaymentStatus::from($this->newPaymentStatus);
-        $order->save();
+        $order->update([
+            'order_status' => $this->newOrderStatus,
+            'payment_status' => $this->newPaymentStatus,
+        ]);
 
         session()->flash('message', 'Order status updated successfully.');
         $this->closeStatusUpdateModal();
-        $this->resetPage(); // Refresh list
     }
 
     public function closeStatusUpdateModal()
     {
         $this->showStatusUpdateModal = false;
-        $this->updateOrderId = null;
-        $this->newOrderStatus = null;
-        $this->newPaymentStatus = null;
-        $this->dispatch('close-status-update-modal');
+        $this->resetPage();
     }
-    // --------------------------------------------------------
+
+    public function closeOrderDetailsModal()
+    {
+        $this->showOrderDetailsModal = false;
+    }
 
     public function render()
     {
         $orders = Order::query()
+            // Eager load for performance
+            ->with(['user', 'vendor'])
             ->when($this->search, function ($query) {
-                $query->where('order_number', 'like', '%' . $this->search . '%')
-                      ->orWhere('billing_email', 'like', '%' . $this->search . '%')
-                      ->orWhere('total_amount', 'like', '%' . $this->search . '%')
-                      ->orWhereHas('user', function ($q) {
-                          $q->where('name', 'like', '%' . $this->search . '%');
-                      });
+                $query->where(function ($q) {
+                    $q->where('order_number', 'like', '%' . $this->search . '%')
+                        ->orWhere('transaction_id', 'like', '%' . $this->search . '%') // Added TxID search
+                        ->orWhere('billing_email', 'like', '%' . $this->search . '%')
+                        ->orWhereHas('user', function ($uq) {
+                            $uq->where('name', 'like', '%' . $this->search . '%')
+                                ->orWhere('phone', 'like', '%' . $this->search . '%');
+                        })
+                        ->orWhereHas('vendor', function ($vq) { // Added Vendor search
+                            $vq->where('name', 'like', '%' . $this->search . '%');
+                        });
+                });
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
         return view('livewire.backend.orders.index', [
             'orders' => $orders,
-            'orderStatuses' => OrderStatus::cases(), // For dropdowns
-            'paymentStatuses' => PaymentStatus::cases(), // For dropdowns
+            'orderStatuses' => OrderStatus::cases(),
+            'paymentStatuses' => PaymentStatus::cases(),
         ]);
     }
 }

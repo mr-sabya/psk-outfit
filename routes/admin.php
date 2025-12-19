@@ -142,4 +142,7 @@ Route::middleware('auth:admin')->group(function () {
 
     // shipping methods
     Route::get('/shipping-methods', [App\Http\Controllers\Backend\ShippingMethodController::class, 'index'])->name('shipping-method.index');
+
+    // payment methods
+    Route::get('/payment-methods', [App\Http\Controllers\Backend\PaymentMethodController::class, 'index'])->name('payment-method.index');
 });

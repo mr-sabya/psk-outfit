@@ -250,6 +250,11 @@
                                 </a>
                             </li>
                             <!-- payment methods -->
+                            <li class="{{ request()->routeIs('admin.payment-method.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.payment-method.index') }}" wire:navigate>
+                                    <span class="sub-item">Payment Methods</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

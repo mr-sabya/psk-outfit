@@ -130,14 +130,18 @@
 
                         <div class="checkout_shipping mt-3 mb-3 border-top pt-3">
                             <h6>Shipping method</h6>
+                            @foreach($shippingMethods as $method)
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" wire:model.live="shipping_method" id="ship1" value="flat_rate">
-                                <label class="form-check-label d-flex justify-content-between w-100" for="ship1">Flat rate <span>৳15.00</span></label>
+                                <input class="form-check-input" type="radio" wire:model.live="shipping_method_id"
+                                    id="ship{{ $method->id }}" value="{{ $method->id }}">
+                                <label class="form-check-label d-flex justify-content-between w-100" for="ship{{ $method->id }}">
+                                    {{ $method->name }}
+                                    @if($shipping_address_id && $shipping_method_id == $method->id)
+                                    <span>৳{{ number_format($shipping_cost, 2) }}</span>
+                                    @endif
+                                </label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" wire:model.live="shipping_method" id="ship2" value="local_pickup">
-                                <label class="form-check-label d-flex justify-content-between w-100" for="ship2">Local pickup <span>৳19.00</span></label>
-                            </div>
+                            @endforeach
                         </div>
 
                         <h4 class="border-top pt-3">Total <span style="color: #ff3c00;">৳{{ number_format($total, 2) }}</span></h4>
@@ -146,14 +150,27 @@
 
                 <div class="checkout_payment mt-4">
                     <h3>payment method</h3>
+                    @foreach($paymentMethods as $pay)
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio" wire:model="payment_method" id="pay1" value="bank">
-                        <label class="form-check-label" for="pay1">Direct Bank Transfer</label>
+                        <input class="form-check-input" type="radio" wire:model.live="payment_method_id"
+                            id="pay{{ $pay->id }}" value="{{ $pay->id }}">
+                        <label class="form-check-label" for="pay{{ $pay->id }}">
+                            {{ $pay->name }}
+                        </label>
                     </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio" wire:model="payment_method" id="pay3" value="cod">
-                        <label class="form-check-label" for="pay3">Cash on Delivery</label>
+                    @endforeach
+
+                    {{-- Conditional Transaction ID Field --}}
+                    @if($selectedPayment && $selectedPayment->type === 'direct')
+                    <div class="p-3 bg-light border rounded mb-3 mt-2">
+                        <p class="small text-danger mb-2"><strong>Instructions:</strong> {{ $selectedPayment->instructions }}</p>
+                        <div class="single_input">
+                            <label>Transaction ID *</label>
+                            <input type="text" wire:model="transaction_id" placeholder="e.g. 8N77XCW9">
+                            @error('transaction_id') <span class="text-danger small">{{ $message }}</span> @enderror
+                        </div>
                     </div>
+                    @endif
 
                     <div class="terms mt-3">
                         <div class="form-check">

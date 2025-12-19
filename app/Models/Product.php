@@ -301,4 +301,32 @@ class Product extends Model
 
         return $this->price; // No active deal, return original price
     }
+
+
+    /**
+     * Find the specific variant ID based on selected options (e.g., Size, Color)
+     */
+    public function findVariantByOptions(array $options)
+    {
+        if (!$this->isVariable() || empty($options)) {
+            return null;
+        }
+
+        // We search through the variants of this product
+        return $this->variants()->with('attributeValues.attribute')->get()->filter(function ($variant) use ($options) {
+
+            // Convert the variant's database relationships into an array like: ['Color' => 'Black', 'Size' => 'XL']
+            $variantAttributes = $variant->attributeValues->mapWithKeys(function ($attrValue) {
+                // attrValue->attribute->name is "Color", attrValue->value is "Black"
+                return [$attrValue->attribute->name => $attrValue->value];
+            })->toArray();
+
+            // Sort both arrays by key so the comparison is order-independent
+            ksort($variantAttributes);
+            ksort($options);
+
+            // Check if the combination matches exactly
+            return $variantAttributes === $options;
+        })->first();
+    }
 }
