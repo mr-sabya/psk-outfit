@@ -103,6 +103,8 @@ Route::middleware('auth:admin')->group(function () {
     // orders
     Route::get('/orders', [App\Http\Controllers\Backend\OrderController::class, 'index'])->name('order.index');
 
+    Route::get('/orders/{orderId}/invoice', [App\Http\Controllers\Backend\OrderController::class, 'invoice'])->name('orders.invoice');
+
     // deals
     Route::prefix('deals')->name('deal.')->group(function () {
         Route::get('/', [App\Http\Controllers\Backend\DealController::class, 'index'])->name('index');

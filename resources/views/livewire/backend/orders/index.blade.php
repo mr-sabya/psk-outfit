@@ -1,20 +1,4 @@
 <div class="py-4">
-    <h2 class="mb-4">Order Management</h2>
-
-    @if (session()->has('message'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('message') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @endif
-
-    @if (session()->has('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @endif
-
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Order Management</h2>
     </div>
@@ -95,6 +79,9 @@
                                     <button class="btn btn-sm btn-outline-dark" wire:click="openStatusUpdateModal({{ $order->id }})">
                                         <i class="fas fa-edit"></i>
                                     </button>
+                                    <a href="{{ route('admin.orders.invoice', $order->id) }}" target="_blank" class="btn btn-sm btn-secondary">
+                                        <i class="fas fa-file-invoice"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>

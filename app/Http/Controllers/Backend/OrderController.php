@@ -12,4 +12,10 @@ class OrderController extends Controller
     {
         return view('backend.pages.orders.index');
     }
+
+    // invoice view
+    public function invoice($orderId)
+    {
+        return view('backend.pages.orders.invoice', compact('orderId'));
+    }
 }
