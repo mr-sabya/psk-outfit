@@ -64,6 +64,12 @@ Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
 
     // user password route
     Route::get('/change-password', [App\Http\Controllers\Frontend\User\DashboardController::class, 'password'])->name('password');
+
+    // cart page
+    Route::get('/cart', [App\Http\Controllers\Frontend\CartController::class, 'index'])->name('cart');
+
+    // checkout page
+    Route::get('/checkout', [App\Http\Controllers\Frontend\CheckoutController::class, 'index'])->name('checkout');
 });
 
 

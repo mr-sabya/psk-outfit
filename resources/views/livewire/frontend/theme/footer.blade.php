@@ -89,7 +89,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="footer_copyright mt_75">
-                    <p>Copyright @ <b>Zenis</b> 2025. All right reserved.</p>
+                    <p>{!! $settings['copyright'] ?? 'Copyright @ <b>Website</b> 2025. All right reserved.' !!}</p>
                     <ul class="payment">
                         <li>Payment by :</li>
                         <li>

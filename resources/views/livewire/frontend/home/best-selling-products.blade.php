@@ -30,7 +30,7 @@
 
                             <div class="text">
                                 {{-- Title --}}
-                                <a class="title" href="{{ route('product.show', $product->slug) }}">
+                                <a class="title" href="{{ route('product.show', $product->slug) }}" wire:navigate>
                                     {{ Str::limit($product->name, 25) }}
                                 </a>
 
@@ -44,7 +44,7 @@
                                 </p>
 
                                 {{-- Buy Button --}}
-                                <a class="buy_btn" href="{{ route('product.show', $product->slug) }}">
+                                <a class="buy_btn" href="{{ route('product.show', $product->slug) }}" wire:navigate>
                                     buy now <i class="far fa-arrow-up"></i>
                                 </a>
                             </div>

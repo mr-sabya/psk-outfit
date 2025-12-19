@@ -47,11 +47,11 @@
                         <livewire:frontend.theme.cart-icon />
                         @auth
                         <li>
-                            <a class="user" href="dashboard.html">
+                            <a class="user"href="{{ route('user.dashboard') }}" wire:navigate>
                                 <b>
                                     <img src="{{ url('assets/frontend/images/user_icon_black.svg') }}" alt="cart" class="img-fluid">
                                 </b>
-                                <h5> Smith Jhon</h5>
+                                <h5> {{ Auth::user()->name }}</h5>
                             </a>
                             <ul class="user_dropdown">
                                 <li>

@@ -53,7 +53,7 @@
             <h5>sub total <span>৳{{ number_format($subtotal, 2) }}</span></h5>
 
             <div class="minicart_btn_area">
-                <a class="common_btn" href="#">view cart</a>
+                <a class="common_btn" href="{{ route('user.cart') }}" wire:navigate>view cart</a>
             </div>
             @else
             {{-- Empty State --}}
