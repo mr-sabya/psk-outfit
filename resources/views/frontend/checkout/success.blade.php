@@ -10,7 +10,7 @@
             <div class="col-xl-6 col-md-10 col-lg-8 col-xxl-5 wow fadeInUp">
                 <div class="payment_success_text">
                     <div class="img">
-                        <img src="assets/images/payment_success_img.png" alt="payment" class="img-fluid w-100">
+                        <img src="{{ url('assets/frontend/images/payment_success_img.png') }}" alt="payment" class="img-fluid w-100">
                     </div>
                     <h3>Your Payment is successfully</h3>
                     <p>We appreciate your purchase! We can't wait to deliver your things to you. ID of Order

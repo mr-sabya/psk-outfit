@@ -65,6 +65,8 @@ class Order extends Model
         'shipped_at',
         'delivered_at',
         'cancelled_at',
+        'cancel_reason',
+        'cancelled_by',
     ];
 
     protected $casts = [
@@ -137,6 +139,22 @@ class Order extends Model
     public function shippingCity()
     {
         return $this->belongsTo(City::class, 'shipping_city_id');
+    }
+
+    // Add this relationship
+    public function cancelledBy()
+    {
+        return $this->belongsTo(User::class, 'cancelled_by');
+    }
+
+    /**
+     * Helper to check if order can be cancelled.
+     * Usually allowed only if status is Pending.
+     */
+    public function canBeCancelled(): bool
+    {
+        // Check against your OrderStatus Enum
+        return $this->order_status === OrderStatus::Pending;
     }
 
     /* 

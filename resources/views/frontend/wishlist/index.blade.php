@@ -4,17 +4,17 @@
 <!--=========================
         PAGE BANNER START
     ==========================-->
-<livewire:frontend.components.page-banner :title="'My Cart'" />
+<livewire:frontend.components.page-banner :title="'Wishlist'" />
 <!--=========================
         PAGE BANNER START
     ==========================-->
 
 
 <!--============================
-        CART PAGE START
+        WISHLIST START
     =============================-->
-<livewire:frontend.cart.index />
+<livewire:frontend.wishlist.index />
 <!--============================
-        CART PAGE END
+        WISHLIST END
     =============================-->
 @endsection

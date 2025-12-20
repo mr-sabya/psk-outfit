@@ -5,7 +5,7 @@
                 <div class="row">
                     {{-- Left Side: Image Gallery --}}
                     <div class="col-lg-6 col-md-10 wow fadeInLeft">
-                        <div class="shop_details_slider_area">
+                        <div class="shop_details_slider_area" wire:ignore>
                             <div class="row">
                                 {{-- Thumbnail Slider --}}
                                 <div class="col-xl-2 col-lg-3 col-md-3 order-2 order-md-1">

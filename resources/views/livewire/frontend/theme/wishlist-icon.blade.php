@@ -1,5 +1,5 @@
 <li>
-    <a href="#" wire:navigate>
+    <a href="{{ Auth::check() ? route('user.wishlist') : route('login') }}" wire:navigate>
         <b>
             <img src="{{ url('assets/frontend/images/love_black.svg') }}" alt="Wishlist" class="img-fluid">
         </b>

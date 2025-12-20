@@ -1,5 +1,13 @@
 <div class="dashboard_content mt_100">
     <h3 class="dashboard_title">Order History</h3>
+
+    @if (session()->has('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
     <div class="dashboard_order_table">
         <div class="table-responsive">
             <table>
@@ -19,8 +27,8 @@
                         <td>{{ $order->created_at->format('M d, Y') }}</td>
                         <td>
                             @php
-                            // Mapping OrderStatus Enum to CSS classes
-                            $statusClass = match($order->order_status->value ?? $order->order_status) {
+                            $status = $order->order_status->value ?? $order->order_status;
+                            $statusClass = match($status) {
                             'completed', 'delivered' => 'complete',
                             'pending', 'processing', 'shipped' => 'active',
                             'cancelled' => 'cancel',
@@ -28,39 +36,39 @@
                             };
                             @endphp
                             <span class="{{ $statusClass }}">
-                                {{ ucfirst($order->order_status->value ?? $order->order_status) }}
+                                {{ str($status)->headline() }}
                             </span>
                         </td>
                         <td>{{ $order->currency }} {{ number_format($order->total_amount, 2) }}</td>
                         <td>
-                            {{-- View Button --}}
-                            <a href="{{ route('user.orders.show', $order->order_number) }}" wire:navigate>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                </svg>
-                                View
-                            </a>
+                            <div>
+                                {{-- View Button --}}
+                                <a href="{{ route('user.orders.show', $order->order_number) }}" wire:navigate>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    </svg>
+                                    View
+                                </a>
 
-                            {{-- Show Review button only if completed --}}
-                            @if($order->order_status->value == 'completed')
-                            <a class="review_order" href="{{ route('user.orders.review', $order->id) }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                                </svg>
-                                Review
-                            </a>
-                            @endif
-
-                            {{-- Show Cancel button only if pending --}}
-                            @if($order->order_status->value == 'pending')
-                            <a class="cancel_order" href="#" wire:click.prevent="cancelOrder({{ $order->id }})" onclick="confirm('Are you sure?') || event.stopImmediatePropagation()">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                </svg>
-                                Cancel
-                            </a>
-                            @endif
+                                {{-- Show Cancel button only if pending --}}
+                                @if($status === 'pending')
+                                <a href="javascript:void(0)"
+                                    wire:click="openCancelModal({{ $order->id }})">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M6 18 18 6M6 6l12 12" />
+                                    </svg>
+                                    Cancel
+                                </a>
+                                @endif
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -71,9 +79,37 @@
                 </tbody>
             </table>
         </div>
-        {{-- Pagination Links --}}
+
         <div class="mt-4">
             {{ $orders->links() }}
         </div>
     </div>
+
+    {{-- CANCEL MODAL --}}
+    @if($showCancelModal)
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); z-index: 1050;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancel Order</h5>
+                    <button type="button" class="btn-close" wire:click="closeCancelModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted">Please provide a reason for cancelling this order.</p>
+                    <div class="form-group">
+                        <textarea wire:model="cancelReason" class="form-control" rows="4" placeholder="e.g. I ordered the wrong item..."></textarea>
+                        @error('cancelReason') <span class="text-danger small">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" wire:click="closeCancelModal">Close</button>
+                    <button type="button" class="btn btn-danger" wire:click="confirmCancel">
+                        <span wire:loading.remove wire:target="confirmCancel" class="text-white">Confirm Cancellation</span>
+                        <span wire:loading wire:target="confirmCancel" class="text-white">Processing...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>

@@ -82,6 +82,9 @@ Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
 
     // order success page
     Route::get('/checkout/success', [App\Http\Controllers\Frontend\CheckoutController::class, 'success'])->name('checkout.success');
+
+    // wishlist page
+    Route::get('/wishlist', [App\Http\Controllers\Frontend\WishlistController::class, 'index'])->name('wishlist');
 });
 
 
