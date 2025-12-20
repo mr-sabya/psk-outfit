@@ -3,12 +3,15 @@
 namespace App\Livewire\Frontend\Product;
 
 use App\Livewire\Frontend\Traits\CartTrait;
+use App\Livewire\Frontend\Traits\WishlistTrait;
+use App\Models\Attribute;
+use App\Models\AttributeValue;
 use App\Models\Product;
 use Livewire\Component;
 
 class Show extends Component
 {
-    use CartTrait;
+    use CartTrait, WishlistTrait;
 
     public $product;
     public $slug;
@@ -24,6 +27,8 @@ class Show extends Component
 
     // Quantity input
     public $quantity = 1;
+
+    protected $listeners = ['wishlistUpdated' => '$refresh'];
 
     public function mount($slug)
     {
@@ -137,8 +142,8 @@ class Show extends Component
         // 2. Map IDs to readable names for the cart
         $options = [];
         foreach($this->selectedAttributes as $attrId => $valId) {
-            $val = \App\Models\AttributeValue::find($valId);
-            $attr = \App\Models\Attribute::find($attrId);
+            $val = AttributeValue::find($valId);
+            $attr = Attribute::find($attrId);
             $options[$attr->name] = $val->value;
         }
 

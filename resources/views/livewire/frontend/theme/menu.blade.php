@@ -36,14 +36,7 @@
                                 <span>2</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="wishlist.html">
-                                <b>
-                                    <img src="{{ url('assets/frontend/images/love_black.svg') }}" alt="Wishlist" class="img-fluid">
-                                </b>
-                                <span>5</span>
-                            </a>
-                        </li>
+                        <livewire:frontend.theme.wishlist-icon />
                         <livewire:frontend.theme.cart-icon />
                         @auth
                         <li>

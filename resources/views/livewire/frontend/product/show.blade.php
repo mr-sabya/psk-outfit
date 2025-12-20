@@ -141,7 +141,14 @@
                             </div>
 
                             <ul class="details_list_btn">
-                                <li><a href="#"> <i class="fal fa-heart"></i> Add Wishlist </a></li>
+                                <li>
+                                    <a href="javascript:void(0)"
+                                        wire:click="toggleWishlist({{ $product->id }})"
+                                        class="{{ $this->isInWishlist($product->id) ? 'text-danger' : '' }}">
+                                        <i class="{{ $this->isInWishlist($product->id) ? 'fas fa-heart' : 'fal fa-heart' }}"></i>
+                                        {{ $this->isInWishlist($product->id) ? 'Saved to Wishlist' : 'Add to Wishlist' }}
+                                    </a>
+                                </li>
                                 <li><a href="#"><i class="fal fa-exchange"></i> Compare</a></li>
                             </ul>
 
@@ -341,7 +348,7 @@
 
             {{-- Sidebar (Vendor Info Repeated or Other Widgets) --}}
             <div class="col-xxl-2 wow fadeInRight">
-                <div id="sticky_sidebar_2">
+                <div id="">
                     <div class="shop_details_sidebar">
                         <div class="row">
                             <div class="col-xxl-12 col-md">

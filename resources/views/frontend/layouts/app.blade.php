@@ -89,6 +89,7 @@
         SCROLL BUTTON END
     ===========================-->
 
+    <livewire:frontend.components.wishlist-selector />
 
     <!--jquery library js-->
     <script data-navigate-once src="{{ asset('assets/frontend/js/jquery-3.7.1.min.js') }}"></script>

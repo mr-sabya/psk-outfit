@@ -3,14 +3,18 @@
 namespace App\Livewire\Frontend\Components;
 
 use App\Livewire\Frontend\Traits\CartTrait;
+use App\Livewire\Frontend\Traits\WishlistTrait;
 use Livewire\Component;
 use App\Models\Product as ProductModel; // Alias to avoid conflict with Component name
 
 class Product extends Component
 {
-    use CartTrait;
+    use CartTrait, WishlistTrait;
     public ProductModel $product;
     public $isColor = true;
+
+    // Listen for changes so the heart icon updates instantly
+    protected $listeners = ['wishlistUpdated' => '$refresh'];
 
     /**
      * Mount the component.
@@ -22,8 +26,8 @@ class Product extends Component
     {
         // If an integer ID is passed, fetch the model. 
         // If the Model is passed directly (e.g. in a loop), use it.
-        $this->product = $product instanceof ProductModel 
-            ? $product 
+        $this->product = $product instanceof ProductModel
+            ? $product
             : ProductModel::with(['reviews', 'variants.attributeValues'])->findOrFail($product);
 
         $this->isColor = $isColor;

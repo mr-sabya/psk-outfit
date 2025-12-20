@@ -26,8 +26,14 @@
                 </a>
             </li>
             <li>
-                <a href="javascript:void(0);" aria-label="Add to Wishlist">
+                <a href="javascript:void(0);"
+                    wire:click="toggleWishlist({{ $product->id }})"
+                    aria-label="Wishlist">
+                    @if($this->isInWishlist($product->id))
+                    <i class="fas fa-heart" style="color: #ff4d4d; font-size: 18px;"></i>
+                    @else
                     <img src="{{ url('assets/frontend/images/love_icon_white.svg') }}" alt="Love" class="img-fluid">
+                    @endif
                 </a>
             </li>
             <li>

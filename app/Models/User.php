@@ -136,7 +136,7 @@ class User extends Authenticatable
     /**
      * A user can have many items in their wishlist.
      */
-    public function wishlist()
+    public function wishlists()
     {
         return $this->hasMany(Wishlist::class); // Assuming Wishlist model exists
     }
