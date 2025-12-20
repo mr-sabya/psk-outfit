@@ -41,16 +41,9 @@
                 <div class="topbar_right d-flex flex-wrap align-items-center justify-content-end">
                     <select class="select_js language">
                         <option>English</option>
-                        <option>Arabic</option>
-                        <option>Hindi</option>
-                        <option>Chinese</option>
                     </select>
                     <select class="select_js">
-                        <option>$USD</option>
-                        <option>€EUR</option>
-                        <option>¥JPY</option>
-                        <option>£GBP</option>
-                        <option>₹INR</option>
+                        <option>৳BDT</option>
                     </select>
                 </div>
             </div>
