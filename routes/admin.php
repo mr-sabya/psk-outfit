@@ -40,7 +40,10 @@ Route::middleware('auth:admin')->group(function () {
             Route::get('/', [App\Http\Controllers\Backend\ProductController::class, 'index'])->name('index');
             Route::get('/create', [App\Http\Controllers\Backend\ProductController::class, 'create'])->name('create');
             Route::get('/{product}/edit', [App\Http\Controllers\Backend\ProductController::class, 'edit'])->name('edit');
+
+            // reviews
         });
+        Route::get('/reviews', [App\Http\Controllers\Backend\ProductController::class, 'review'])->name('reviews.index');
     });
 
 

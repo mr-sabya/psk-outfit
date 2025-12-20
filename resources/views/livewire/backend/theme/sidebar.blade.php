@@ -83,6 +83,13 @@
                                 </a>
                             </li>
 
+                            <!-- reviews -->
+                            <li class="{{ request()->routeIs('admin.product.reviews.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.product.reviews.index') }}" wire:navigate>
+                                    <span class="sub-item">Reviews</span>
+                                </a>
+                            </li>
+
                         </ul>
                     </div>
                 </li>

@@ -3,113 +3,88 @@
 namespace App\Livewire\Backend\Product;
 
 use App\Models\Product;
-use App\Models\Attribute;
-use App\Models\AttributeValue;
+use App\Models\SpecificationKey;
+use App\Models\ProductSpecification;
 use Livewire\Component;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 
 class SpecificationsManager extends Component
 {
     public Product $product;
-    public $availableAttributes; // All active attributes
-    public $selectedSpecs = []; // Array of [attribute_id => attribute_value_id] for existing specs
 
-    public $newAttributeValueNames = []; // [attribute_id => 'new value string']
+    // We store current values as [key_id => value_string]
+    public $specs = [];
+
+    // For adding a brand new key (e.g., "New Tech Label")
+    public $newKeyName;
+    public $newKeyGroup = 'General';
 
     public function mount(Product $product)
     {
         $this->product = $product;
-        $this->availableAttributes = Attribute::active()->orderBy('name')->get();
-
         $this->loadCurrentSpecifications();
     }
 
     private function loadCurrentSpecifications()
     {
-        $this->selectedSpecs = $this->product->attributeValues()
+        // Load existing specs into the array
+        $this->specs = $this->product->specifications()
             ->get()
-            ->keyBy('attribute_id')
-            ->map(function ($value) {
-                return $value->id;
-            })
+            ->pluck('value', 'specification_key_id')
             ->toArray();
     }
 
-    protected function rules()
-    {
-        $rules = [
-            'selectedSpecs' => ['nullable', 'array'],
-            'selectedSpecs.*' => ['nullable', 'exists:attribute_values,id'],
-            'newAttributeValueNames.*' => ['nullable', 'string', 'max:255'],
-        ];
-
-        foreach ($this->newAttributeValueNames as $attributeId => $value) {
-            if (!empty($value)) {
-                $rules['newAttributeValueNames.' . $attributeId] = [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('attribute_values', 'value')
-                        ->where(fn($query) => $query->where('attribute_id', $attributeId))
-                ];
-            }
-        }
-
-        return $rules;
-    }
-
-    public function addAttributeValue($attributeId)
+    /**
+     * Create a new specification label on the fly
+     */
+    public function addNewKey()
     {
         $this->validate([
-            "newAttributeValueNames.$attributeId" => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('attribute_values', 'value')
-                    ->where(fn($query) => $query->where('attribute_id', $attributeId))
-            ]
+            'newKeyName' => 'required|string|max:255|unique:specification_keys,name',
+            'newKeyGroup' => 'required|string|max:100',
         ]);
 
-        $attribute = Attribute::find($attributeId);
-        if ($attribute) {
-            $value = $this->newAttributeValueNames[$attributeId];
-            $attributeValue = $attribute->values()->create([
-                'value' => $value,
-                'slug' => Str::slug($value),
-            ]);
+        $key = SpecificationKey::create([
+            'name' => $this->newKeyName,
+            'slug' => \Illuminate\Support\Str::slug($this->newKeyName),
+            'group' => $this->newKeyGroup,
+        ]);
 
-            // Automatically select this new value for the product
-            $this->selectedSpecs[$attributeId] = $attributeValue->id;
-            $this->newAttributeValueNames[$attributeId] = ''; // Clear input
-            session()->flash('message', "New attribute value '{$value}' added and selected.");
-            $this->saveSpecifications(); // Save changes immediately
-        }
+        // IMPORTANT: Explicitly set the new ID in the array to an empty string
+        // This prevents Livewire from "guessing" the value from the last input
+        $this->specs[$key->id] = '';
+
+        $this->newKeyName = '';
+        session()->flash('message', "Technical Key '{$key->name}' added.");
     }
 
     public function saveSpecifications()
     {
-        $this->validate();
+        // Remove empty values before saving
+        $filteredSpecs = array_filter($this->specs, fn($value) => !is_null($value) && $value !== '');
 
-        $attributeValueIdsToAttach = array_values(array_filter($this->selectedSpecs));
+        foreach ($filteredSpecs as $keyId => $value) {
+            ProductSpecification::updateOrCreate(
+                ['product_id' => $this->product->id, 'specification_key_id' => $keyId],
+                ['value' => $value]
+            );
+        }
 
-        $this->product->attributeValues()->sync($attributeValueIdsToAttach);
+        // Optional: Remove specs that were cleared out
+        $this->product->specifications()
+            ->whereNotIn('specification_key_id', array_keys($filteredSpecs))
+            ->delete();
 
-        $this->loadCurrentSpecifications(); // Refresh in case of any issues
-        session()->flash('message', 'Product specifications updated successfully!');
+        session()->flash('message', 'Technical specifications updated successfully!');
     }
-
 
     public function render()
     {
-        // Get attribute values for rendering the select dropdowns
-        $attributeOptions = [];
-        foreach ($this->availableAttributes as $attribute) {
-            $attributeOptions[$attribute->id] = $attribute->values()->orderBy('value')->get();
-        }
+        // Group existing keys by their group for a cleaner UI
+        $availableKeys = SpecificationKey::orderBy('group')->orderBy('id')->get()->groupBy('group');
 
         return view('livewire.backend.product.specifications-manager', [
-            'attributeOptions' => $attributeOptions,
+            'groupedKeys' => $availableKeys,
         ]);
     }
 }

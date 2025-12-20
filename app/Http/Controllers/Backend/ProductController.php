@@ -26,4 +26,10 @@ class ProductController extends Controller
         $product = Product::find($id);
         return view('backend.product.edit', compact('product'));
     }
+
+    // review
+    public function review()
+    {
+        return view('backend.product.review');
+    }
 }

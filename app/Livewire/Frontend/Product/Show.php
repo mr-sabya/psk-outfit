@@ -38,8 +38,11 @@ class Show extends Component
             'images',
             'vendor',
             'reviews.user',
-            'variants.attributeValues.attribute', // Deep eager loading
-            'variants.images'
+            'variants.attributeValues.attribute',
+            'variants.images',
+            'categories', // Added for efficiency
+            'tags',       // Added for efficiency
+            'specifications.key' // <--- ADD THIS LINE
         ])
             ->active()
             ->where('slug', $slug)
@@ -141,7 +144,7 @@ class Show extends Component
 
         // 2. Map IDs to readable names for the cart
         $options = [];
-        foreach($this->selectedAttributes as $attrId => $valId) {
+        foreach ($this->selectedAttributes as $attrId => $valId) {
             $val = AttributeValue::find($valId);
             $attr = Attribute::find($attrId);
             $options[$attr->name] = $val->value;

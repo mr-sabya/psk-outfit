@@ -161,6 +161,16 @@ class Product extends Model
     }
 
     /**
+     * Get the technical specifications for the product.
+     */
+    public function specifications()
+    {
+        return $this->hasMany(ProductSpecification::class);
+    }
+
+
+
+    /**
      * Get the order items associated with this product.
      */
     public function orderItems()
@@ -302,6 +312,20 @@ class Product extends Model
         return $this->price; // No active deal, return original price
     }
 
+
+    /**
+     * Helper to get grouped specifications for the frontend table.
+     * Returns: ['Dimensions' => [...], 'Technical' => [...]]
+     */
+    public function getGroupedSpecificationsAttribute()
+    {
+        return $this->specifications()
+            ->with('key')
+            ->get()
+            ->groupBy(function ($spec) {
+                return $spec->key->group ?? 'General';
+            });
+    }
 
     /**
      * Find the specific variant ID based on selected options (e.g., Size, Color)

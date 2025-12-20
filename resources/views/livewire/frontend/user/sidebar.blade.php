@@ -2,13 +2,31 @@
     <div class="dashboard_sidebar_area">
         <div class="dashboard_sidebar_user">
             <div class="img">
-                <img src="{{ url('assets/frontend/images/dashboard_user_img.jpg') }}" alt="dashboard"
+                {{-- Show temporary upload preview OR the actual profile photo --}}
+                @if ($photo)
+                <img src="{{ $photo->temporaryUrl() }}" alt="Preview" class="img-fluid w-100">
+                @else
+                <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('assets/frontend/images/dashboard_user_img.jpg') }}"
+                    alt="{{ $user->name }}"
                     class="img-fluid w-100">
-                <label for="profile_photo"><i class="far fa-camera"></i></label>
-                <input type="file" id="profile_photo" hidden="">
+                @endif
+
+                {{-- Camera Icon Trigger --}}
+                <label for="profile_photo">
+                    <div wire:loading wire:target="photo" class="spinner-border spinner-border-sm text-light" role="status"></div>
+                    <i wire:loading.remove wire:target="photo" class="far fa-camera"></i>
+                </label>
+
+                {{-- Wire model binds the file to the $photo property --}}
+                <input type="file" id="profile_photo" wire:model.live="photo" hidden accept="image/*">
             </div>
-            <h3>Mr. ariful islam</h3>
-            <p>arifulislam@gmail.com</p>
+
+            <h3>{{ $user->name }}</h3>
+            <p>{{ $user->email }}</p>
+
+            @error('photo')
+            <span class="text-danger small">{{ $message }}</span>
+            @enderror
         </div>
         <div class="dashboard_sidebar_menu">
             <ul>

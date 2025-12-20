@@ -149,6 +149,13 @@ class User extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
+    public function hasPurchased($productId)
+    {
+        return $this->orders()->whereHas('orderItems', function ($query) use ($productId) {
+            $query->where('product_id', $productId);
+        })->where('order_status', 'delivered')->exists();
+        // Adjust 'status' and 'items' based on your actual database schema
+    }
 
     /**
      * Get the full name of the user.
