@@ -25,6 +25,9 @@ Route::get('/flash-deals', [App\Http\Controllers\Frontend\FlashDealController::c
 // blog page
 Route::get('/blog', [App\Http\Controllers\Frontend\BlogController::class, 'index'])->name('blog');
 
+// blog detail page
+Route::get('/blog/{slug}', [App\Http\Controllers\Frontend\BlogController::class, 'show'])->name('blog.show');
+
 // contact page
 Route::get('/contact', [App\Http\Controllers\Frontend\ContactController::class, 'index'])->name('contact');
 

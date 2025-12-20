@@ -8,14 +8,18 @@
             </div>
             <div class="col-xl-6 col-sm-3">
                 <div class="view_all_btn_area">
-                    <a class="view_all_btn" href="blog_classic.html">View all</a>
+                    <!-- Update this link to your actual blog index route -->
+                    <a class="view_all_btn" href="{{ url('/blog') }}">View all</a>
                 </div>
             </div>
         </div>
         <div class="row mt_15">
-            <div class="col-lg-4 col-xxl-3 col-md-6 wow fadeInUp">
-                <livewire:frontend.components.blog />
+            @foreach($posts as $post)
+            <div class="col-lg-4 col-xxl-3 col-md-6 wow fadeInUp" data-wow-duration="1s">
+                <!-- Passing the $post object to the child component -->
+                <livewire:frontend.components.blog :post="$post" :key="$post->id" />
             </div>
+            @endforeach
         </div>
     </div>
 </section>

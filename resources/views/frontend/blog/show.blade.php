@@ -14,7 +14,7 @@
 <!--============================
         BLOG RIGHT SIDEBAR START
     =============================-->
-<livewire:frontend.blog.index />
+<livewire:frontend.blog.show blogId="{{ $blog->id }}" />
 <!--============================
         BLOG RIGHT SIDEBAR START
     =============================-->

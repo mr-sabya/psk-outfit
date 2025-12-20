@@ -61,11 +61,9 @@ class BlogPost extends Model
      */
     public function getImageUrlAttribute(): ?string
     {
-        if ($this->image_path) {
-            // Assumes images are stored in the 'public' disk and accessible via '/storage'
-            return Storage::url($this->image_path);
-        }
-        return null;
+        return $this->image_path
+            ? url('storage/' . $this->image_path)
+            : null;
     }
 
     /*
