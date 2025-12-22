@@ -22,9 +22,10 @@ class Index extends Component
     public $topRatedProducts;
 
     // Filters
+    public $search = ''; // Added search property
     public $minPrice = 0;
     public $maxPrice = 1000;
-    
+
     // Limits for the slider UI (to know the absolute bounds)
     public $priceRangeMin = 0;
     public $priceRangeMax = 1000;
@@ -41,6 +42,7 @@ class Index extends Component
     public $perPage = 12;
 
     protected $queryString = [
+        'search' => ['except' => ''], // Added to query string
         'minPrice' => ['except' => 0],
         'maxPrice' => ['except' => 1000],
         'selectedCategory' => ['except' => null],
@@ -55,7 +57,7 @@ class Index extends Component
         // 1. DYNAMIC PRICE: Get actual min/max from DB to ensure products aren't hidden
         $this->priceRangeMin = floor(Product::min('price') ?? 0);
         $this->priceRangeMax = ceil(Product::max('price') ?? 1000);
-        
+
         // If URL doesn't have custom price, use DB limits
         if (!request()->has('minPrice')) {
             $this->minPrice = $this->priceRangeMin;
@@ -91,6 +93,11 @@ class Index extends Component
         if (request()->has('category')) {
             $this->selectedCategory = request('category');
         }
+
+        // Handle search from request (e.g. from header search bar)
+        if (request()->has('search')) {
+            $this->search = request('search');
+        }
     }
 
     public function updated($propertyName)
@@ -101,6 +108,7 @@ class Index extends Component
     public function resetFilters()
     {
         $this->reset([
+            'search', // Added to reset
             'selectedCategory',
             'selectedColors',
             'selectedSizes',
@@ -126,6 +134,15 @@ class Index extends Component
             // Eager load necessary relationships
             ->with(['reviews', 'variants', 'categories']);
 
+        // --- New Search Filter ---
+        if ($this->search) {
+            $products->where(function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('long_description', 'like', '%' . $this->search . '%')
+                    ->orWhere('short_description', 'like', '%' . $this->search . '%');
+            });
+        }
+
         // --- 1. Price Filter ---
         // Use whereBetween on the price column
         $products->whereBetween('price', [$this->minPrice, $this->maxPrice]);
@@ -134,7 +151,7 @@ class Index extends Component
         if ($this->selectedCategory) {
             $products->whereHas('categories', function ($query) {
                 $query->where('categories.slug', $this->selectedCategory)
-                      ->orWhere('categories.id', $this->selectedCategory);
+                    ->orWhere('categories.id', $this->selectedCategory);
             });
         }
 
@@ -145,10 +162,10 @@ class Index extends Component
                 $query->whereHas('attributeValues', function ($q) {
                     $q->whereIn('attribute_values.id', $this->selectedColors);
                 })
-                // OR Check Variable Product attributes
-                ->orWhereHas('variants.attributeValues', function ($q) {
-                    $q->whereIn('attribute_values.id', $this->selectedColors);
-                });
+                    // OR Check Variable Product attributes
+                    ->orWhereHas('variants.attributeValues', function ($q) {
+                        $q->whereIn('attribute_values.id', $this->selectedColors);
+                    });
             });
         }
 
@@ -159,10 +176,10 @@ class Index extends Component
                 $query->whereHas('attributeValues', function ($q) {
                     $q->whereIn('attribute_values.id', $this->selectedSizes);
                 })
-                // OR Check Variable Product attributes
-                ->orWhereHas('variants.attributeValues', function ($q) {
-                    $q->whereIn('attribute_values.id', $this->selectedSizes);
-                });
+                    // OR Check Variable Product attributes
+                    ->orWhereHas('variants.attributeValues', function ($q) {
+                        $q->whereIn('attribute_values.id', $this->selectedSizes);
+                    });
             });
         }
 
@@ -170,13 +187,13 @@ class Index extends Component
         if ($this->selectedRating) {
             // Filter by calculating average rating
             $products->withAvg('reviews', 'rating')
-                     ->having('reviews_avg_rating', '>=', $this->selectedRating);
+                ->having('reviews_avg_rating', '>=', $this->selectedRating);
         }
 
         // --- 6. On Sale Filter ---
         if ($this->isOnSale) {
             $products->whereNotNull('compare_at_price')
-                     ->whereColumn('compare_at_price', '>', 'price');
+                ->whereColumn('compare_at_price', '>', 'price');
         }
 
         // --- 7. In Stock Filter ---
@@ -184,13 +201,13 @@ class Index extends Component
             $products->where(function ($query) {
                 // Case A: Stock management disabled (always in stock)
                 $query->where('is_manage_stock', false)
-                // Case B: Simple Product with quantity > 0
-                    ->orWhere(function($q) {
+                    // Case B: Simple Product with quantity > 0
+                    ->orWhere(function ($q) {
                         $q->where('is_manage_stock', true)
-                          ->where('quantity', '>', 0);
+                            ->where('quantity', '>', 0);
                     })
-                // Case C: Variable Product (check sum of variants)
-                    ->orWhereHas('variants', function($q) {
+                    // Case C: Variable Product (check sum of variants)
+                    ->orWhereHas('variants', function ($q) {
                         $q->where('quantity', '>', 0);
                     });
             });
