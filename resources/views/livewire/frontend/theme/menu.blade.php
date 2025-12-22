@@ -28,14 +28,7 @@
                     <livewire:frontend.theme.menu-item className="menu_item" />
                     <!-- ?menu item -->
                     <ul class="menu_icon">
-                        <li>
-                            <a href="compare.html">
-                                <b>
-                                    <img src="{{ url('assets/frontend/images/compare_black.svg') }}" alt="Wishlist" class="img-fluid">
-                                </b>
-                                <span>2</span>
-                            </a>
-                        </li>
+                        <livewire:frontend.theme.compare-icon />
                         <livewire:frontend.theme.wishlist-icon />
                         <livewire:frontend.theme.cart-icon />
                         @auth

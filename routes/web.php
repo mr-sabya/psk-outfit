@@ -35,11 +35,12 @@ Route::get('/contact', [App\Http\Controllers\Frontend\ContactController::class, 
 Route::get('/about', [App\Http\Controllers\Frontend\AboutController::class, 'index'])->name('about');
 
 
-// auth routes
-Route::get('/login', [App\Http\Controllers\Frontend\AuthController::class, 'login'])->name('login');
+Route::middleware('guest')->group(function () {
+    Route::get('login', [App\Http\Controllers\Frontend\AuthController::class, 'login'])->name('login');
+    Route::get('register', [App\Http\Controllers\Frontend\AuthController::class, 'register'])->name('register');
+});
 
-// register route
-Route::get('/register', [App\Http\Controllers\Frontend\AuthController::class, 'register'])->name('register');
+Route::get('/compare', [App\Http\Controllers\Frontend\CompareController::class, 'index'])->name('compare');
 
 
 
@@ -69,7 +70,7 @@ Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
     Route::get('/address/create', [App\Http\Controllers\Frontend\User\AddressController::class, 'create'])->name('address.create');
 
     // user edit address route
-    Route::get('/address/edit/{id}', [App\Http\Controllers\Frontend\User\AddressController::class, 'edit'])->name('address.edit');  
+    Route::get('/address/edit/{id}', [App\Http\Controllers\Frontend\User\AddressController::class, 'edit'])->name('address.edit');
 
     // user reviews route
     Route::get('/reviews', [App\Http\Controllers\Frontend\User\DashboardController::class, 'reviews'])->name('reviews');

@@ -149,7 +149,7 @@
                                         {{ $this->isInWishlist($product->id) ? 'Saved to Wishlist' : 'Add to Wishlist' }}
                                     </a>
                                 </li>
-                                <li><a href="#"><i class="fal fa-exchange"></i> Compare</a></li>
+                                <li><a href="javascript:void(0)" wire:click="addToCompare({{ $product->id }})"><i class="fal fa-exchange"></i> Compare</a></li>
                             </ul>
 
                             <ul class="details_tags_sku">

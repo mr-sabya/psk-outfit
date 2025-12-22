@@ -21,7 +21,7 @@
 
         <ul class="btn_list">
             <li>
-                <a href="javascript:void(0);" aria-label="Compare">
+                <a href="javascript:void(0);" aria-label="Compare" wire:click="addToCompare({{ $product->id }})">
                     <img src="{{ url('assets/frontend/images/compare_icon_white.svg') }}" alt="Compare" class="img-fluid">
                 </a>
             </li>

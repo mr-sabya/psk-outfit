@@ -23,7 +23,10 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-
+        $middleware->redirectTo(
+            guests: '/login',
+            users: '/user/dashboard' // Change this to your dashboard route
+        );
         // 1. Register aliases
         $middleware->alias([
             'api.key' => \App\Http\Middleware\CheckApiKey::class,

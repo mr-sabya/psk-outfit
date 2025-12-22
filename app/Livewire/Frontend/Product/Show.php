@@ -7,6 +7,7 @@ use App\Livewire\Frontend\Traits\WishlistTrait;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
 use App\Models\Product;
+use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
 class Show extends Component
@@ -151,6 +152,24 @@ class Show extends Component
         }
 
         $this->handleAddToCart($this->product->id, $this->quantity, $options);
+    }
+
+    public function addToCompare($productId)
+    {
+        $compare = Session::get('compare', []);
+
+        if (count($compare) >= 5) {
+            session()->flash('error', 'You can only compare up to 5 products.');
+            return;
+        }
+
+        if (!in_array($productId, $compare)) {
+            $compare[] = $productId;
+            Session::put('compare', $compare);
+            // THIS LINE triggers the CompareIcon component to refresh
+            $this->dispatch('compareUpdated');
+            session()->flash('success', 'Product added to compare list.');
+        }
     }
 
     public function render()

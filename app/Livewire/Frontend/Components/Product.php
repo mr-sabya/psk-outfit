@@ -6,6 +6,7 @@ use App\Livewire\Frontend\Traits\CartTrait;
 use App\Livewire\Frontend\Traits\WishlistTrait;
 use Livewire\Component;
 use App\Models\Product as ProductModel; // Alias to avoid conflict with Component name
+use Illuminate\Support\Facades\Session;
 
 class Product extends Component
 {
@@ -31,6 +32,24 @@ class Product extends Component
             : ProductModel::with(['reviews', 'variants.attributeValues'])->findOrFail($product);
 
         $this->isColor = $isColor;
+    }
+
+    public function addToCompare($productId)
+    {
+        $compare = Session::get('compare', []);
+
+        if (count($compare) >= 5) {
+            session()->flash('error', 'You can only compare up to 5 products.');
+            return;
+        }
+
+        if (!in_array($productId, $compare)) {
+            $compare[] = $productId;
+            Session::put('compare', $compare);
+            // THIS LINE triggers the CompareIcon component to refresh
+            $this->dispatch('compareUpdated');
+            session()->flash('success', 'Product added to compare list.');
+        }
     }
 
     public function addToCart()

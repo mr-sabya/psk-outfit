@@ -10,7 +10,9 @@ trait CartTrait
     public function handleAddToCart($productId, $quantity = 1, $options = [])
     {
         if (!Auth::check()) {
-            return redirect()->guest(route('login'));
+            // Manually store the current URL as the 'intended' destination
+
+            return $this->redirect(route('login'), navigate: true);
         }
 
         // 1. Normalize Options
