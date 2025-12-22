@@ -101,6 +101,8 @@ Route::middleware('auth:admin')->group(function () {
 
         // feature
         Route::get('/features', [App\Http\Controllers\Backend\WebsiteController::class, 'features'])->name('feature.index');
+
+        Route::get('/about', [App\Http\Controllers\Backend\AboutController::class, 'index'])->name('about.index');
     });
 
     // orders

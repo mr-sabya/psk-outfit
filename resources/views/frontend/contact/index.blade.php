@@ -21,24 +21,21 @@
                 <div class="contact_info wow fadeInUp">
                     <span><img src="{{ url('assets/frontend/images/call_icon_black.png') }}" alt="call" class="img-fluid"></span>
                     <h3>Call Us</h3>
-                    <a href="callto:12345678901">+44 20 9994 7740</a>
-                    <a href="callto:12345678901">+44 30 7772 8830</a>
+                    <a href="callto:{{ $settings['phone'] }}">{{ $settings['phone'] }}</a>
                 </div>
             </div>
             <div class="col-xl-4 col-md-6">
                 <div class="contact_info wow fadeInUp">
                     <span><img src="{{ url('assets/frontend/images/mail_icon_black.png') }}" alt="Mail" class="img-fluid"></span>
                     <h3>Email Us</h3>
-                    <a href="mailto:example@gmail.com">support@yourdomain.com</a>
-                    <a href="mailto:example@gmail.com">hellow@yourdomain.com</a>
+                    <a href="mailto:{{ $settings['email'] }}">{{ $settings['email'] }}</a>
                 </div>
             </div>
             <div class="col-xl-4 col-md-6">
                 <div class="contact_info wow fadeInUp">
                     <span><img src="{{ url('assets/frontend/images/location_icon_black.png') }}" alt="Map" class="img-fluid"></span>
                     <h3>Our Location</h3>
-                    <p>37 W 24th St, Blackwell Street Creek,
-                        10th Avenue, New York</p>
+                    <p>{{ $settings['address'] }}</p>
                 </div>
             </div>
         </div>
@@ -48,7 +45,7 @@
                     <img src="{{ url('assets/frontend/images/contact_message.jpg') }}" alt="contact" class="img-fluid w-100">
                     <div class="contact_hotline">
                         <h3>Hotline</h3>
-                        <a href="callto:+123324587939">+123 324 5879 39</a>
+                        <a href="callto:{{ $settings['phone'] }}">{{ $settings['phone'] }}</a>
                         <div class="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -103,10 +100,7 @@
         </div>
     </div>
     <div class="contact_map mt_100 wow fadeInUp">
-        <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3104.8776746534986!2d-77.027541687759!3d38.903912546200644!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b7b7931d95b707%3A0x16e85cf5a8a5fdce!2sMarriott%20Marquis%20Washington%2C%20DC!5e0!3m2!1sen!2sbd!4v1700767199965!5m2!1sen!2sbd"
-            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        {!! $settings['map'] !!}
     </div>
 </section>
 <!--============================

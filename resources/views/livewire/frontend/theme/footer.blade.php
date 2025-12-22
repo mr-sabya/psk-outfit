@@ -13,10 +13,25 @@
 
                     <ul>
                         <li><span>Follow :</span></li>
-                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                        <li><a href="#"><i class="fab fa-google-plus-g"></i></a></li>
-                        <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                        @if(!empty($settings['facebook']))
+                        <li><a href="{{ $settings['facebook'] }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a></li>
+                        @endif
+
+                        @if(!empty($settings['instagram']))
+                        <li><a href="{{ $settings['instagram'] }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a></li>
+                        @endif
+
+                        @if(!empty($settings['twitter']))
+                        <li><a href="{{ $settings['twitter'] }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a></li>
+                        @endif
+
+                        @if(!empty($settings['youtube']))
+                        <li><a href="{{ $settings['youtube'] }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a></li>
+                        @endif
+
+                        @if(!empty($settings['linkedin']))
+                        <li><a href="{{ $settings['linkedin'] }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a></li>
+                        @endif
                     </ul>
                 </div>
             </div>
@@ -25,10 +40,10 @@
                     <h3>Company</h3>
                     <ul>
                         <li><a href="{{ route('about') }}" wire:navigate>About us</a></li>
-                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="{{ route('contact') }}" wire:navigate>Contact Us</a></li>
                         <li><a href="#">Affiliate</a></li>
                         <li><a href="#">Career</a></li>
-                        <li><a href="#">Latest News</a></li>
+                        <li><a href="{{ route('blog') }}" wire:navigate>Latest News</a></li>
                     </ul>
                 </div>
             </div>
@@ -89,7 +104,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="footer_copyright mt_75">
-                    <p>{!! $settings['copyright'] ?? 'Copyright @ <b>Website</b> 2025. All right reserved.' !!}</p>
+                    <p>{!! $settings['copyright'] ?? 'Copyright @ <b>Website</b> {{ $currentYear }}. All right reserved.' !!}</p>
                     <ul class="payment">
                         <li>Payment by :</li>
                         <li>

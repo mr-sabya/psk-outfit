@@ -160,11 +160,11 @@
                                 </a>
                             </li>
                             <!-- investors -->
-                            <li class="{{ request()->routeIs('admin.users.investors.*') ? 'active' : '' }}">
+                            <!-- <li class="{{ request()->routeIs('admin.users.investors.*') ? 'active' : '' }}">
                                 <a href="{{ route('admin.users.investors.index') }}" wire:navigate>
                                     <span class="sub-item">Investors</span>
                                 </a>
-                            </li>
+                            </li> -->
                             <!-- vendors -->
                             <li class="{{ request()->routeIs('admin.users.vendors.*') ? 'active' : '' }}">
                                 <a href="{{ route('admin.users.vendors.index') }}" wire:navigate>
@@ -286,6 +286,12 @@
                             <li class="{{ request()->routeIs('admin.website.feature.index') ? 'active' : '' }}">
                                 <a href="{{ route('admin.website.feature.index') }}" wire:navigate>
                                     <span class="sub-item">Features</span>
+                                </a>
+                            </li>
+                            <!-- about -->
+                            <li class="{{ request()->routeIs('admin.website.about.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.website.about.index') }}" wire:navigate>
+                                    <span class="sub-item">About Page</span>
                                 </a>
                             </li>
 
