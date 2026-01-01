@@ -35,7 +35,19 @@
                     </ul>
                 </div>
             </div>
+            
             <div class="col-xl-2 col-sm-6 col-md-4 col-lg-2 wow fadeInUp" data-wow-delay="1s">
+                <div class="footer_link">
+                    <h3>Category</h3>
+                    <ul>
+                        @foreach($categories as $category)
+                        <li><a href="{{ route('shop', ['category' => $category->slug]) }}" wire:navigate>{{ $category->name }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-xl-2 col-sm-6 col-md-4 col-lg-2 wow fadeInUp" data-wow-delay="1.3s">
                 <div class="footer_link">
                     <h3>Company</h3>
                     <ul>
@@ -47,16 +59,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-xl-2 col-sm-6 col-md-4 col-lg-2 wow fadeInUp" data-wow-delay="1.3s">
-                <div class="footer_link">
-                    <h3>Category</h3>
-                    <ul>
-                        @foreach($categories as $category)
-                        <li><a href="{{ route('shop', ['category' => $category->slug]) }}" wire:navigate>{{ $category->name }}</a></li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
+            
             <div class="col-xl-2 col-sm-6 col-md-4 col-lg-2 wow fadeInUp" data-wow-delay="1.6s">
                 <div class="footer_link">
                     <h3>Quick Links</h3>

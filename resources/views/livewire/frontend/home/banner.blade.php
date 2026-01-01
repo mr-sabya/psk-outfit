@@ -1,12 +1,10 @@
 <section class="banner_2">
     <div class="container">
         <div class="row">
-            <div class="col-xl-2  d-none d-xxl-block">
-                <livewire:frontend.theme.menu-category />
-            </div>
-            <div class="col-xxl-7 col-lg-8">
+            
+            <div class="col-xxl-9 col-lg-8">
                 <div class="banner_content">
-                    <div class="row banner_2_slider">
+                    <div class="banner_2_slider">
                         @forelse ($banners as $banner)
                         <div class="col-xl-12" wire:key="banner-{{ $banner->id }}">
                             <div class="banner_slider_2 wow fadeInUp"

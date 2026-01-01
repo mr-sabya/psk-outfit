@@ -1010,7 +1010,7 @@ header .header_support h3 a:hover {
 .menu_item {
     line-height: 60px;
     position: relative;
-    margin-left: 25px;
+    /* margin-left: 25px; */
 }
 
 .menu_icon {
@@ -1153,6 +1153,7 @@ header .header_support h3 a:hover {
 
 .main_menu .main_menu_area {
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
     width: 100%;
 }
@@ -1160,6 +1161,7 @@ header .header_support h3 a:hover {
 .main_menu .menu_category_area {
     width: 280px;
     height: 60px;
+    display: none;
 }
 
 .menu_category_area .menu_cat_item {
@@ -1211,6 +1213,7 @@ header .header_support h3 a:hover {
 
 .main_menu.menu_fix .menu_category_area {
     width: 180px;
+    display: block;
 }
 
 .main_menu.menu_fix .menu_item {
@@ -3242,9 +3245,7 @@ footer {
     border: none;
 }
 
-.main_menu_2 .menu_item {
-    margin: 0 auto;
-}
+
 
 .main_menu_2 .menu_icon {
     margin-left: 0;
@@ -3429,8 +3430,9 @@ footer {
 }
 
 .header_2 .header_support_user {
-    justify-content: start;
-    margin: 0 auto;
+    justify-content: end;
+    /* margin: 0 auto; */
+    width: 100%;
 }
 
 .header_2 .topbar_right .current {
@@ -3508,7 +3510,7 @@ footer {
 
 .banner_slider_2 {
     height: 480px;
-    margin: 25px 12px 0px 52px;
+    margin: 25px 12px 0px 0px;
     position: relative;
     overflow: hidden;
     background-position: center !important;
@@ -3602,6 +3604,7 @@ footer {
 }
 
 .banner_2 .slick-dots {
+    width: 100%;
     position: absolute;
     bottom: 40px;
     display: flex;

@@ -13,16 +13,7 @@
                                 alt="{{ $settings['website_name'] }}"
                                 class="img-fluid w-100" />
                         </a>
-                        <div class="menu_category_bar">
-                            <p>
-                                <span>
-                                    <img src="{{ url('assets/frontend/images/bar_icon_white.svg') }}" alt="category icon">
-                                </span>
-                                Browse Categories
-                            </p>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <livewire:frontend.theme.menu-category />
+                    
                     </div>
                     <!-- ?menu item -->
                     <livewire:frontend.theme.menu-item className="menu_item" />

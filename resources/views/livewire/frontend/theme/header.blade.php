@@ -18,11 +18,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xxl-6 col-xl-5 col-lg-5 d-none d-lg-block">
-                <livewire:frontend.theme.search />
-            </div>
-            <div class="col-xxl-4 col-xl-5 col-lg-5 d-none d-lg-flex">
-                <div class="header_support_user d-flex flex-wrap">
+
+            <div class="col-xxl-10 col-xl-10 col-lg-10 d-none d-lg-flex">
+                <div class="header_support_user d-flex flex-wrap justify-contents-end">
                     <div class="header_support">
                         <span class="icon">
                             <i class="far fa-phone-alt"></i>
@@ -38,14 +36,7 @@
                         </h3>
                     </div>
                 </div>
-                <div class="topbar_right d-flex flex-wrap align-items-center justify-content-end">
-                    <select class="select_js language">
-                        <option>English</option>
-                    </select>
-                    <select class="select_js">
-                        <option>৳BDT</option>
-                    </select>
-                </div>
+
             </div>
         </div>
     </div>

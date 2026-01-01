@@ -18,14 +18,4 @@
             <button type="submit"><i class="far fa-search"></i></button>
         </div>
     </form>
-
-    <script>
-        // If your theme uses Select2, we need this to tell Livewire when the value changes
-        $(document).ready(function() {
-            $('#search_category_select').on('change', function(e) {
-                let data = $(this).val();
-                $wire.set('category', data);
-            });
-        });
-    </script>
 </div>
