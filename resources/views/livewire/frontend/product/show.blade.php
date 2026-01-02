@@ -128,12 +128,15 @@
 
                             <div class="d-flex flex-wrap align-items-center">
                                 <div class="details_qty_input">
-                                    <button class="minus"><i class="fal fa-minus"></i></button>
-                                    <input type="text" placeholder="1" value="1">
-                                    <button class="plus"><i class="fal fa-plus"></i></button>
+                                    <button class="minus" wire:click="decrementQty"><i class="fal fa-minus"></i></button>
+                                    <input type="text" wire:model="quantity" readonly>
+                                    <button class="plus" wire:click="incrementQty"><i class="fal fa-plus"></i></button>
                                 </div>
                                 <div class="details_btn_area">
-                                    <a class="common_btn buy_now" href="#">Buy Now <i class="fas fa-long-arrow-right"></i></a>
+                                    <a class="common_btn buy_now" href="javascript:void(0)" wire:click="buyNow">
+                                        <span wire:loading.remove wire:target="buyNow" class="text-white">Buy Now <i class="fas fa-long-arrow-right"></i></span>
+                                        <span wire:loading wire:target="buyNow" class="text-white">Processing...</span>
+                                    </a>
                                     <a class="common_btn" href="javascript:void(0)" wire:click="addToCart">
                                         Add to cart <i class="fas fa-long-arrow-right"></i>
                                     </a>

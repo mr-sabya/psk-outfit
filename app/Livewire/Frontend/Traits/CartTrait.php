@@ -53,6 +53,10 @@ trait CartTrait
             ]);
         }
 
+        
         $this->dispatch('cartUpdated');
+        
+        // Dispatch browser event to OPEN the offcanvas
+        $this->dispatch('open-cart');
     }
 }

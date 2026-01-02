@@ -57,7 +57,11 @@
     ==========================-->
     <livewire:frontend.theme.menu />
 
-    <livewire:frontend.theme.minicart />
+    <div class="mini_cart">
+        <div class="offcanvas offcanvas-end" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" wire:ignore.self>
+            <livewire:frontend.theme.minicart />
+        </div>
+    </div>
     <!--=========================
         MENU 2 END
     ==========================-->
@@ -143,6 +147,19 @@
             el.style.backgroundSize = "cover";
             el.style.backgroundPosition = "center";
             el.style.backgroundRepeat = "no-repeat";
+        });
+
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('open-cart', (event) => {
+                // Find the offcanvas element by its ID
+                const cartEl = document.getElementById('offcanvasRight');
+
+                // Initialize or get the Bootstrap Offcanvas instance
+                const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(cartEl);
+
+                // Show it!
+                bsOffcanvas.show();
+            });
         });
     </script>
 

@@ -36,14 +36,15 @@
     ==================================-->
 
 
+<!--============================
+        FLASH SELL 2 START
+    ==============================-->
+<livewire:frontend.home.flash-sale />
+<!--============================
+        FLASH SELL 2 END
+    ==============================-->
 
-<!--================================
-        BEST SELLING PRODUCT 2 START
-    ==================================-->
-<livewire:frontend.home.best-selling-products />
-<!--================================
-        BEST SELLING PRODUCT 2 END
-    ==================================-->
+
 
 
 
@@ -55,6 +56,35 @@
         SPECIAL PRODUCT 2 END
     ==============================-->
 
+
+<!--============================
+        TRENDING PRODUCT 2 START
+    ==============================-->
+<livewire:frontend.home.trending-products />
+<!--============================
+        TRENDING PRODUCT 2 END
+    ==============================-->
+
+
+<!--================================
+        BEST SELLING PRODUCT 2 START
+    ==================================-->
+<livewire:frontend.home.best-selling-products />
+<!--================================
+        BEST SELLING PRODUCT 2 END
+    ==================================-->
+
+
+
+
+
+<!--============================
+        FAVOURITE PRODUCT 2 START
+    ==============================-->
+<livewire:frontend.home.favourite-products />
+<!--============================
+        FAVOURITE PRODUCT 2 END
+    ==============================-->
 
 
 <!--=========================

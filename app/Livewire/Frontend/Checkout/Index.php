@@ -116,6 +116,48 @@ class Index extends Component
         ]);
     }
 
+
+    // ... inside the Index class
+
+    public function incrementQuantity($itemId)
+    {
+        $cartItem = CartItem::where('id', $itemId)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if ($cartItem) {
+            $cartItem->increment('quantity');
+        }
+    }
+
+    public function decrementQuantity($itemId)
+    {
+        $cartItem = CartItem::where('id', $itemId)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if ($cartItem && $cartItem->quantity > 1) {
+            $cartItem->decrement('quantity');
+        } elseif ($cartItem && $cartItem->quantity <= 1) {
+            // Optional: Remove item if it goes below 1
+            $cartItem->delete();
+
+            // Redirect if cart becomes empty
+            if (CartItem::where('user_id', Auth::id())->count() === 0) {
+                return redirect()->route('shop');
+            }
+        }
+    }
+
+    public function removeItem($itemId)
+    {
+        CartItem::where('id', $itemId)->where('user_id', Auth::id())->delete();
+
+        if (CartItem::where('user_id', Auth::id())->count() === 0) {
+            return redirect()->route('shop');
+        }
+    }
+
     public function placeOrder()
     {
         // 1. Validation

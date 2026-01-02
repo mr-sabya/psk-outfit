@@ -41,6 +41,33 @@ class Minicart extends Component
         ]);
     }
 
+    // ... inside the Minicart class
+
+    public function incrementQuantity($itemId)
+    {
+        if (Auth::check()) {
+            $item = CartItem::where('user_id', Auth::id())->find($itemId);
+            if ($item) {
+                $item->increment('quantity');
+                $this->dispatch('cartUpdated');
+            }
+        }
+    }
+
+    public function decrementQuantity($itemId)
+    {
+        if (Auth::check()) {
+            $item = CartItem::where('user_id', Auth::id())->find($itemId);
+            if ($item && $item->quantity > 1) {
+                $item->decrement('quantity');
+                $this->dispatch('cartUpdated');
+            } else {
+                // Optional: if quantity is 1 and they press minus, remove it
+                $this->removeItem($itemId);
+            }
+        }
+    }
+
     /**
      * Remove an item from the database cart
      */

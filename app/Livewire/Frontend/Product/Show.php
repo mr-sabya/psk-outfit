@@ -154,6 +154,33 @@ class Show extends Component
         $this->handleAddToCart($this->product->id, $this->quantity, $options);
     }
 
+
+    // ... inside the Show class
+
+    public function buyNow()
+    {
+        // 1. Validate variants if required
+        if ($this->product->isVariable() && count($this->selectedAttributes) < count($this->groupedAttributes)) {
+            session()->flash('error', 'Please select all options.');
+            return;
+        }
+
+        // 2. Map IDs to readable names for the cart
+        $options = [];
+        foreach ($this->selectedAttributes as $attrId => $valId) {
+            $val = AttributeValue::find($valId);
+            $attr = Attribute::find($attrId);
+            $options[$attr->name] = $val->value;
+        }
+
+        // 3. Add the product to the cart using your trait
+        $this->handleAddToCart($this->product->id, $this->quantity, $options);
+
+        // 4. Redirect immediately to the checkout page
+        // Note: Make sure 'checkout' matches your route name for the Index component you shared.
+        return $this->redirect(route('user.checkout'), navigate:true);
+    }
+
     public function addToCompare($productId)
     {
         $compare = Session::get('compare', []);

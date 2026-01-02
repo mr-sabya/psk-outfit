@@ -111,7 +111,34 @@
                             <div class="img"><img src="{{ $item->product->thumbnail_url }}" class="img-fluid"></div>
                             <div class="text">
                                 <a class="title">{{ Str::limit($item->product->name, 30) }}</a>
-                                <p>৳{{ number_format($item->product->effective_price, 2) }} × {{ $item->quantity }}</p>
+                                <div class="checkout_qty_wrapper d-flex align-items-center justify-content-between mt-2">
+                                    <p class="mb-0">৳{{ number_format($item->product->effective_price, 2) }}</p>
+
+                                    <div class="d-flex align-items-center border rounded">
+                                        <button type="button"
+                                            wire:click="decrementQuantity({{ $item->id }})"
+                                            class="btn btn-sm px-2 py-0 border-end"
+                                            style="font-size: 12px;">
+                                            <i class="fal fa-minus"></i>
+                                        </button>
+
+                                        <span class="px-3 fw-bold" style="font-size: 14px;">{{ $item->quantity }}</span>
+
+                                        <button type="button"
+                                            wire:click="incrementQuantity({{ $item->id }})"
+                                            class="btn btn-sm px-2 py-0 border-start"
+                                            style="font-size: 12px;">
+                                            <i class="fal fa-plus"></i>
+                                        </button>
+                                    </div>
+
+                                    {{-- Optional: Remove Button --}}
+                                    <button type="button"
+                                        wire:click="removeItem({{ $item->id }})"
+                                        class="btn btn-sm text-danger ms-2">
+                                        <i class="fal fa-trash-alt"></i>
+                                    </button>
+                                </div>
                                 @if($item->options)
                                 <p class="small text-muted">
                                     {{ collect($item->options)->map(fn($v, $k) => "$k: $v")->implode(', ') }}
