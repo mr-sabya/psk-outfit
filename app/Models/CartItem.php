@@ -9,13 +9,23 @@ class CartItem extends Model
     protected $fillable = [
         'user_id',
         'product_id',
+        'main_product_id', // Add this
         'quantity',
-        'options'
+        'options',
+        'price',           // Add this
+        'is_combo'         // Add this
     ];
 
     protected $casts = [
         'options' => 'array',
+        'is_combo' => 'boolean',
     ];
+
+    // Relationship to the main product to access bundle rules
+    public function mainProduct()
+    {
+        return $this->belongsTo(Product::class, 'main_product_id');
+    }
 
     public function product()
     {

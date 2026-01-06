@@ -39,6 +39,10 @@ class Product extends Model
         'digital_file',
         'download_limit',
         'download_expiry_days',
+        'free_delivery_threshold',
+        'free_delivery_starts_at',
+        'free_delivery_ends_at',
+
     ];
 
     // Add this line
@@ -59,6 +63,9 @@ class Product extends Model
         'download_limit' => 'integer',
         'download_expiry_days' => 'integer',
         'type' => ProductType::class, // Cast to ProductType Enum
+        'free_delivery_threshold' => 'integer',
+        'free_delivery_starts_at' => 'datetime',
+        'free_delivery_ends_at' => 'datetime',
     ];
 
 
@@ -352,5 +359,64 @@ class Product extends Model
             // Check if the combination matches exactly
             return $variantAttributes === $options;
         })->first();
+    }
+
+
+    /**
+     * Get products bundled with this product (Combos).
+     */
+    public function bundleProducts()
+    {
+        return $this->belongsToMany(Product::class, 'product_bundles', 'main_product_id', 'bundled_product_id')
+            ->withPivot('special_price')
+            ->withTimestamps();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Business Logic / Accessors
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Check if the product currently qualifies for free delivery based on time.
+     * (Rule 3)
+     */
+    public function getIsFreeDeliveryActiveAttribute(): bool
+    {
+        if (!$this->free_delivery_starts_at || !$this->free_delivery_ends_at) {
+            return false;
+        }
+
+        return now()->between($this->free_delivery_starts_at, $this->free_delivery_ends_at);
+    }
+
+    /**
+     * Check if a specific quantity qualifies for free delivery.
+     * (Rule 1)
+     */
+    public function qualifiesForFreeDelivery(int $quantity): bool
+    {
+        // Check time-based rule first
+        if ($this->is_free_delivery_active) {
+            return true;
+        }
+
+        // Check quantity-based rule
+        if ($this->free_delivery_threshold && $quantity >= $this->free_delivery_threshold) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Calculate combo price
+     * (Rule 2)
+     */
+    public function getComboDiscount(int $bundledProductId)
+    {
+        $bundle = $this->bundleProducts()->where('bundled_product_id', $bundledProductId)->first();
+        return $bundle ? $bundle->pivot->special_price : null;
     }
 }

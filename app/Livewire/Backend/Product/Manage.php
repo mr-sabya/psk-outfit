@@ -21,16 +21,16 @@ class Manage extends Component
     public ?Product $product = null;
 
     // Core Product Properties
-    public $vendor_id; // Will likely be set from auth user in a real app
-    public $selectedCategoryIds = []; // <--- ADD THIS
+    public $vendor_id;
+    public $selectedCategoryIds = [];
     public $brand_id;
     public $name;
     public $slug;
     public $short_description;
     public $long_description;
-    public $thumbnail_image_path; // For existing image display
-    public $new_thumbnail_image; // For new file upload
-    public $type = 'normal'; // Default to normal
+    public $thumbnail_image_path;
+    public $new_thumbnail_image;
+    public $type = 'normal';
     public $sku;
     public $price;
     public $compare_at_price;
@@ -44,85 +44,116 @@ class Manage extends Component
     public $min_order_quantity = 1;
     public $max_order_quantity;
 
+    // --- NEW: Promotion & Bundle Properties ---
+    public $free_delivery_threshold;
+    public $free_delivery_starts_at;
+    public $free_delivery_ends_at;
+    public $bundleSearch = '';
+    public $bundleSearchResults = [];
+    public $selectedBundleIds = []; 
+    public $selectedBundleProducts = []; 
+    public $bundlePrices = []; 
+
     // Fields for specific product types
     public $affiliate_url;
-    public $digital_file_path; // For existing file display
-    public $new_digital_file; // For new file upload
+    public $digital_file_path;
+    public $new_digital_file;
     public $download_limit;
     public $download_expiry_days;
 
     public $categories;
     public $brands;
-    public $productTypes; // For dropdown options
+    public $productTypes;
     public $vendors;
 
     public function mount($productId = null)
     {
-        // 1. Attempt to find the product by ID if one is passed
         if ($productId) {
-            $this->product = Product::find($productId);
-            // dd($this->product);
+            $this->product = Product::with(['categories', 'bundleProducts'])->find($productId);
         }
 
-        // 2. If no ID was passed, or the ID was invalid/not found, create a new instance
         if (!$this->product) {
             $this->product = new Product();
         }
 
-        // 3. Load necessary data for dropdowns
         $this->categories = Category::active()->get();
         $this->brands = Brand::active()->get();
         $this->productTypes = ProductType::cases();
         $this->vendors = User::where('role', UserRole::Vendor)->where('is_active', true)->get();
 
-        // 4. Fill the component properties based on whether we found an existing product
         if ($this->product->exists) {
-            // --- EDIT MODE ---
             $this->fill($this->product->toArray());
 
-            // Handle enum type casting for display
             $this->type = $this->product->type?->value ?? ProductType::Normal->value;
-
-            // Existing thumbnail/digital file path
             $this->thumbnail_image_path = $this->product->thumbnail_image_path;
             $this->digital_file_path = $this->product->digital_file;
-
-            // Set Vendor
             $this->vendor_id = $this->product->vendor_id;
-
-            // Load existing categories (Pivot table)
             $this->selectedCategoryIds = $this->product->categories->pluck('id')->toArray();
+
+            // Format dates for input
+            $this->free_delivery_starts_at = $this->product->free_delivery_starts_at?->format('Y-m-d\TH:i');
+            $this->free_delivery_ends_at = $this->product->free_delivery_ends_at?->format('Y-m-d\TH:i');
+
+            // Load Bundles
+            $this->selectedBundleIds = $this->product->bundleProducts->pluck('id')->toArray();
+            $this->selectedBundleProducts = $this->product->bundleProducts->toArray();
+            foreach ($this->product->bundleProducts as $bundled) {
+                $this->bundlePrices[$bundled->id] = $bundled->pivot->special_price;
+            }
         } else {
-            // --- CREATE MODE (Defaults) ---
             $this->type = ProductType::Normal->value;
-
-            // Set default vendor (e.g., first available)
             $this->vendor_id = $this->vendors->first()->id ?? null;
-
-            // Default booleans
             $this->is_active = true;
             $this->is_manage_stock = true;
         }
     }
 
+    // --- NEW: Bundle Logic ---
+    public function updatedBundleSearch()
+    {
+        if (strlen($this->bundleSearch) < 2) {
+            $this->bundleSearchResults = [];
+            return;
+        }
+        $this->bundleSearchResults = Product::active()
+            ->where('name', 'like', '%' . $this->bundleSearch . '%')
+            ->where('id', '!=', $this->product->id ?? 0)
+            ->limit(10)->get()->toArray();
+    }
+
+    public function addProductToBundle($productId)
+    {
+        if (!in_array($productId, $this->selectedBundleIds)) {
+            $found = Product::find($productId);
+            if ($found) {
+                $this->selectedBundleIds[] = $productId;
+                $this->selectedBundleProducts[] = $found->toArray();
+                $this->bundlePrices[$productId] = $found->price;
+            }
+        }
+        $this->bundleSearch = '';
+        $this->bundleSearchResults = [];
+    }
+
+    public function removeProductFromBundle($productId)
+    {
+        $this->selectedBundleIds = array_filter($this->selectedBundleIds, fn($id) => $id != $productId);
+        $this->selectedBundleProducts = array_filter($this->selectedBundleProducts, fn($p) => $p['id'] != $productId);
+        unset($this->bundlePrices[$productId]);
+    }
+
     protected function rules()
     {
         $rules = [
-            'vendor_id' => ['nullable'], // <-- Add/update rule for vendor_id
-            'selectedCategoryIds' => ['required', 'array', 'min:1'], // <--- ADD THIS
-            'selectedCategoryIds.*' => ['exists:categories,id'], // Validate each ID in the array
+            'vendor_id' => ['nullable'],
+            'selectedCategoryIds' => ['required', 'array', 'min:1'],
+            'selectedCategoryIds.*' => ['exists:categories,id'],
             'brand_id' => ['nullable', 'exists:brands,id'],
             'name' => ['required', 'string', 'max:255'],
-            'slug' => [
-                'nullable',
-                'string',
-                'max:255',
-                // Rule to ensure slug is unique for products, ignoring current product if editing
-                Rule::unique('products', 'slug')->ignore($this->product->id),
-            ],
+            'slug' => ['nullable', 'string', 'max:255', Rule::unique('products', 'slug')->ignore($this->product->id)],
             'short_description' => ['nullable', 'string', 'max:500'],
             'long_description' => ['nullable', 'string'],
-            'new_thumbnail_image' => ['nullable', 'image', 'max:2048'], // 2MB Max
+            'new_thumbnail_image' => ['nullable', 'image', 'max:2048'],
             'type' => ['required', Rule::enum(ProductType::class)],
             'sku' => ['nullable', 'string', 'max:255', Rule::unique('products', 'sku')->ignore($this->product->id)],
             'price' => ['required', 'numeric', 'min:0'],
@@ -136,42 +167,47 @@ class Manage extends Component
             'is_manage_stock' => ['boolean'],
             'min_order_quantity' => ['nullable', 'integer', 'min:1'],
             'max_order_quantity' => ['nullable', 'integer', 'min:1', 'gte:min_order_quantity'],
+            
+            // New Rules
+            'free_delivery_threshold' => ['nullable', 'integer', 'min:1'],
+            'free_delivery_starts_at' => ['nullable', 'date'],
+            'free_delivery_ends_at' => ['nullable', 'date', 'after_or_equal:free_delivery_starts_at'],
+            'bundlePrices.*' => ['nullable', 'numeric', 'min:0'],
+
             'affiliate_url' => ['nullable', 'url', 'max:2048'],
-            'new_digital_file' => ['nullable', 'file', 'max:102400'], // 100MB Max
+            'new_digital_file' => ['nullable', 'file', 'max:102400'],
             'download_limit' => ['nullable', 'integer', 'min:1'],
             'download_expiry_days' => ['nullable', 'integer', 'min:1'],
         ];
 
-        // Conditional rules for product types
         if ($this->type === ProductType::Affiliate->value) {
             $rules['affiliate_url'][] = 'required';
-            $rules['sku'] = ['nullable', 'string', 'max:255', Rule::unique('products', 'sku')->ignore($this->product->id)]; // SKU can be nullable for affiliate
-            $rules['quantity'] = ['nullable', 'integer', 'min:0']; // Quantity not strictly managed
-            $rules['is_manage_stock'] = ['nullable', 'boolean']; // Stock isn't managed
+            $rules['sku'] = ['nullable', 'string', 'max:255', Rule::unique('products', 'sku')->ignore($this->product->id)];
+            $rules['quantity'] = ['nullable', 'integer', 'min:0'];
+            $rules['is_manage_stock'] = ['nullable', 'boolean'];
         }
         if ($this->type === ProductType::Digital->value) {
-            $rules['new_digital_file'][] = $this->product->digital_file ? 'nullable' : 'required'; // Required if no existing file
-            $rules['sku'] = ['nullable', 'string', 'max:255', Rule::unique('products', 'sku')->ignore($this->product->id)]; // SKU can be nullable for digital
-            $rules['quantity'] = ['nullable', 'integer', 'min:0']; // Quantity not strictly managed
-            $rules['is_manage_stock'] = ['nullable', 'boolean']; // Stock isn't managed
+            $rules['new_digital_file'][] = $this->product->digital_file ? 'nullable' : 'required';
+            $rules['sku'] = ['nullable', 'string', 'max:255', Rule::unique('products', 'sku')->ignore($this->product->id)];
+            $rules['quantity'] = ['nullable', 'integer', 'min:0'];
+            $rules['is_manage_stock'] = ['nullable', 'boolean'];
         }
         if ($this->type === ProductType::Normal->value) {
-            $rules['quantity'][] = 'required'; // Normal products need quantity
+            $rules['quantity'][] = 'required';
         }
         if ($this->type === ProductType::Variable->value) {
-            $rules['quantity'] = ['nullable', 'integer', 'min:0']; // Quantity is managed by variants
-            $rules['is_manage_stock'] = ['nullable', 'boolean']; // Stock isn't managed on parent product
-            $rules['sku'] = ['nullable', 'string', 'max:255', Rule::unique('products', 'sku')->ignore($this->product->id)]; // SKU can be nullable for variable
+            $rules['quantity'] = ['nullable', 'integer', 'min:0'];
+            $rules['is_manage_stock'] = ['nullable', 'boolean'];
+            $rules['sku'] = ['nullable', 'string', 'max:255', Rule::unique('products', 'sku')->ignore($this->product->id)];
         }
-
 
         return $rules;
     }
 
     protected $messages = [
-        'selectedCategoryIds.required' => 'At least one category must be selected.', // <--- ADD THIS
-        'selectedCategoryIds.array' => 'Categories must be an array.', // <--- ADD THIS
-        'selectedCategoryIds.min' => 'Please select at least one category.', // <--- ADD THIS
+        'selectedCategoryIds.required' => 'At least one category must be selected.',
+        'selectedCategoryIds.array' => 'Categories must be an array.',
+        'selectedCategoryIds.min' => 'Please select at least one category.',
         'quantity.required_if' => 'The quantity field is required when stock is managed.',
         'new_digital_file.required' => 'A digital file is required for digital products.',
         'affiliate_url.required' => 'The affiliate URL is required for affiliate products.',
@@ -185,7 +221,6 @@ class Manage extends Component
     {
         $this->validateOnly($propertyName);
 
-        // Auto-generate slug if name changes and slug is empty
         if ($propertyName === 'name' && empty($this->slug)) {
             $this->slug = Str::slug($this->name);
         }
@@ -194,14 +229,13 @@ class Manage extends Component
     public function generateSlug()
     {
         $this->slug = Str::slug($this->name);
-        $this->validateOnly('slug'); // Validate the generated slug immediately
+        $this->validateOnly('slug');
     }
 
     public function save()
     {
         $this->validate();
 
-        // Handle thumbnail image upload
         if ($this->new_thumbnail_image) {
             if ($this->product->thumbnail_image_path) {
                 Storage::disk('public')->delete($this->product->thumbnail_image_path);
@@ -209,19 +243,16 @@ class Manage extends Component
             $this->thumbnail_image_path = $this->new_thumbnail_image->store('products/thumbnails', 'public');
         }
 
-        // Handle digital file upload for digital products
         if ($this->type === ProductType::Digital->value && $this->new_digital_file) {
             if ($this->product->digital_file) {
                 Storage::disk('public')->delete($this->product->digital_file);
             }
             $this->digital_file_path = $this->new_digital_file->store('products/digital_files', 'public');
         } elseif ($this->type !== ProductType::Digital->value && $this->product->digital_file) {
-            // If product type changes from digital, delete old digital file
             Storage::disk('public')->delete($this->product->digital_file);
             $this->digital_file_path = null;
         }
 
-        // Determine quantity based on type (Must be integer, not null)
         $quantityToSave = 0;
         if ($this->type === ProductType::Normal->value) {
             $quantityToSave = $this->quantity ?? 0;
@@ -231,37 +262,46 @@ class Manage extends Component
             'vendor_id' => $this->vendor_id,
             'brand_id' => $this->brand_id,
             'name' => $this->name,
-            'slug' => $this->slug ?? Str::slug($this->name), // Fallback if slug is null
+            'slug' => $this->slug ?? Str::slug($this->name),
             'short_description' => $this->short_description,
             'long_description' => $this->long_description,
             'thumbnail_image_path' => $this->thumbnail_image_path,
-            'type' => ProductType::from($this->type), // Cast back to enum
+            'type' => ProductType::from($this->type),
             'sku' => $this->sku,
             'price' => $this->price,
             'compare_at_price' => $this->compare_at_price,
             'cost_price' => $this->cost_price,
-            'quantity' => $quantityToSave, // Quantity nullified for variable/affiliate/digital parent products
+            'quantity' => $quantityToSave,
             'weight' => $this->weight,
             'is_active' => $this->is_active,
             'is_featured' => $this->is_featured,
             'is_new' => $this->is_new,
-            'is_manage_stock' => ($this->type === ProductType::Variable->value || $this->type === ProductType::Affiliate->value || $this->type === ProductType::Digital->value) ? false : $this->is_manage_stock, // Stock not managed on parent for these types
+            'is_manage_stock' => ($this->type === ProductType::Variable->value || $this->type === ProductType::Affiliate->value || $this->type === ProductType::Digital->value) ? false : $this->is_manage_stock,
             'min_order_quantity' => $this->min_order_quantity,
             'max_order_quantity' => $this->max_order_quantity,
             'affiliate_url' => ($this->type === ProductType::Affiliate->value) ? $this->affiliate_url : null,
             'digital_file' => ($this->type === ProductType::Digital->value) ? $this->digital_file_path : null,
             'download_limit' => ($this->type === ProductType::Digital->value) ? $this->download_limit : null,
             'download_expiry_days' => ($this->type === ProductType::Digital->value) ? $this->download_expiry_days : null,
-            // SEO fields will be handled by a separate component
+            
+            // New Fields
+            'free_delivery_threshold' => $this->free_delivery_threshold ?: null,
+            'free_delivery_starts_at' => $this->free_delivery_starts_at ?: null,
+            'free_delivery_ends_at' => $this->free_delivery_ends_at ?: null,
         ])->save();
 
-        // Sync categories after saving the product
-        $this->product->categories()->sync($this->selectedCategoryIds); // <--- ADD THIS
+        $this->product->categories()->sync($this->selectedCategoryIds);
+
+        // Sync Bundles
+        $bundleData = [];
+        foreach ($this->selectedBundleIds as $bId) {
+            $bundleData[$bId] = ['special_price' => $this->bundlePrices[$bId] ?? 0];
+        }
+        $this->product->bundleProducts()->sync($bundleData);
 
         session()->flash('message', 'Product ' . ($this->product->wasRecentlyCreated ? 'created' : 'updated') . ' successfully!');
 
-        // Redirect or emit event
-        return $this->redirect(route('admin.product.products.edit', $this->product->id), navigate:true); // Example redirection
+        return $this->redirect(route('admin.product.products.edit', $this->product->id), navigate:true);
     }
 
     public function render()

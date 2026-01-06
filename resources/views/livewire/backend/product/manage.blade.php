@@ -14,11 +14,9 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="m-0">Create New Product</h5>
+                        <h5 class="m-0">{{ $product->exists ? 'Edit Product' : 'Create New Product' }}</h5>
                     </div>
                     <div class="card-body">
-
-
                         <div class="row">
                             <!-- Basic Product Details -->
                             <div class="col-md-12 mb-3">
@@ -34,8 +32,6 @@
                                     @error('slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
-
-
 
                             <!-- Vendor Selection -->
                             <div class="col-md-6 mb-3">
@@ -60,13 +56,11 @@
                                 @error('brand_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
 
-
                             <div class="col-md-12">
                                 <label for="short_description" class="form-label">Short Description</label>
                                 <textarea class="form-control @error('short_description') is-invalid @enderror" id="short_description" wire:model="short_description" rows="4" placeholder="A brief summary of the product"></textarea>
                                 @error('short_description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -79,7 +73,6 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-
                             <!-- Thumbnail Image -->
                             <div class="col-md-12 mb-3">
                                 <label for="new_thumbnail_image" class="form-label">Thumbnail Image</label>
@@ -94,7 +87,6 @@
                                 <div wire:loading wire:target="new_thumbnail_image" class="text-info">Uploading...</div>
                                 @error('new_thumbnail_image') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
-
 
                             <div class="col-md-6 mb-3 ">
                                 <div class="form-check form-switch border">
@@ -120,6 +112,85 @@
             </div>
         </div>
 
+        <!-- NEW: Promotion & Bundle Row -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="m-0">Delivery Rules (Promotions)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Free Delivery Threshold (Qty)</label>
+                            <input type="number" class="form-control" wire:model="free_delivery_threshold" placeholder="e.g. 2">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Starts At</label>
+                            <input type="datetime-local" class="form-control" wire:model="free_delivery_starts_at">
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label small fw-bold">Ends At</label>
+                            <input type="datetime-local" class="form-control" wire:model="free_delivery_ends_at">
+                            @error('free_delivery_ends_at') <div class="text-danger small">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="m-0">Product Combo (Bundle)</h5>
+                    </div>
+                    <div class="card-body position-relative">
+                        <label class="form-label small fw-bold">Search Product to Add</label>
+                        <input type="text" class="form-control mb-3" placeholder="Search by name..." wire:model.live.debounce.300ms="bundleSearch">
+
+                        @if(!empty($bundleSearchResults))
+                        <div class="list-group position-absolute w-100 shadow-lg" style="z-index: 1050; left: 0;">
+                            @foreach($bundleSearchResults as $res)
+                            <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between" wire:click="addProductToBundle({{ $res['id'] }})">
+                                {{ $res['name'] }} <span class="text-primary">${{ $res['price'] }}</span>
+                            </button>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr class="small text-muted">
+                                        <th>Item</th>
+                                        <th>Bundle Price</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($selectedBundleProducts as $sp)
+                                    <tr>
+                                        <td class="small">{{ $sp['name'] }}</td>
+                                        <td style="width: 150px;">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">৳</span>
+                                                <input type="number" class="form-control" wire:model="bundlePrices.{{ $sp['id'] }}">
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <button type="button" class="btn btn-sm text-danger" wire:click="removeProductFromBundle({{ $sp['id'] }})"><i class="fas fa-times"></i></button>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted small py-3">No combo items added.</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row mb-3">
             <div class="col-md-8">
                 <div class="card">
@@ -134,7 +205,6 @@
                                 theme="snow" />
                             @error('long_description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -149,23 +219,22 @@
                             <div class="border p-3 rounded @error('selectedCategoryIds') is-invalid-border @enderror" style="max-height: 250px; overflow-y: auto;">
                                 @forelse ($categories as $category)
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="category-{{ $category->id }}" value="{{ $category->id }}" wire:model.live="selectedCategoryIds">
-                                    <label class="form-check-label" for="category-{{ $category->id }}">
-                                        {{ $category->name }}
+                                    {{-- FIX: Use Array Syntax for $category --}}
+                                    <input class="form-check-input" type="checkbox" id="category-{{ $category['id'] }}" value="{{ $category['id'] }}" wire:model.live="selectedCategoryIds">
+                                    <label class="form-check-label" for="category-{{ $category['id'] }}">
+                                        {{ $category['name'] }}
                                     </label>
                                 </div>
                                 @empty
                                 <p class="text-muted">No categories available. Please create some first.</p>
                                 @endforelse
                             </div>
-                            @error('selectedCategoryIds') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror {{-- d-block to force visibility --}}
+                            @error('selectedCategoryIds') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
 
         <div class="card">
             <div class="card-header">
@@ -173,8 +242,6 @@
             </div>
             <div class="card-body">
                 <div class="row">
-
-
                     <!-- Price and SKU -->
                     <div class="col-md-12 mb-3">
                         <label for="sku" class="form-label">SKU (Stock Keeping Unit)</label>
@@ -218,24 +285,17 @@
                         @error('max_order_quantity') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
                 </div>
-
             </div>
         </div>
-
 
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-                        <!-- Title -->
                         <h5 class="mb-0 mb-md-0 me-md-4">Product Type & Inventory</h5>
-
-                        <!-- Product Type Control Group -->
                         <div class="d-flex align-items-center flex-wrap flex-md-nowrap product-type-group ms-md-auto">
-                            <label for="type" class="form-label mb-0 me-2 text-nowrap">
-                                Product Type <span class="text-danger">*</span>
-                            </label>
-                            <div class="flex-grow-1" style="min-width: 150px;"> <!-- Added min-width to prevent squishing -->
+                            <label for="type" class="form-label mb-0 me-2 text-nowrap">Product Type <span class="text-danger">*</span></label>
+                            <div class="flex-grow-1" style="min-width: 150px;">
                                 <select class="form-select @error('type') is-invalid @enderror" id="type" wire:model.live="type">
                                     @foreach ($productTypes as $productType)
                                     <option value="{{ $productType->value }}">{{ Str::title($productType->value) }}</option>
@@ -247,18 +307,12 @@
 
                     <div class="card-body">
                         <div class="row">
-
-
-
                             @if ($type === \App\Enums\ProductType::Normal->value)
-                            <!-- Stock Management -->
                             <div class="col-md-6 mb-3">
                                 <label for="is_manage_stock" class="form-label">Manage Stock</label>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="is_manage_stock" wire:model.live="is_manage_stock" {{ in_array($type, ['variable', 'affiliate', 'digital']) ? 'disabled' : '' }}>
-                                    <label class="form-check-label" for="is_manage_stock">
-                                        {{ in_array($type, ['variable', 'affiliate', 'digital']) ? 'Stock managed by variants/external' : 'Enable stock tracking' }}
-                                    </label>
+                                    <label class="form-check-label" for="is_manage_stock">Enable stock tracking</label>
                                 </div>
                                 @error('is_manage_stock') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                             </div>
@@ -269,15 +323,12 @@
                                 @error('quantity') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             @endif
-
                             @else
                             <div class="col-md-12 mb-3">
                                 <p>Stock is managed by {{ $type === \App\Enums\ProductType::Variable->value ? 'product variants' : ($type === \App\Enums\ProductType::Affiliate->value ? 'the external vendor' : 'the digital product system') }}.</p>
                             </div>
-
                             @endif
 
-                            <!-- Conditional Fields based on Product Type -->
                             @if ($type === \App\Enums\ProductType::Affiliate->value)
                             <div class="col-md-12 mb-3">
                                 <label for="affiliate_url" class="form-label">Affiliate URL <span class="text-danger">*</span></label>
@@ -292,7 +343,6 @@
                                 @if ($digital_file_path)
                                 <div class="mb-2">
                                     <span class="badge bg-secondary">Current File: {{ basename($digital_file_path) }}</span>
-                                    <small class="text-muted ms-2">Upload a new file to replace.</small>
                                 </div>
                                 @endif
                                 <input type="file" class="form-control @error('new_digital_file') is-invalid @enderror" id="new_digital_file" wire:model="new_digital_file">
@@ -301,12 +351,12 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="download_limit" class="form-label">Download Limit</label>
-                                <input type="number" class="form-control @error('download_limit') is-invalid @enderror" id="download_limit" wire:model="download_limit" placeholder="Unlimited (e.g., 5)">
+                                <input type="number" class="form-control @error('download_limit') is-invalid @enderror" id="download_limit" wire:model="download_limit" placeholder="Unlimited">
                                 @error('download_limit') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="download_expiry_days" class="form-label">Download Expiry (Days)</label>
-                                <input type="number" class="form-control @error('download_expiry_days') is-invalid @enderror" id="download_expiry_days" wire:model="download_expiry_days" placeholder="Never (e.g., 30)">
+                                <input type="number" class="form-control @error('download_expiry_days') is-invalid @enderror" id="download_expiry_days" wire:model="download_expiry_days" placeholder="Never">
                                 @error('download_expiry_days') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             @endif
@@ -318,7 +368,6 @@
                             </button>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -329,91 +378,28 @@
     <div class="card mt-4">
         <div class="card-header bg-transparent border-bottom-0 pt-3 pb-0">
             <h5 class="mb-3">Additional Product Management</h5>
-
-            <!-- Tab Navigation -->
             <ul class="nav nav-tabs" id="productTabs" role="tablist">
-                <!-- Images Tab -->
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="images-tab" data-bs-toggle="tab" data-bs-target="#images" type="button" role="tab" aria-controls="images" aria-selected="true">
-                        <i class="fas fa-images me-1"></i> Images
-                    </button>
-                </li>
-
-                <!-- Specifications Tab -->
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab" aria-controls="specs" aria-selected="false">
-                        <i class="fas fa-list-ul me-1"></i> Specifications
-                    </button>
-                </li>
-
-                <!-- Variants Tab (Conditional) -->
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#images" type="button"><i class="fas fa-images me-1"></i> Images</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#specs" type="button"><i class="fas fa-list-ul me-1"></i> Specifications</button></li>
                 @if ($product->isVariable())
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="variants-tab" data-bs-toggle="tab" data-bs-target="#variants" type="button" role="tab" aria-controls="variants" aria-selected="false">
-                        <i class="fas fa-tags me-1"></i> Variants
-                    </button>
-                </li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#variants" type="button"><i class="fas fa-tags me-1"></i> Variants</button></li>
                 @endif
-
-                <!-- Tags Tab -->
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="tags-tab" data-bs-toggle="tab" data-bs-target="#tags" type="button" role="tab" aria-controls="tags" aria-selected="false">
-                        <i class="fas fa-tag me-1"></i> Tags
-                    </button>
-                </li>
-
-                <!-- SEO Tab -->
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab" aria-controls="seo" aria-selected="false">
-                        <i class="fas fa-search me-1"></i> SEO
-                    </button>
-                </li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tags" type="button"><i class="fas fa-tag me-1"></i> Tags</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#seo" type="button"><i class="fas fa-search me-1"></i> SEO</button></li>
             </ul>
         </div>
 
         <div class="card-body">
-            <div class="tab-content" id="productTabsContent">
-
-                <!-- Images Content -->
-                <div class="tab-pane fade show active" id="images" role="tabpanel" aria-labelledby="images-tab">
-                    <div class="py-2">
-                        <livewire:backend.product.images-manager :product="$product" />
-                    </div>
-                </div>
-
-                <!-- Specifications Content -->
-                <div class="tab-pane fade" id="specs" role="tabpanel" aria-labelledby="specs-tab">
-                    <div class="py-2">
-                        <livewire:backend.product.specifications-manager :product="$product" />
-                    </div>
-                </div>
-
-                <!-- Variants Content (Conditional) -->
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="images"><livewire:backend.product.images-manager :product="$product" /></div>
+                <div class="tab-pane fade" id="specs"><livewire:backend.product.specifications-manager :product="$product" /></div>
                 @if ($product->isVariable())
-                <div class="tab-pane fade" id="variants" role="tabpanel" aria-labelledby="variants-tab">
-                    <div class="py-2">
-                        <livewire:backend.product.variants-manager :product="$product" />
-                    </div>
-                </div>
+                <div class="tab-pane fade" id="variants"><livewire:backend.product.variants-manager :product="$product" /></div>
                 @endif
-
-                <!-- Tags Content -->
-                <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
-                    <div class="py-2">
-                        <livewire:backend.product.tags-manager :product="$product" />
-                    </div>
-                </div>
-
-                <!-- SEO Content -->
-                <div class="tab-pane fade" id="seo" role="tabpanel" aria-labelledby="seo-tab">
-                    <div class="py-2">
-                        <livewire:backend.product.seo-manager :product="$product" />
-                    </div>
-                </div>
-
+                <div class="tab-pane fade" id="tags"><livewire:backend.product.tags-manager :product="$product" /></div>
+                <div class="tab-pane fade" id="seo"><livewire:backend.product.seo-manager :product="$product" /></div>
             </div>
         </div>
     </div>
     @endif
-
 </div>

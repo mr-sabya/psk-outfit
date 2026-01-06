@@ -13,7 +13,6 @@
                     </p>
                 </div>
 
-                {{-- Address Selection --}}
                 <div class="checkout_address_area">
                     <div class="row">
                         @forelse($addresses as $address)
@@ -58,7 +57,6 @@
                 </div>
 
                 <form class="checkout_form_area mt-4" wire:submit.prevent="placeOrder">
-                    {{-- Bill to different address checkbox --}}
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" wire:model.live="bill_to_different_address" id="diffAddr">
                         <label class="form-check-label" for="diffAddr" style="font-weight: 600;">Bill to a different address?</label>
@@ -90,54 +88,50 @@
                     <div class="col-xl-12 mt-3">
                         <div class="single_input">
                             <label>Order notes (optional)</label>
-                            <textarea rows="2" wire:model="order_notes" placeholder="Notes about your order, e.g. special notes for delivery."></textarea>
+                            <textarea rows="2" wire:model="order_notes" placeholder="Notes about your order..."></textarea>
                         </div>
                     </div>
                 </form>
             </div>
 
-            {{-- Sidebar remains same as before --}}
             <div class="col-lg-4 col-md-9 wow fadeInRight">
                 <div class="cart_page_summary">
                     <h3>Billing summary</h3>
 
                     @foreach($groupedItems as $vendorName => $items)
-                    <div class="vendor_name mt-3" style="font-weight: 700; color: #ff3c00;">
-                        <i class="fas fa-store me-2"></i> {{ $vendorName }}
+                    <div class="vendor_name mt-3 d-flex justify-content-between align-items-center" style="font-weight: 700; color: #ff3c00;">
+                        <span><i class="fas fa-store me-2"></i> {{ $vendorName }}</span>
+                        @if($this->isEligibleForFreeShipping($items))
+                        <span class="badge bg-success" style="font-size: 10px;">Free Ship Qualified</span>
+                        @endif
                     </div>
                     <ul>
                         @foreach($items as $item)
+                        @php
+                        $displayPrice = $item->product->effective_price;
+                        if($item->is_combo && $item->main_product_id && $item->product_id != $item->main_product_id) {
+                            $displayPrice = $item->mainProduct->getComboDiscount($item->product_id) ?? $displayPrice;
+                        }
+                        @endphp
                         <li>
                             <div class="img"><img src="{{ $item->product->thumbnail_url }}" class="img-fluid"></div>
                             <div class="text">
                                 <a class="title">{{ Str::limit($item->product->name, 30) }}</a>
                                 <div class="checkout_qty_wrapper d-flex align-items-center justify-content-between mt-2">
-                                    <p class="mb-0">৳{{ number_format($item->product->effective_price, 2) }}</p>
+                                    <p class="mb-0">
+                                        ৳{{ number_format($displayPrice, 2) }}
+                                        @if($item->is_combo && $item->product_id != $item->main_product_id)
+                                        <span class="badge bg-info" style="font-size: 8px;">Combo Price</span>
+                                        @endif
+                                    </p>
 
                                     <div class="d-flex align-items-center border rounded">
-                                        <button type="button"
-                                            wire:click="decrementQuantity({{ $item->id }})"
-                                            class="btn btn-sm px-2 py-0 border-end"
-                                            style="font-size: 12px;">
-                                            <i class="fal fa-minus"></i>
-                                        </button>
-
+                                        <button type="button" wire:click="decrementQuantity({{ $item->id }})" class="btn btn-sm px-2 py-0 border-end" style="font-size: 12px;"><i class="fal fa-minus"></i></button>
                                         <span class="px-3 fw-bold" style="font-size: 14px;">{{ $item->quantity }}</span>
-
-                                        <button type="button"
-                                            wire:click="incrementQuantity({{ $item->id }})"
-                                            class="btn btn-sm px-2 py-0 border-start"
-                                            style="font-size: 12px;">
-                                            <i class="fal fa-plus"></i>
-                                        </button>
+                                        <button type="button" wire:click="incrementQuantity({{ $item->id }})" class="btn btn-sm px-2 py-0 border-start" style="font-size: 12px;"><i class="fal fa-plus"></i></button>
                                     </div>
 
-                                    {{-- Optional: Remove Button --}}
-                                    <button type="button"
-                                        wire:click="removeItem({{ $item->id }})"
-                                        class="btn btn-sm text-danger ms-2">
-                                        <i class="fal fa-trash-alt"></i>
-                                    </button>
+                                    <button type="button" wire:click="removeItem({{ $item->id }})" class="btn btn-sm text-danger ms-2"><i class="fal fa-trash-alt"></i></button>
                                 </div>
                                 @if($item->options)
                                 <p class="small text-muted">
@@ -156,7 +150,12 @@
                         <h6>Discount <span>(-) ৳{{ number_format($discount, 2) }}</span></h6>
 
                         <div class="checkout_shipping mt-3 mb-3 border-top pt-3">
-                            <h6>Shipping method</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6>Shipping method</h6>
+                                @if($freeShippingActive)
+                                <span class="badge bg-success"><i class="fas fa-truck me-1"></i> Free Shipping Applied</span>
+                                @endif
+                            </div>
                             @foreach($shippingMethods as $method)
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" wire:model.live="shipping_method_id"
@@ -164,7 +163,9 @@
                                 <label class="form-check-label d-flex justify-content-between w-100" for="ship{{ $method->id }}">
                                     {{ $method->name }}
                                     @if($shipping_address_id && $shipping_method_id == $method->id)
-                                    <span>৳{{ number_format($shipping_cost, 2) }}</span>
+                                    <span>
+                                        @if($freeShippingActive) ৳0.00 @else ৳{{ number_format($shipping_cost, 2) }} @endif
+                                    </span>
                                     @endif
                                 </label>
                             </div>
@@ -187,7 +188,6 @@
                     </div>
                     @endforeach
 
-                    {{-- Conditional Transaction ID Field --}}
                     @if($selectedPayment && $selectedPayment->type === 'direct')
                     <div class="p-3 bg-light border rounded mb-3 mt-2">
                         <p class="small text-danger mb-2"><strong>Instructions:</strong> {{ $selectedPayment->instructions }}</p>
