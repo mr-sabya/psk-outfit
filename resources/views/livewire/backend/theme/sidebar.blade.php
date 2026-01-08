@@ -294,6 +294,12 @@
                                     <span class="sub-item">About Page</span>
                                 </a>
                             </li>
+                            <!-- ad banner -->
+                            <li class="{{ request()->routeIs('admin.website.ad-banner.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.website.ad-banner.index') }}" wire:navigate>
+                                    <span class="sub-item">Ad Banner</span>
+                                </a>
+                            </li>
 
                         </ul>
                     </div>

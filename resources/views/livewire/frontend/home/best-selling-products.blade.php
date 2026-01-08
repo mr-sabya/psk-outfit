@@ -59,6 +59,34 @@
             </div>
 
             {{-- Right Side: 1 Large Product (The 4th item) --}}
+            @php
+            $ad2 = \App\Models\AdBanner::getPosition('home-banner-2');
+            @endphp
+
+            @if($ad2)
+            <div class="col-xl-5 wow fadeInRight">
+                <div class="best_selling_product_item_large">
+                    {{-- Dynamic Image from Model --}}
+                    <img src="{{ $ad2->image_url }}" alt="{{ $ad2->title }}" class="img-fluid w-100">
+
+                    <div class="text">
+                        {{-- Dynamic Title and Link --}}
+                        <a class="title" href="{{ $ad2->link }}">{{ $ad2->title }}</a>
+
+                        {{--
+                    Note: Since your current AdBanner model doesn't have price fields, 
+                    this remains static. You can put the discount text in the 'title' 
+                    field from the admin panel if you want it to be dynamic.
+                --}}
+                        <p class="price">$89.00 <del>$12.00</del></p>
+
+                        <a class="common_btn" href="{{ $ad2->link }}">
+                            buy now <i class="fas fa-long-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @else
             <div class="col-xl-5 wow fadeInRight">
                 <div class="best_selling_product_item_large">
                     <img src="{{ url('assets/frontend/images/best_sell_pro_img_4.jpg') }}" alt="best sell" class="img-fluid w-100">
@@ -70,6 +98,8 @@
                     </div>
                 </div>
             </div>
+            @endif
+
         </div>
     </div>
 </section>

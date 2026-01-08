@@ -48,7 +48,7 @@
                                         </label>
                                     </div>
                                     @if (Route::has('password.request'))
-                                    <a href="{{ route('password.request') }}" class="forgot_link">Forgot Password?</a>
+                                    <a href="{{ route('password.request') }}" wire:navigate class="forgot_link">Forgot Password?</a>
                                     @endif
                                 </div>
                             </div>

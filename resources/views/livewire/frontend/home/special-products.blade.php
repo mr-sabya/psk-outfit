@@ -16,6 +16,34 @@
 
         <div class="row pt_15">
             {{-- Static Banner Section (Left Side) --}}
+            @php
+            $ad3 = \App\Models\AdBanner::getPosition('home-banner-3');
+            @endphp
+
+            @if($ad3)
+            <div class="col-xl-4 wow fadeInLeft">
+                <div class="special_product_banner">
+                    {{-- Dynamic Image from Model --}}
+                    <img src="{{ $ad3->image_url }}" alt="{{ $ad3->title }}" class="img-fluid w-100">
+
+                    <div class="text">
+                        {{-- Dynamic Heading from the Title field --}}
+                        <h3>{{ $ad3->title }}</h3>
+
+                        {{--
+                    Note: If you want this sub-text to be dynamic, you can add a 'description' 
+                    column to your AdBanner model, or simply type it into the title field 
+                    separated by a symbol and explode it. 
+                --}}
+                        <p>Get 50% Off on Selected Clothing Items</p>
+
+                        <a class="common_btn" href="{{ $ad3->link }}">
+                            shop now <i class="fas fa-long-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @else
             <div class="col-xl-4 wow fadeInLeft">
                 <div class="special_product_banner">
                     <img src="{{ asset('assets/frontend/images/home2_special_banner.jpg') }}" alt="special product" class="img-fluid w-100">
@@ -28,6 +56,8 @@
                     </div>
                 </div>
             </div>
+            @endif
+
 
             {{-- Dynamic Product Grid (Right Side) --}}
             <div class="col-xl-8">

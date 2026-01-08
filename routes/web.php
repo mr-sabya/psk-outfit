@@ -3,9 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 // login route for admins
-Route::get('login', function () {
-    return 'login page';
-})->name('login');
 
 // home page
 Route::get('/', [App\Http\Controllers\Frontend\HomeController::class, 'index'])->name('home');
@@ -38,6 +35,9 @@ Route::get('/about', [App\Http\Controllers\Frontend\AboutController::class, 'ind
 Route::middleware('guest')->group(function () {
     Route::get('login', [App\Http\Controllers\Frontend\AuthController::class, 'login'])->name('login');
     Route::get('register', [App\Http\Controllers\Frontend\AuthController::class, 'register'])->name('register');
+    // Password Reset Routes
+    Route::get('/forgot-password', [App\Http\Controllers\Frontend\AuthController::class, 'forgotPassword'])->name('password.request');
+    Route::get('/reset-password/{token}', [App\Http\Controllers\Frontend\AuthController::class, 'resetPassword'])->name('password.reset');
 });
 
 Route::get('/compare', [App\Http\Controllers\Frontend\CompareController::class, 'index'])->name('compare');

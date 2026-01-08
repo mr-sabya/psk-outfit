@@ -38,7 +38,7 @@
                         Remember me
                     </label>
                 </div>
-                <a href="#" class="text-decoration-none">Forgot Password?</a>
+                <a href="{{ route('admin.password.request') }}" wire:navigate class="text-decoration-none">Forgot Password?</a>
             </div>
 
             <button type="submit" class="btn btn-primary w-100 mb-3" wire:loading.attr="disabled">
@@ -47,6 +47,5 @@
             </button>
         </form>
 
-        <p class="text-muted">Don't have an account? <a href="#" class="text-decoration-none">Sign Up</a></p>
     </div>
 </div>

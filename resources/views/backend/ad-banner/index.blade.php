@@ -1,5 +1,5 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<livewire:backend.home.index />
+<livewire:backend.ad-banner.index />
 @endsection

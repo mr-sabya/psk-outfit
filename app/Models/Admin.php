@@ -4,6 +4,7 @@
 
 namespace App\Models;
 
+use App\Notifications\AdminResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -42,5 +43,17 @@ class Admin extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-}
 
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = route('admin.password.reset', [
+            'token' => $token,
+            'email' => $this->getEmailForPasswordReset(),
+        ]);
+
+        $this->notify(new AdminResetPasswordNotification($token));
+        // You can use the same Notification class we created earlier, 
+        // just pass the $url directly if you customized it to accept a URL.
+    }
+}

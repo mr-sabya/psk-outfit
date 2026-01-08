@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 // Guest Routes (Login Page)
 Route::middleware('guest:admin')->group(function () {
     Route::get('/login', [App\Http\Controllers\Backend\Auth\LoginController::class, 'showLoginForm'])->name('login');
+    Route::get('/forgot-password', [App\Http\Controllers\Backend\AdminController::class, 'showForgotPassword'])->name('password.request');
+    Route::get('/reset-password/{token}', [App\Http\Controllers\Backend\AdminController::class, 'showResetPassword'])->name('password.reset');
 });
 
 Route::middleware('auth:admin')->group(function () {
@@ -103,6 +105,9 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/features', [App\Http\Controllers\Backend\WebsiteController::class, 'features'])->name('feature.index');
 
         Route::get('/about', [App\Http\Controllers\Backend\AboutController::class, 'index'])->name('about.index');
+
+        // ad banner
+        Route::get('/ad-banner', [App\Http\Controllers\Backend\AdBannerController::class, 'index'])->name('ad-banner.index');
     });
 
     // orders
@@ -152,4 +157,8 @@ Route::middleware('auth:admin')->group(function () {
 
     // payment methods
     Route::get('/payment-methods', [App\Http\Controllers\Backend\PaymentMethodController::class, 'index'])->name('payment-method.index');
+
+
+    Route::get('/profile', [App\Http\Controllers\Backend\AdminController::class, 'profile'])->name('profile');
+    Route::get('/change-password', [App\Http\Controllers\Backend\AdminController::class, 'changePassword'])->name('change-password');
 });

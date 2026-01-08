@@ -19,4 +19,24 @@ class AuthController extends Controller
     {
         return view('frontend.auth.register');
     }
+
+     /**
+     * Show the forgot password form.
+     */
+    public function forgotPassword()
+    {
+        return view('frontend.auth.forgot-password');
+    }
+
+    /**
+     * Show the reset password form.
+     */
+    public function resetPassword(Request $request, $token)
+    {
+        return view('frontend.auth.reset-password', [
+            'token' => $token,
+            'email' => $request->email
+        ]);
+    }
+    
 }

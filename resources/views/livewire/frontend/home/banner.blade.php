@@ -1,7 +1,7 @@
 <section class="banner_2">
     <div class="container">
         <div class="row">
-            
+
             <div class="col-xxl-9 col-lg-8">
                 <div class="banner_content">
                     <div class="banner_2_slider">
@@ -39,6 +39,32 @@
             </div>
             <div class="col-xxl-3 col-lg-4 col-sm-12 col-md-12">
                 <div class="row">
+                    @php
+                    $ad1 = \App\Models\AdBanner::getPosition('home-banner-1');
+                    @endphp
+
+                    @if($ad1)
+                    <div class="col-xl-12">
+                        {{--
+            Using style="background-image: url(...)" is often more reliable 
+            for dynamic images than data-bg unless your theme's JS specifically handles data-bg 
+        --}}
+                        <div class="banner_2_add wow fadeInUp"
+                            data-bg="{{ $ad1->image_url }}"
+                            style="background-image: url('{{ $ad1->image_url }}');">
+
+                            <div class="text">
+                                {{-- You can use the title from the DB here --}}
+                                <h4>Limited Offer</h4>
+                                <h2>{{ $ad1->title }}</h2>
+
+                                <a class="common_btn" href="{{ $ad1->link }}">
+                                    shop now <i class="fas fa-long-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @else
                     <div class="col-xl-12">
                         <div class="banner_2_add wow fadeInUp"
                             data-bg="{{ url('assets/frontend/images/banner_3_add_bg_1.jpg') }}">
@@ -50,6 +76,8 @@
                             </div>
                         </div>
                     </div>
+                    @endif
+
                 </div>
             </div>
         </div>
