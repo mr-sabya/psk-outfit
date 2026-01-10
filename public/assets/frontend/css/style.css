@@ -1008,7 +1008,7 @@ header .header_support h3 a:hover {
 }
 
 .menu_item {
-    line-height: 60px;
+    /* line-height: 60px; */
     position: relative;
     /* margin-left: 25px; */
 }
