@@ -109,7 +109,7 @@
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $coupon->id }}">
                                         <li>
-                                            <a class="dropdown-item" href="{{ route('coupons.edit', $coupon->id) }}">
+                                            <a class="dropdown-item" href="{{ route('admin.product.coupons.edit', $coupon->id) }}">
                                                 <i class="fas fa-edit me-2"></i>Edit Coupon
                                             </a>
                                         </li>
