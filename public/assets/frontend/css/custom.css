@@ -287,3 +287,78 @@
     font-size: 10px;
     color: #bbb;
 }
+
+
+/* Ensure the list item is positioned relatively */
+.search_li {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search_icon_trigger {
+    cursor: pointer;
+    display: block;
+}
+
+.search_icon_trigger i {
+    font-size: 18px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* The Popover Box */
+.search_form_container {
+    position: absolute;
+    top: 100%;
+    /* Appears right below the icon */
+    right: 0;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 9999;
+    width: 300px;
+
+    /* FIX: Reset the line-height inherited from .menu_icon */
+    line-height: normal !important;
+    text-align: left;
+}
+
+/* Reset styles for the internal form elements */
+.search_form_container select,
+.search_form_container input {
+    height: 40px !important;
+    /* Force a standard height */
+    line-height: 40px !important;
+    margin-bottom: 10px;
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 0 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.search_form_container .input_wrapper {
+    display: flex;
+    position: relative;
+}
+
+.search_form_container .input_wrapper input {
+    margin-bottom: 0;
+    padding-right: 45px;
+}
+
+.search_form_container .input_wrapper button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 40px;
+    width: 40px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-left: none;
+    cursor: pointer;
+    line-height: 40px;
+    /* Fix button icon centering */
+}

@@ -19,6 +19,7 @@
                     <livewire:frontend.theme.menu-item className="menu_item" />
                     <!-- ?menu item -->
                     <ul class="menu_icon">
+                        <livewire:frontend.theme.search />
                         <livewire:frontend.theme.compare-icon />
                         <livewire:frontend.theme.wishlist-icon />
                         <livewire:frontend.theme.cart-icon />
