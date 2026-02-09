@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Listeners\MigrateGuestCart;
 use App\Models\Setting;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -41,5 +44,10 @@ class AppServiceProvider extends ServiceProvider
          * Make available through config()
          */
         config(['global_settings' => $settings]);
+
+        Event::listen(
+            Login::class,
+            MigrateGuestCart::class
+        );
     }
 }

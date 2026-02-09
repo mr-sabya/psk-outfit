@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Customer
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null'); // Customer
+                
             $table->foreignId('vendor_id')->nullable()->constrained('users')->onDelete('set null'); // Optional: If order is primarily from one vendor (e.g., for single-vendor mode)
             $table->foreignId('coupon_id')->nullable()->constrained('coupons')->onDelete('set null'); // Applied coupon
 

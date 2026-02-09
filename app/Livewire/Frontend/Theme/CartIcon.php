@@ -5,6 +5,7 @@ namespace App\Livewire\Frontend\Theme;
 use Livewire\Component;
 use App\Models\CartItem;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\On;
 
 class CartIcon extends Component
@@ -15,12 +16,19 @@ class CartIcon extends Component
     #[On('cartUpdated')]
     public function render()
     {
-        $count = 0;
+        // 1. Initialize query
+        $query = CartItem::query();
 
+        // 2. Filter based on Auth or Session
         if (Auth::check()) {
-            // Count total items in the database for this user
-            $count = CartItem::where('user_id', Auth::id())->count();
+            $query->where('user_id', Auth::id());
+        } else {
+            $query->where('session_id', Session::getId());
         }
+
+        // 3. Get the count
+        // Note: use ->count() for unique items or ->sum('quantity') for total items
+        $count = $query->count();
 
         return view('livewire.frontend.theme.cart-icon', [
             'count' => $count

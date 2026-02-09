@@ -4,29 +4,43 @@ namespace App\Livewire\Frontend\Traits;
 
 use App\Models\CartItem;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 trait CartTrait
 {
-    // Updated signature to include $price and $isCombo
     public function handleAddToCart($productId, $quantity = 1, $options = [], $price = null, $isCombo = false, $mainProductId = null)
     {
-        if (!Auth::check()) return $this->redirect(route('login'), navigate: true);
+        // 1. Determine Identity (User ID or Session ID)
+        $userId = Auth::id();
+        if (!Session::isStarted()) {
+            Session::start();
+        }
+        $sessionId = Session::getId(); // Unique ID for guest browsers
+
 
         $normalizedOptions = (!empty($options) && is_array($options)) ? (ksort($options) ? $options : $options) : null;
 
-        // Check if item exists (including combo status and main_product link)
-        $existingItem = CartItem::where('user_id', Auth::id())
-            ->where('product_id', $productId)
+        // 2. Find existing item logic
+        $query = CartItem::where('product_id', $productId)
             ->where('is_combo', $isCombo)
             ->where('main_product_id', $mainProductId)
-            ->where('options', $normalizedOptions)
-            ->first();
+            ->where('options', $normalizedOptions);
+
+        // Filter by user if logged in, otherwise by session ID
+        if ($userId) {
+            $query->where('user_id', $userId);
+        } else {
+            $query->where('session_id', $sessionId);
+        }
+
+        $existingItem = $query->first();
 
         if ($existingItem) {
             $existingItem->increment('quantity', $quantity);
         } else {
             CartItem::create([
-                'user_id'         => Auth::id(),
+                'user_id'         => $userId,    // Will be null for guests
+                'session_id'      => $userId ? null : $sessionId, // Store session for guests
                 'product_id'      => $productId,
                 'main_product_id' => $mainProductId,
                 'quantity'        => $quantity,
@@ -35,6 +49,7 @@ trait CartTrait
                 'is_combo'        => $isCombo,
             ]);
         }
+
         $this->dispatch('cartUpdated');
         $this->dispatch('open-cart');
     }

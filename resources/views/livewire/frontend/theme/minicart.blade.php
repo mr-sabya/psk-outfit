@@ -12,23 +12,22 @@
         @if(count($cartItems) > 0)
         <ul>
             @foreach($cartItems as $item)
-            <li class="align-items-start">
-                {{-- Product Image --}}
+            {{-- Use item id in wire:key to prevent Livewire DOM issues --}}
+            <li class="align-items-start" wire:key="cart-item-{{ $item->id }}">
+                @if($item->product)
                 <a href="{{ route('product.show', $item->product->slug) }}" class="cart_img">
                     <img src="{{ $item->product->thumbnail_url ?? asset('assets/frontend/images/product_1.png') }}"
                         alt="{{ $item->product->name }}" class="img-fluid w-100">
                 </a>
 
                 <div class="cart_text">
-                    {{-- Product Title --}}
                     <a class="cart_title" href="{{ route('product.show', $item->product->slug) }}">
                         {{ Str::limit($item->product->name, 25) }}
                     </a>
 
-                    {{-- Price --}}
-                    <p>৳{{ number_format($item->product->effective_price, 2) }}</p>
+                    {{-- Use item price first, then product price --}}
+                    <p>৳{{ number_format($item->price ?? $item->product->effective_price, 2) }}</p>
 
-                    {{-- QUANTITY CONTROLS --}}
                     <div class="minicart_quantity_area d-flex align-items-center mt-1">
                         <button type="button" wire:click="decrementQuantity({{ $item->id }})" class="qty_btn">
                             <i class="fal fa-minus"></i>
@@ -39,7 +38,6 @@
                         </button>
                     </div>
 
-                    {{-- Display Attributes --}}
                     @if($item->options)
                     <div class="mt-1">
                         @foreach($item->options as $key => $value)
@@ -50,11 +48,14 @@
                     </div>
                     @endif
                 </div>
+                @else
+                <div class="cart_text">Product Unavailable</div>
+                @endif
 
-                {{-- DELETE BUTTON (TRASH ICON) --}}
                 <a class="del_icon text-danger" href="javascript:void(0)"
                     wire:click="removeItem({{ $item->id }})"
-                    wire:loading.attr="disabled">
+                    wire:loading.attr="disabled"
+                    wire:target="removeItem({{ $item->id }})">
                     <i class="fal fa-trash-alt"></i>
                 </a>
             </li>
@@ -64,10 +65,10 @@
         <h5>sub total <span>৳{{ number_format($subtotal, 2) }}</span></h5>
 
         <div class="minicart_btn_area">
-            <a class="common_btn" href="{{ route('user.cart') }}" wire:navigate>view cart</a>
+            {{-- Make sure route('user.cart') is accessible to guests --}}
+            <a class="common_btn" href="{{ route('cart') }}" wire:navigate>view cart</a>
         </div>
         @else
-        {{-- Empty State --}}
         <div class="text-center py-5">
             <i class="fal fa-shopping-bag fa-3x mb-3 text-muted"></i>
             <p>Your cart is empty</p>

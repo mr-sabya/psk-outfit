@@ -128,7 +128,7 @@
                     </div>
                     <div class="cart_summary_btn">
                         <a class="common_btn continue_shopping" href="{{ route('shop') }}" wire:navigate>Continue shopping</a>
-                        <a class="common_btn" href="{{ route('user.checkout') }}" wire:navigate>checkout <i class="fas fa-long-arrow-right"></i></a>
+                        <a class="common_btn" href="{{ route('checkout') }}" wire:navigate>checkout <i class="fas fa-long-arrow-right"></i></a>
                     </div>
                 </div>
             </div>

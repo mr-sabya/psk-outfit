@@ -141,6 +141,11 @@ class Order extends Model
         return $this->belongsTo(City::class, 'shipping_city_id');
     }
 
+    public function isGuest()
+    {
+        return $this->user_id === null;
+    }
+
     // Add this relationship
     public function cancelledBy()
     {

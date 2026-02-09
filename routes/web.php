@@ -40,6 +40,15 @@ Route::middleware('guest')->group(function () {
     Route::get('/reset-password/{token}', [App\Http\Controllers\Frontend\AuthController::class, 'resetPassword'])->name('password.reset');
 });
 
+// cart page
+Route::get('/cart', [App\Http\Controllers\Frontend\CartController::class, 'index'])->name('cart');
+
+// checkout page
+Route::get('/checkout', [App\Http\Controllers\Frontend\CheckoutController::class, 'index'])->name('checkout');
+
+// order success page
+Route::get('/checkout/success', [App\Http\Controllers\Frontend\CheckoutController::class, 'success'])->name('checkout.success');
+
 Route::get('/compare', [App\Http\Controllers\Frontend\CompareController::class, 'index'])->name('compare');
 
 
@@ -78,14 +87,7 @@ Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
     // user password route
     Route::get('/change-password', [App\Http\Controllers\Frontend\User\DashboardController::class, 'password'])->name('password');
 
-    // cart page
-    Route::get('/cart', [App\Http\Controllers\Frontend\CartController::class, 'index'])->name('cart');
 
-    // checkout page
-    Route::get('/checkout', [App\Http\Controllers\Frontend\CheckoutController::class, 'index'])->name('checkout');
-
-    // order success page
-    Route::get('/checkout/success', [App\Http\Controllers\Frontend\CheckoutController::class, 'success'])->name('checkout.success');
 
     // wishlist page
     Route::get('/wishlist', [App\Http\Controllers\Frontend\WishlistController::class, 'index'])->name('wishlist');
