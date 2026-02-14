@@ -1,7 +1,7 @@
 <div>
     @if (session()->has('message'))
     <div class="alert alert-success border-0 shadow-sm mb-4">
-        {{ session('message') }}
+        <i class="fas fa-check-circle me-2"></i> {{ session('message') }}
     </div>
     @endif
 
@@ -12,13 +12,24 @@
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="mb-0">Order #{{ $order->order_number }}</h4>
+                        <div>
+                            <h4 class="mb-0">Order #{{ $order->order_number }}</h4>
+                            <p class="text-muted mb-0">
+                                Customer:
+                                <span class="fw-bold text-dark">
+                                    {{ $order->user->name ?? $order->billing_first_name . ' ' . $order->billing_last_name }}
+                                </span>
+                                @if(!$order->user)
+                                <span class="badge bg-secondary ms-1" style="font-size: 0.7rem;">GUEST</span>
+                                @endif
+                            </p>
+                        </div>
                         <div>
                             <span class="badge {{ $order->order_status->badgeColor() }} p-2">{{ $order->order_status->label() }}</span>
                             <span class="badge {{ $order->payment_status->badgeColor() }} p-2">{{ $order->payment_status->label() }}</span>
                         </div>
                     </div>
-                    <p class="text-muted mb-0">Placed on: {{ $order->placed_at?->format('d M, Y h:i A') }}</p>
+                    <p class="text-muted mb-0 small">Placed on: {{ $order->placed_at?->format('d M, Y h:i A') }}</p>
                 </div>
             </div>
 
@@ -50,7 +61,7 @@
                                                 @if($item->item_attributes)
                                                 <div class="mt-1">
                                                     @foreach($item->item_attributes as $key => $val)
-                                                    <span class="badge bg-light text-dark border">{{ $key }}: {{ $val }}</span>
+                                                    <span class="badge bg-light text-dark border" style="font-size: 0.7rem;">{{ $key }}: {{ $val }}</span>
                                                     @endforeach
                                                 </div>
                                                 @endif
@@ -86,23 +97,25 @@
             <div class="row">
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm border-0 h-100">
-                        <div class="card-header bg-white"><strong>Shipping Address</strong></div>
+                        <div class="card-header bg-white"><strong><i class="fas fa-truck me-2"></i> Shipping Address</strong></div>
                         <div class="card-body">
                             <p class="mb-1"><strong>{{ $order->shipping_first_name }} {{ $order->shipping_last_name }}</strong></p>
                             <p class="mb-1">{{ $order->shipping_address_line_1 }}</p>
+                            @if($order->shipping_address_line_2) <p class="mb-1">{{ $order->shipping_address_line_2 }}</p> @endif
                             <p class="mb-1">{{ $order->shippingCity?->name }}, {{ $order->shippingState?->name }}</p>
                             <p class="mb-1">{{ $order->shippingCountry?->name }}, {{ $order->shipping_zip_code }}</p>
-                            <p class="mb-0"><i class="fas fa-phone me-2"></i> {{ $order->shipping_phone }}</p>
+                            <p class="mb-0 mt-2 small text-muted"><i class="fas fa-phone me-2"></i> {{ $order->shipping_phone }}</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm border-0 h-100">
-                        <div class="card-header bg-white"><strong>Billing Address</strong></div>
+                        <div class="card-header bg-white"><strong><i class="fas fa-file-invoice me-2"></i> Billing Address</strong></div>
                         <div class="card-body">
                             <p class="mb-1"><strong>{{ $order->billing_first_name }} {{ $order->billing_last_name }}</strong></p>
                             <p class="mb-1">{{ $order->billing_address_line_1 }}</p>
-                            <p class="mb-0"><i class="fas fa-envelope me-2"></i> {{ $order->billing_email }}</p>
+                            <p class="mb-2"><i class="fas fa-envelope me-2"></i> {{ $order->billing_email }}</p>
+                            <p class="mb-0 small text-muted"><i class="fas fa-phone me-2"></i> {{ $order->billing_phone }}</p>
                         </div>
                     </div>
                 </div>
@@ -126,7 +139,7 @@
                         @if($order->transaction_id)
                         <code class="fs-6 text-danger">{{ $order->transaction_id }}</code>
                         @else
-                        <span class="text-muted italic">N/A</span>
+                        <span class="text-muted italic">No Transaction ID</span>
                         @endif
                     </div>
                     <div class="mb-0">
@@ -167,7 +180,12 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 py-2">
-                            <i class="fas fa-save me-2"></i> Save Changes
+                            <span wire:loading.remove wire:target="updateOrder">
+                                <i class="fas fa-save me-2"></i> Save Changes
+                            </span>
+                            <span wire:loading wire:target="updateOrder">
+                                <span class="spinner-border spinner-border-sm me-2"></span> Updating...
+                            </span>
                         </button>
                     </form>
                 </div>

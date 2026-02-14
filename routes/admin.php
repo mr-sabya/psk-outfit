@@ -115,6 +115,9 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::get('/orders/{orderId}/invoice', [App\Http\Controllers\Backend\OrderController::class, 'invoice'])->name('orders.invoice');
 
+    // manage order
+    Route::get('/orders/{orderId}/manage', [App\Http\Controllers\Backend\OrderController::class, 'manage'])->name('orders.manage');
+
     // deals
     Route::prefix('deals')->name('deal.')->group(function () {
         Route::get('/', [App\Http\Controllers\Backend\DealController::class, 'index'])->name('index');

@@ -1,6 +1,5 @@
 <?php
 
-namespace App\Models; // Ensure correct namespace for Enums
 namespace App\Livewire\Backend\Orders;
 
 use App\Enums\OrderStatus;
@@ -46,8 +45,8 @@ class Index extends Component
     public function viewOrderDetails($orderId)
     {
         $this->selectedOrderId = $orderId;
-        $this->showOrderDetailsModal = true;
-        $this->dispatch('open-order-details-modal');
+        $this->showOrderDetailsModal = true; // Set flag to true
+        $this->dispatch('open-order-details-modal'); // Dispatch JS event
     }
 
     public function openStatusUpdateModal($orderId)
@@ -56,8 +55,8 @@ class Index extends Component
         $this->updateOrderId = $orderId;
         $this->newOrderStatus = $order->order_status->value;
         $this->newPaymentStatus = $order->payment_status->value;
-        $this->showStatusUpdateModal = true;
-        $this->dispatch('open-status-update-modal');
+        $this->showStatusUpdateModal = true; // Set flag to true
+        $this->dispatch('open-status-update-modal'); // Dispatch JS event
     }
 
     public function updateOrderStatus()
@@ -74,13 +73,12 @@ class Index extends Component
         ]);
 
         session()->flash('message', 'Order status updated successfully.');
-        $this->closeStatusUpdateModal();
+        $this->dispatch('close-status-update-modal');
     }
 
     public function closeStatusUpdateModal()
     {
         $this->showStatusUpdateModal = false;
-        $this->resetPage();
     }
 
     public function closeOrderDetailsModal()
@@ -91,18 +89,17 @@ class Index extends Component
     public function render()
     {
         $orders = Order::query()
-            // Eager load for performance
             ->with(['user', 'vendor'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('order_number', 'like', '%' . $this->search . '%')
-                        ->orWhere('transaction_id', 'like', '%' . $this->search . '%') // Added TxID search
+                        ->orWhere('transaction_id', 'like', '%' . $this->search . '%')
                         ->orWhere('billing_email', 'like', '%' . $this->search . '%')
                         ->orWhereHas('user', function ($uq) {
                             $uq->where('name', 'like', '%' . $this->search . '%')
                                 ->orWhere('phone', 'like', '%' . $this->search . '%');
                         })
-                        ->orWhereHas('vendor', function ($vq) { // Added Vendor search
+                        ->orWhereHas('vendor', function ($vq) {
                             $vq->where('name', 'like', '%' . $this->search . '%');
                         });
                 });

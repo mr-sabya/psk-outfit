@@ -122,6 +122,8 @@ class Order extends Model
     {
         return $this->belongsTo(PaymentMethod::class);
     }
+
+
     public function shippingMethod()
     {
         return $this->belongsTo(ShippingMethod::class);
@@ -141,6 +143,9 @@ class Order extends Model
         return $this->belongsTo(City::class, 'shipping_city_id');
     }
 
+    /**
+     * Check if the order was placed by a guest.
+     */
     public function isGuest()
     {
         return $this->user_id === null;
@@ -179,5 +184,17 @@ class Order extends Model
         $country = $this->shippingCountry?->name ?? 'Unknown Country';
 
         return "{$address}, {$city}, {$state} {$this->shipping_zip_code}, {$country}";
+    }
+
+
+    /**
+     * Get the customer name (User name or Billing name if guest).
+     */
+    public function getCustomerNameAttribute(): string
+    {
+        if ($this->user) {
+            return $this->user->name;
+        }
+        return $this->billing_first_name . ' ' . $this->billing_last_name . ' (Guest)';
     }
 }

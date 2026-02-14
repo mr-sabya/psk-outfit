@@ -32,8 +32,8 @@
                         <tr>
                             <th wire:click="sortBy('order_number')" style="cursor:pointer">Order #</th>
                             <th>Customer</th>
-                            <th>Vendor</th> <!-- Added Vendor Column -->
-                            <th>Payment Info</th> <!-- Added Method & TxID Column -->
+                            <th>Vendor</th>
+                            <th>Payment Info</th>
                             <th wire:click="sortBy('total_amount')" style="cursor:pointer">Amount</th>
                             <th>Status</th>
                             <th wire:click="sortBy('placed_at')" style="cursor:pointer">Date</th>
@@ -45,7 +45,7 @@
                         <tr>
                             <td class="fw-bold text-primary">{{ $order->order_number }}</td>
                             <td>
-                                <div>{{ $order->user->name ?? 'Guest' }}</div>
+                                <div>{{ $order->user->name ?? $order->billing_first_name . ' (Guest)' }}</div>
                                 <small class="text-muted">{{ $order->billing_phone }}</small>
                             </td>
                             <td>
@@ -79,6 +79,10 @@
                                     <button class="btn btn-sm btn-outline-dark" wire:click="openStatusUpdateModal({{ $order->id }})">
                                         <i class="fas fa-edit"></i>
                                     </button>
+                                    <!-- manage order -->
+                                    <a href="{{ route('admin.orders.manage', $order->id) }}" wire:navigate class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-cogs"></i>
+                                    </a>
                                     <a href="{{ route('admin.orders.invoice', $order->id) }}" target="_blank" class="btn btn-sm btn-secondary">
                                         <i class="fas fa-file-invoice"></i>
                                     </a>
@@ -109,8 +113,6 @@
                 </div>
                 <div class="modal-body">
                     @if ($showOrderDetailsModal && $selectedOrderId)
-                    {{-- Here we'll embed the OrderDetails component --}}
-                    {{-- This is a pattern for dynamic component loading within a modal --}}
                     <livewire:backend.orders.manage :orderId="$selectedOrderId" wire:key="order-{{ $selectedOrderId }}" />
                     @else
                     <p>Select an order to view details.</p>
@@ -136,7 +138,7 @@
                         @if ($updateOrderId)
                         <div class="mb-3">
                             <label for="newOrderStatus" class="form-label">Order Status</label>
-                            <select class="form-select @error('newOrderStatus') is-invalid @enderror" id="newOrderStatus" wire:model.defer="newOrderStatus">
+                            <select class="form-select @error('newOrderStatus') is-invalid @enderror" id="newOrderStatus" wire:model="newOrderStatus">
                                 @foreach($orderStatuses as $status)
                                 <option value="{{ $status->value }}">{{ $status->label() }}</option>
                                 @endforeach
@@ -145,21 +147,19 @@
                         </div>
                         <div class="mb-3">
                             <label for="newPaymentStatus" class="form-label">Payment Status</label>
-                            <select class="form-select @error('newPaymentStatus') is-invalid @enderror" id="newPaymentStatus" wire:model.defer="newPaymentStatus">
+                            <select class="form-select @error('newPaymentStatus') is-invalid @enderror" id="newPaymentStatus" wire:model="newPaymentStatus">
                                 @foreach($paymentStatuses as $status)
                                 <option value="{{ $status->value }}">{{ $status->label() }}</option>
                                 @endforeach
                             </select>
                             @error('newPaymentStatus') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        @else
-                        <p>No order selected for status update.</p>
                         @endif
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeStatusUpdateModal">Cancel</button>
                         <button type="submit" class="btn btn-primary">
-                            <span wire:loading wire:target="updateOrderStatus" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span wire:loading wire:target="updateOrderStatus" class="spinner-border spinner-border-sm" role="status"></span>
                             Update
                         </button>
                     </div>
@@ -170,11 +170,12 @@
 </div>
 
 <script>
-    document.addEventListener('livewire:initialized', () => {
-        // Order Details Modal
-        const orderDetailsModalElement = document.getElementById('order-details-modal');
-        const orderDetailsModal = new bootstrap.Modal(orderDetailsModalElement);
+    document.addEventListener('livewire:init', () => {
+        // Initialize the Bootstrap Modals
+        const orderDetailsModal = new bootstrap.Modal(document.getElementById('order-details-modal'));
+        const statusUpdateModal = new bootstrap.Modal(document.getElementById('status-update-modal'));
 
+        // Listen for events from the Livewire Component
         Livewire.on('open-order-details-modal', () => {
             orderDetailsModal.show();
         });
@@ -183,16 +184,20 @@
             orderDetailsModal.hide();
         });
 
-        // Order Status Update Modal
-        const statusUpdateModalElement = document.getElementById('status-update-modal');
-        const statusUpdateModal = new bootstrap.Modal(statusUpdateModalElement);
-
         Livewire.on('open-status-update-modal', () => {
             statusUpdateModal.show();
         });
 
         Livewire.on('close-status-update-modal', () => {
             statusUpdateModal.hide();
+        });
+
+        // Optional: Reset Livewire properties when modal is closed manually via 'X' button
+        document.getElementById('order-details-modal').addEventListener('hidden.bs.modal', () => {
+            @this.set('showOrderDetailsModal', false);
+        });
+        document.getElementById('status-update-modal').addEventListener('hidden.bs.modal', () => {
+            @this.set('showStatusUpdateModal', false);
         });
     });
 </script>
