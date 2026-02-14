@@ -13,9 +13,12 @@ class SpecialProducts extends Component
         // We eager load 'reviews' count and avg rating for the UI.
         $products = Product::active()
             ->featured()
-            ->withAvg('reviews', 'rating') // Calculates 'reviews_avg_rating'
+            ->whereDoesntHave('categories', function ($query) {
+                $query->where('slug', 'lustrai-wear');
+            })
+            ->withAvg('reviews', 'rating')
             ->latest()
-            ->take(8) // Limit to 8 items to match the layout
+            ->take(8)
             ->get();
 
         return view('livewire.frontend.home.special-products', [

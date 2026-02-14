@@ -131,6 +131,9 @@ class Index extends Component
     public function render()
     {
         $products = Product::active()
+            ->whereDoesntHave('categories', function ($query) {
+                $query->where('slug', 'lustrai-wear');
+            })
             // Eager load necessary relationships
             ->with(['reviews', 'variants', 'categories']);
 

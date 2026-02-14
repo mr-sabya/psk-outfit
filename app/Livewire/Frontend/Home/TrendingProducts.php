@@ -15,8 +15,9 @@ class TrendingProducts extends Component
         // We use the scopeFeaturedOnHomepage() you defined in your Category model
         // If no categories are marked for homepage, we fallback to just active categories
         $categories = Category::featuredOnHomepage()
+            ->where('slug', '!=', 'lustrai-wear')
             ->orderBy('sort_order', 'asc')
-            ->take(5) // Limit to 5 tabs to prevent UI clutter
+            ->take(5)
             ->get();
 
         // Fallback if no homepage categories exist

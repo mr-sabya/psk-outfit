@@ -13,7 +13,10 @@ class BestSellingProducts extends Component
         // Note: To make this truly "Best Selling", you would typically join with
         // an 'order_items' table and count sales. For now, we fetch the latest/featured.
         $products = Product::active()
-            ->latest() // Or ->inRandomOrder() or ->orderBy('sales_count', 'desc')
+            ->whereDoesntHave('categories', function ($query) {
+                $query->where('slug', 'lustrai-wear');
+            })
+            ->latest()
             ->take(4)
             ->get();
 
