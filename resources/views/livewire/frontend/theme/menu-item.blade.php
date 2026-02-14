@@ -49,6 +49,8 @@
     </li>
 
     <li><a class="{{ Route::is('shop') ? 'active' : '' }}" href="{{ route('shop') }}" wire:navigate>Shop</a></li>
+    <!-- lustrai-wear link -->
+    <li><a class="{{ Route::is('lustrai-wear') ? 'active' : '' }}" href="{{ route('lustrai-wear') }}" wire:navigate>Lustrai Wear</a></li>
     <li><a class="{{ Route::is('flash-deals') ? 'active' : '' }}" href="{{ route('flash-deals') }}" wire:navigate>Flash Deals</a></li>
     <li><a class="{{ Route::is('blog') ? 'active' : '' }}" href="{{ route('blog') }}" wire:navigate>Blog</a></li>
     <li>

@@ -6,8 +6,8 @@
                     <div class="page_banner_text wow fadeInUp">
                         <h1>{{ $title }}</h1>
                         <ul>
-                            <li><a href="#"><i class="fal fa-home-lg"></i> Home</a></li>
-                            <li><a href="#">{{ $title }}</a></li>
+                            <li><a href="{{ route('home') }}" wire:navigate><i class="fal fa-home-lg"></i> Home</a></li>
+                            <li class="text-white">{{ $title }}</li>
                         </ul>
                     </div>
                 </div>

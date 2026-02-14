@@ -10,6 +10,10 @@ Route::get('/', [App\Http\Controllers\Frontend\HomeController::class, 'index'])-
 // shop page
 Route::get('/shop', [App\Http\Controllers\Frontend\ShopController::class, 'index'])->name('shop');
 
+// lustrai-wear page
+Route::get('/lustrai-wear', [App\Http\Controllers\Frontend\ShopController::class, 'lustraiWear'])->name('lustrai-wear');
+
+
 // product details page
 Route::get('/product/{slug}', [App\Http\Controllers\Frontend\ShopController::class, 'show'])->name('product.show');
 

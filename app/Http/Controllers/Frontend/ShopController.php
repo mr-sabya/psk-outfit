@@ -20,4 +20,10 @@ class ShopController extends Controller
         $product = Product::where('slug', $slug)->firstOrFail();
         return view('frontend.product.show', compact('product'));
     }
+
+    // lustrai-wear page
+    public function lustraiWear()
+    {
+        return view('frontend.shop.lustrai-wear');
+    }
 }
