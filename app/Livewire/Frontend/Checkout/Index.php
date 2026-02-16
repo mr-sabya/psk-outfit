@@ -252,7 +252,7 @@ class Index extends Component
             $this->getCartQuery()->delete();
         });
 
-        return redirect()->route('user.checkout.success');
+        return redirect()->route('checkout.success');
     }
 
     public function incrementQuantity($id)

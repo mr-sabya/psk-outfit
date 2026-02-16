@@ -81,7 +81,7 @@ class Show extends Component
             );
         }
 
-        return $this->redirect(route('user.checkout'), navigate: true);
+        return $this->redirect(route('checkout'), navigate: true);
     }
 
     public function selectAttribute($attributeId, $valueId)
@@ -157,7 +157,7 @@ class Show extends Component
             return;
         }
         $this->addToCart();
-        return $this->redirect(route('user.checkout'), navigate: true);
+        return $this->redirect(route('checkout'), navigate: true);
     }
 
     public function addToCompare($productId)
