@@ -172,12 +172,22 @@
 
                 <div class="checkout_payment mt-4">
                     <h3>payment method</h3>
-                    @foreach($paymentMethods as $pay)
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio" wire:model.live="payment_method_id" value="{{ $pay->id }}" id="pay{{ $pay->id }}">
+                    <!-- Add a loading state for when shipping changes -->
+                    <div wire:loading wire:target="shipping_method_id" class="small text-muted mb-2">
+                        Updating available payment methods...
+                    </div>
+
+                    @forelse($paymentMethods as $pay)
+                    <div class="form-check mb-2" wire:key="pay-{{ $pay->id }}">
+                        <input class="form-check-input" type="radio"
+                            wire:model.live="payment_method_id"
+                            value="{{ $pay->id }}"
+                            id="pay{{ $pay->id }}">
                         <label class="form-check-label" for="pay{{ $pay->id }}">{{ $pay->name }}</label>
                     </div>
-                    @endforeach
+                    @empty
+                    <p class="text-danger small">No payment methods available for this shipping selection.</p>
+                    @endforelse
 
                     @if($selectedPayment && $selectedPayment->type === 'direct')
                     <div class="p-3 bg-light border rounded mb-3 mt-2">
