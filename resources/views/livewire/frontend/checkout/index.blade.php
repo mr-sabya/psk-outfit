@@ -18,7 +18,7 @@
                                     <input class="form-check-input" type="radio" wire:model.live="shipping_address_id" value="{{ $address->id }}">
                                     <label class="form-check-label w-100">
                                         <strong>{{ $address->first_name }} {{ $address->last_name }}</strong><br>
-                                        <small class="text-muted">{{ $address->address_line_1 }}</small>
+                                        <small class="text-muted">{{ $address->address_line_1 }}, {{ $address->city?->name }}</small>
                                     </label>
                                 </div>
                             </div>
@@ -29,7 +29,7 @@
                     @endauth
 
                     @if(!Auth::check() || !$shipping_address_id)
-                    <div class="row wow fadeIn bg-light p-3 rounded mb-3">
+                    <div class="row wow fadeIn bg-light p-4 rounded mb-3">
                         <div class="col-md-12">
                             <div class="single_input"><label>Full Name *</label><input type="text" wire:model="shipping.full_name"></div>
                         </div>
@@ -40,11 +40,15 @@
                             <div class="single_input"><label>Phone *</label><input type="text" wire:model="shipping.phone"></div>
                         </div>
                         <div class="col-md-12">
-                            <div class="single_input"><label>Address *</label><input type="text" wire:model="shipping.address_line_1"></div>
+                            <div class="single_input"><label>Address Line 1 *</label><input type="text" wire:model="shipping.address_line_1"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="single_input"><label>Address Line 2 (Optional)</label><input type="text" wire:model="shipping.address_line_2"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="single_input"><label>Country *</label>
                                 <select wire:model.live="shipping.country_id" class="form-select">
+                                    <option value="">Select Country</option>
                                     @foreach($countries as $c) <option value="{{ $c->id }}">{{ $c->name }}</option> @endforeach
                                 </select>
                             </div>
@@ -52,12 +56,20 @@
                         <div class="col-md-4">
                             <div class="single_input"><label>State</label>
                                 <select wire:model.live="shipping.state_id" class="form-select">
-                                    <option value="">Select</option>
-                                    @foreach($states as $s) <option value="{{ $s->id }}">{{ $s->name }}</option> @endforeach
+                                    <option value="">Select State</option>
+                                    @foreach($shipping_states as $s) <option value="{{ $s->id }}">{{ $s->name }}</option> @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-4">
+                            <div class="single_input"><label>City</label>
+                                <select wire:model.live="shipping.city_id" class="form-select">
+                                    <option value="">Select City</option>
+                                    @foreach($shipping_cities as $ct) <option value="{{ $ct->id }}">{{ $ct->name }}</option> @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-3">
                             <div class="single_input"><label>Zip Code</label><input type="text" wire:model="shipping.zip_code"></div>
                         </div>
                     </div>
@@ -71,14 +83,41 @@
                     </div>
 
                     @if($bill_to_different_address)
-                    <div class="row wow fadeIn bg-light p-3 rounded mb-3">
+                    <div class="row wow fadeIn bg-light p-4 rounded mb-3">
                         <div class="col-md-12">
                             <div class="single_input"><label>Full Name *</label><input type="text" wire:model="billing.full_name"></div>
                         </div>
                         <div class="col-md-12">
-                            <div class="single_input"><label>Address *</label><input type="text" wire:model="billing.address_line_1"></div>
+                            <div class="single_input"><label>Address Line 1 *</label><input type="text" wire:model="billing.address_line_1"></div>
                         </div>
                         <div class="col-md-12">
+                            <div class="single_input"><label>Address Line 2</label><input type="text" wire:model="billing.address_line_2"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="single_input"><label>Country *</label>
+                                <select wire:model.live="billing.country_id" class="form-select">
+                                    <option value="">Select</option>
+                                    @foreach($countries as $c) <option value="{{ $c->id }}">{{ $c->name }}</option> @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="single_input"><label>State</label>
+                                <select wire:model.live="billing.state_id" class="form-select">
+                                    <option value="">Select</option>
+                                    @foreach($billing_states as $s) <option value="{{ $s->id }}">{{ $s->name }}</option> @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="single_input"><label>City</label>
+                                <select wire:model.live="billing.city_id" class="form-select">
+                                    <option value="">Select</option>
+                                    @foreach($billing_cities as $ct) <option value="{{ $ct->id }}">{{ $ct->name }}</option> @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-3">
                             <div class="single_input"><label>Zip Code</label><input type="text" wire:model="billing.zip_code"></div>
                         </div>
                     </div>
@@ -91,6 +130,7 @@
             </div>
 
             <div class="col-lg-4">
+                <!-- Summary Section (Same as before) -->
                 <div class="cart_page_summary">
                     <h3>Billing summary</h3>
                     @foreach($groupedItems as $vendorName => $items)
@@ -132,6 +172,7 @@
                     </div>
                 </div>
 
+                <!-- Payment Section -->
                 <div class="checkout_payment mt-4">
                     @if($paymentMethods->isNotEmpty())
                     <h3>payment method</h3>
@@ -143,9 +184,18 @@
                         </div>
                         @endforeach
 
-                        @if($selectedPayment && $selectedPayment->type === 'direct')
+                        @if($selectedPayment)
                         <div class="p-3 bg-light border rounded mb-3 mt-2">
-                            <div class="single_input"><label>Transaction ID (Optional)</label><input type="text" wire:model="transaction_id"></div>
+                            @if($selectedPayment->instructions)
+                            <div class="payment_instructions mb-2">
+                                <p class="mb-1" style="font-size: 14px; font-weight: 600;">Instructions:</p>
+                                <div class="text-muted" style="font-size: 13px;">{!! nl2br(e($selectedPayment->instructions)) !!}</div>
+                            </div>
+                            @endif
+                            @if($selectedPayment->type === 'direct')
+                            <div class="single_input mt-3 mb-3"><label>Phone Number</label><input type="text" wire:model="payment_phone_number" placeholder="017XXXXXXXX"></div>
+                            <div class="single_input mt-3"><label>Transaction ID (Optional)</label><input type="text" wire:model="transaction_id"></div>
+                            @endif
                         </div>
                         @endif
                     </div>
@@ -153,7 +203,7 @@
 
                     <div class="form-check mt-3">
                         <input class="form-check-input" type="checkbox" wire:model="agree_terms" id="agree">
-                        <label class="form-check-label small" for="agree">Agree to terms & conditions.</label>
+                        <label class="form-check-label small" for="agree">I have read and agree to the <a href="{{ route('page.show', 'terms-and-conditions') }}" target="_blank">Terms & Conditions</a> and <a href="{{ route('page.show', 'return-exchange-policy') }}" target="_blank">Return Policy</a></label>
                     </div>
 
                     <button type="button" wire:click="placeOrder" class="common_btn w-100 mt-3" wire:loading.attr="disabled">

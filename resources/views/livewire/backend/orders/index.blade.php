@@ -45,7 +45,7 @@
                         <tr>
                             <td class="fw-bold text-primary">{{ $order->order_number }}</td>
                             <td>
-                                <div>{{ $order->user->name ?? $order->billing_first_name . ' (Guest)' }}</div>
+                                <div>{{ $order->user->name ?? $order->billing_first_name . ' ' . $order->billing_last_name . ' (Guest)' }}</div>
                                 <small class="text-muted">{{ $order->billing_phone }}</small>
                             </td>
                             <td>
@@ -54,11 +54,14 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="small fw-bold">{{ $order->payment_method_name }}</div>
+                                <div class="small fw-bold text-dark">{{ $order->payment_method_name }}</div>
+                                @if($order->payment_phone_number)
+                                <div class="small text-muted"><i class="fas fa-phone-alt me-1"></i>{{ $order->payment_phone_number }}</div>
+                                @endif
                                 @if($order->transaction_id)
-                                <code class="text-danger small">{{ $order->transaction_id }}</code>
+                                <code class="text-danger border px-1 rounded" style="font-size: 0.75rem;">{{ $order->transaction_id }}</code>
                                 @else
-                                <small class="text-muted italic">No TxID</small>
+                                <small class="text-muted fst-italic">No TxID</small>
                                 @endif
                             </td>
                             <td>৳{{ number_format($order->total_amount, 2) }}</td>
@@ -73,13 +76,16 @@
                             <td class="small">{{ $order->placed_at?->format('d M, Y h:i A') }}</td>
                             <td class="text-end">
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" wire:click="viewOrderDetails({{ $order->id }})">
+                                    <button class="btn btn-sm btn-outline-primary"
+                                        data-bs-toggle="modal" data-bs-target="#order-details-modal"
+                                        wire:click="viewOrderDetails({{ $order->id }})">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-dark" wire:click="openStatusUpdateModal({{ $order->id }})">
+                                    <button class="btn btn-sm btn-outline-dark"
+                                        data-bs-toggle="modal" data-bs-target="#status-update-modal"
+                                        wire:click="openStatusUpdateModal({{ $order->id }})">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <!-- manage order -->
                                     <a href="{{ route('admin.orders.manage', $order->id) }}" wire:navigate class="btn btn-sm btn-outline-secondary">
                                         <i class="fas fa-cogs"></i>
                                     </a>
@@ -98,66 +104,80 @@
                 </table>
             </div>
         </div>
-        <div class="card-footer bg-white">
-            {{ $orders->links() }}
-        </div>
+        <div class="card-footer bg-white">{{ $orders->links() }}</div>
     </div>
 
-    {{-- Order Details Modal --}}
-    <div class="modal fade" id="order-details-modal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true" wire:ignore.self>
+    {{-- ORDER DETAILS MODAL --}}
+    <div class="modal fade" id="order-details-modal" tabindex="-1" wire:ignore.self
+        x-data="{ bootstrapModal: null }"
+        x-init="bootstrapModal = new bootstrap.Modal($el)"
+        @hidden-bs-modal.window="if($event.target.id === 'order-details-modal') $wire.closeOrderDetailsModal()">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeOrderDetailsModal"></button>
+                    <h5 class="modal-title">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    @if ($showOrderDetailsModal && $selectedOrderId)
-                    <livewire:backend.orders.manage :orderId="$selectedOrderId" wire:key="order-{{ $selectedOrderId }}" />
-                    @else
-                    <p>Select an order to view details.</p>
-                    @endif
+                    <div wire:loading wire:target="viewOrderDetails" class="text-center py-5">
+                        <div class="spinner-border text-primary"></div>
+                        <p class="mt-2">Loading data...</p>
+                    </div>
+                    <div wire:loading.remove wire:target="viewOrderDetails">
+                        @if ($showOrderDetailsModal && $selectedOrderId)
+                        <livewire:backend.orders.manage :orderId="$selectedOrderId" :key="'order-'.$selectedOrderId" />
+                        @endif
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeOrderDetailsModal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Order Status Update Modal --}}
-    <div class="modal fade" id="status-update-modal" tabindex="-1" aria-labelledby="statusUpdateModalLabel" aria-hidden="true" wire:ignore.self>
+    {{-- STATUS UPDATE MODAL --}}
+    <div class="modal fade" id="status-update-modal" tabindex="-1" wire:ignore.self
+        x-data="{ bootstrapModal: null }"
+        x-init="bootstrapModal = new bootstrap.Modal($el)"
+        @close-modal-now.window="bootstrapModal.hide()"
+        @hidden-bs-modal.window="if($event.target.id === 'status-update-modal') $wire.closeStatusUpdateModal()">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="statusUpdateModalLabel">Update Order Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeStatusUpdateModal"></button>
+                    <h5 class="modal-title">Update Order Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form wire:submit.prevent="updateOrderStatus">
                     <div class="modal-body">
-                        @if ($updateOrderId)
-                        <div class="mb-3">
-                            <label for="newOrderStatus" class="form-label">Order Status</label>
-                            <select class="form-select @error('newOrderStatus') is-invalid @enderror" id="newOrderStatus" wire:model="newOrderStatus">
-                                @foreach($orderStatuses as $status)
-                                <option value="{{ $status->value }}">{{ $status->label() }}</option>
-                                @endforeach
-                            </select>
-                            @error('newOrderStatus') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <div wire:loading wire:target="openStatusUpdateModal" class="text-center py-3">
+                            <div class="spinner-border spinner-border-sm text-primary"></div>
                         </div>
-                        <div class="mb-3">
-                            <label for="newPaymentStatus" class="form-label">Payment Status</label>
-                            <select class="form-select @error('newPaymentStatus') is-invalid @enderror" id="newPaymentStatus" wire:model="newPaymentStatus">
-                                @foreach($paymentStatuses as $status)
-                                <option value="{{ $status->value }}">{{ $status->label() }}</option>
-                                @endforeach
-                            </select>
-                            @error('newPaymentStatus') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <div wire:loading.remove wire:target="openStatusUpdateModal">
+                            @if ($updateOrderId)
+                            <div class="mb-3">
+                                <label class="form-label">Order Status</label>
+                                <select class="form-select @error('newOrderStatus') is-invalid @enderror" wire:model="newOrderStatus">
+                                    @foreach($orderStatuses as $status)
+                                    <option value="{{ $status->value }}">{{ $status->label() }}</option>
+                                    @endforeach
+                                </select>
+                                @error('newOrderStatus') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Payment Status</label>
+                                <select class="form-select @error('newPaymentStatus') is-invalid @enderror" wire:model="newPaymentStatus">
+                                    @foreach($paymentStatuses as $status)
+                                    <option value="{{ $status->value }}">{{ $status->label() }}</option>
+                                    @endforeach
+                                </select>
+                                @error('newPaymentStatus') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            @endif
                         </div>
-                        @endif
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeStatusUpdateModal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">
                             <span wire:loading wire:target="updateOrderStatus" class="spinner-border spinner-border-sm" role="status"></span>
                             Update
@@ -168,36 +188,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('livewire:init', () => {
-        // Initialize the Bootstrap Modals
-        const orderDetailsModal = new bootstrap.Modal(document.getElementById('order-details-modal'));
-        const statusUpdateModal = new bootstrap.Modal(document.getElementById('status-update-modal'));
-
-        // Listen for events from the Livewire Component
-        Livewire.on('open-order-details-modal', () => {
-            orderDetailsModal.show();
-        });
-
-        Livewire.on('close-order-details-modal', () => {
-            orderDetailsModal.hide();
-        });
-
-        Livewire.on('open-status-update-modal', () => {
-            statusUpdateModal.show();
-        });
-
-        Livewire.on('close-status-update-modal', () => {
-            statusUpdateModal.hide();
-        });
-
-        // Optional: Reset Livewire properties when modal is closed manually via 'X' button
-        document.getElementById('order-details-modal').addEventListener('hidden.bs.modal', () => {
-            @this.set('showOrderDetailsModal', false);
-        });
-        document.getElementById('status-update-modal').addEventListener('hidden.bs.modal', () => {
-            @this.set('showStatusUpdateModal', false);
-        });
-    });
-</script>

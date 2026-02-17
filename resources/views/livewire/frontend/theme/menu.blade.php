@@ -21,7 +21,6 @@
                     <ul class="menu_icon">
                         <livewire:frontend.theme.search />
                         <livewire:frontend.theme.compare-icon />
-                        <livewire:frontend.theme.wishlist-icon />
                         <livewire:frontend.theme.cart-icon />
                         @auth
                         <li>

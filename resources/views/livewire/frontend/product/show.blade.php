@@ -97,6 +97,21 @@
                                     <a class="common_btn" href="javascript:void(0)" wire:click="addToCart">Add to cart</a>
                                 </div>
                             </div>
+
+                            <!-- add call and whatsapp button -->
+                            <div class="d-flex align-items-center mt-3">
+                                @if($settings['phone'])
+                                <a href="tel:{{ $settings['phone'] }}" class="me-3 common_btn btn-outline-secondary">
+                                    <i class="fas fa-phone-alt"></i> Call Vendor
+                                </a>
+                                @endif
+
+                                @if($settings['whats_app_phone'])
+                                <a href="https://wa.me/{{ preg_replace('/\D/', '', $settings['whats_app_phone']) }}" target="_blank" class="common_btn btn-outline-success">
+                                    <i class="fab fa-whatsapp"></i> WhatsApp Number
+                                </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -13,7 +13,7 @@
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
                                 <p class="card-category">Total Revenue</p>
-                                <h4 class="card-title">${{ number_format($totalRevenue, 2) }}</h4>
+                                <h4 class="card-title">৳{{ number_format($totalRevenue, 2) }}</h4>
                             </div>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                             @foreach($salesByCountry as $country)
                             <tr>
                                 <td>{{ $country->name }}</td>
-                                <td class="text-end fw-bold">${{ number_format($country->total_sales, 2) }}</td>
+                                <td class="text-end fw-bold">৳{{ number_format($country->total_sales, 2) }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -143,14 +143,14 @@
                             <tbody>
                                 @foreach($recentOrders as $order)
                                 <tr>
-                                    <td><span class="fw-bold">#{{ $order->order_number }}</span></td>
+                                    <td><span class="fw-bold">{{ $order->order_number }}</span></td>
                                     <td>{{ $order->user?->name ?? 'Guest' }}</td>
                                     <td>
                                         <span class="badge @if($order->order_status->value == 'delivered') badge-success @elseif($order->order_status->value == 'pending') badge-warning @else badge-info @endif">
                                             {{ strtoupper($order->order_status->value) }}
                                         </span>
                                     </td>
-                                    <td class="text-end fw-bold">${{ number_format($order->total_amount, 2) }}</td>
+                                    <td class="text-end fw-bold">৳{{ number_format($order->total_amount, 2) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>

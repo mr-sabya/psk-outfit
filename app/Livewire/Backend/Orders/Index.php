@@ -45,8 +45,7 @@ class Index extends Component
     public function viewOrderDetails($orderId)
     {
         $this->selectedOrderId = $orderId;
-        $this->showOrderDetailsModal = true; // Set flag to true
-        $this->dispatch('open-order-details-modal'); // Dispatch JS event
+        $this->showOrderDetailsModal = true;
     }
 
     public function openStatusUpdateModal($orderId)
@@ -55,8 +54,7 @@ class Index extends Component
         $this->updateOrderId = $orderId;
         $this->newOrderStatus = $order->order_status->value;
         $this->newPaymentStatus = $order->payment_status->value;
-        $this->showStatusUpdateModal = true; // Set flag to true
-        $this->dispatch('open-status-update-modal'); // Dispatch JS event
+        $this->showStatusUpdateModal = true;
     }
 
     public function updateOrderStatus()
@@ -73,17 +71,22 @@ class Index extends Component
         ]);
 
         session()->flash('message', 'Order status updated successfully.');
-        $this->dispatch('close-status-update-modal');
+
+        // Dispatch event to close modal via Alpine
+        $this->dispatch('close-modal-now');
+        $this->showStatusUpdateModal = false;
     }
 
     public function closeStatusUpdateModal()
     {
         $this->showStatusUpdateModal = false;
+        $this->updateOrderId = null;
     }
 
     public function closeOrderDetailsModal()
     {
         $this->showOrderDetailsModal = false;
+        $this->selectedOrderId = null;
     }
 
     public function render()
@@ -94,6 +97,7 @@ class Index extends Component
                 $query->where(function ($q) {
                     $q->where('order_number', 'like', '%' . $this->search . '%')
                         ->orWhere('transaction_id', 'like', '%' . $this->search . '%')
+                        ->orWhere('payment_phone_number', 'like', '%' . $this->search . '%')
                         ->orWhere('billing_email', 'like', '%' . $this->search . '%')
                         ->orWhereHas('user', function ($uq) {
                             $uq->where('name', 'like', '%' . $this->search . '%')

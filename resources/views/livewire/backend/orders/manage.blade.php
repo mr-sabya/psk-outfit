@@ -120,34 +120,80 @@
                     </div>
                 </div>
             </div>
+
+
         </div>
 
         <!-- Sidebar Actions -->
         <div class="col-lg-4">
-            <!-- Payment Info -->
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-white py-3">
-                    <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i> Payment Details</h5>
+
+            <!-- Suggested Layout for the Shipping & Payment section -->
+            <div class="row g-4 mb-4">
+                <!-- Shipping Information -->
+                <div class="col-md-12">
+                    <div class="card h-100 border shadow-none">
+                        <div class="card-header bg-light fw-bold">
+                            <i class="fas fa-truck me-2"></i> Shipping Details
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-1"><strong>Method:</strong> {{ $order->shipping_method_name }}</p>
+                            <p class="mb-1"><strong>Recipient:</strong> {{ $order->shipping_first_name }} {{ $order->shipping_last_name }}</p>
+                            <p class="mb-1"><strong>Phone:</strong> {{ $order->shipping_phone }}</p>
+                            <p class="mb-0"><strong>Address:</strong><br>
+                                <span class="text-muted small">
+                                    {{ $order->shipping_address_line_1 }}<br>
+                                    {{ $order->shippingCity?->name }}, {{ $order->shippingState?->name }}, {{ $order->shipping_zip_code }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="text-muted small d-block">Method</label>
-                        <span class="fw-bold">{{ $order->payment_method_name }}</span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="text-muted small d-block">Transaction ID</label>
-                        @if($order->transaction_id)
-                        <code class="fs-6 text-danger">{{ $order->transaction_id }}</code>
-                        @else
-                        <span class="text-muted italic">No Transaction ID</span>
-                        @endif
-                    </div>
-                    <div class="mb-0">
-                        <label class="text-muted small d-block">Vendor Responsible</label>
-                        <span class="badge bg-dark">{{ $order->vendor->name ?? 'System' }}</span>
+
+                <!-- Payment Information -->
+                <div class="col-md-12">
+                    <div class="card h-100 border shadow-none">
+                        <div class="card-header bg-light fw-bold">
+                            <i class="fas fa-credit-card me-2"></i> Payment Details
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Method:</span>
+                                <span class="badge bg-secondary">{{ $order->payment_method_name }}</span>
+                            </div>
+
+                            @if($order->payment_phone_number)
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Paid From:</span>
+                                <span class="fw-bold">{{ $order->payment_phone_number }}</span>
+                            </div>
+                            @endif
+
+                            @if($order->transaction_id)
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Transaction ID:</span>
+                                <span class="text-danger fw-bold">{{ $order->transaction_id }}</span>
+                            </div>
+                            @endif
+
+                            <div class="d-flex justify-content-between">
+                                <span>Payment Status:</span>
+                                <span class="badge {{ $order->payment_status->badgeColor() }}">
+                                    {{ $order->payment_status->label() }}
+                                </span>
+                            </div>
+
+                            @if($order->paymentMethod && $order->paymentMethod->instructions)
+                            <div class="mt-3 p-2 bg-light rounded border-start border-4 border-info">
+                                <small class="d-block fw-bold text-info mb-1">Method Instructions:</small>
+                                <small class="text-muted">{!! nl2br(e($order->paymentMethod->instructions)) !!}</small>
+                            </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- Payment Info -->
+
 
             <!-- Management Form -->
             <div class="card shadow-sm border-0">

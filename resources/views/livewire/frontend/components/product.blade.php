@@ -1,9 +1,11 @@
 <div class="product_item_2 product_item">
     <div class="product_img">
         {{-- Use the thumbnail_url accessor created in your Product Model --}}
-        <img src="{{ $product->thumbnail_url ?? asset('assets/frontend/images/default-product.png') }}"
-            alt="{{ $product->name }}"
-            class="img-fluid w-100">
+        <a href="{{ route('product.show', $product->slug) }}" wire:navigate>
+            <img src="{{ $product->thumbnail_url ?? asset('assets/frontend/images/default-product.png') }}"
+                alt="{{ $product->name }}"
+                class="img-fluid w-100">
+        </a>
 
         <ul class="discount_list">
             {{-- Check is_new attribute --}}
@@ -25,17 +27,7 @@
                     <img src="{{ url('assets/frontend/images/compare_icon_white.svg') }}" alt="Compare" class="img-fluid">
                 </a>
             </li>
-            <li>
-                <a href="javascript:void(0);"
-                    wire:click="toggleWishlist({{ $product->id }})"
-                    aria-label="Wishlist">
-                    @if($this->isInWishlist($product->id))
-                    <i class="fas fa-heart" style="color: #ff4d4d; font-size: 18px;"></i>
-                    @else
-                    <img src="{{ url('assets/frontend/images/love_icon_white.svg') }}" alt="Love" class="img-fluid">
-                    @endif
-                </a>
-            </li>
+
             <li>
                 <a href="javascript:void(0);" wire:click="addToCart" aria-label="Add to Cart">
                     <img src="{{ url('assets/frontend/images/cart_icon_white.svg') }}" alt="Cart" class="img-fluid">

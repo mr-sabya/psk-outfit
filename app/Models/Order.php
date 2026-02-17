@@ -53,6 +53,7 @@ class Order extends Model
         'payment_method_id',
         'payment_method_name',
         'transaction_id',
+        'payment_phone_number', // Add this line
         'payment_status',
 
         'shipping_method_id',
