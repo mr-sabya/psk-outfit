@@ -51,7 +51,10 @@ Route::get('/cart', [App\Http\Controllers\Frontend\CartController::class, 'index
 Route::get('/checkout', [App\Http\Controllers\Frontend\CheckoutController::class, 'index'])->name('checkout');
 
 // order success page
-Route::get('/checkout/success', [App\Http\Controllers\Frontend\CheckoutController::class, 'success'])->name('checkout.success');
+Route::get('/order/success/{order_number}', [App\Http\Controllers\Frontend\OrderController::class, 'success'])->name('order.success');
+
+// track order page
+Route::get('/order/track/{order_number?}', [App\Http\Controllers\Frontend\OrderController::class, 'track'])->name('order.track');
 
 Route::get('/compare', [App\Http\Controllers\Frontend\CompareController::class, 'index'])->name('compare');
 

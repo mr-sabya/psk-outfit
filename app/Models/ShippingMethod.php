@@ -17,4 +17,9 @@ class ShippingMethod extends Model
     {
         return $this->hasMany(ShippingRule::class);
     }
+
+    public function paymentMethods()
+    {
+        return $this->belongsToMany(PaymentMethod::class, 'payment_method_shipping_method');
+    }
 }

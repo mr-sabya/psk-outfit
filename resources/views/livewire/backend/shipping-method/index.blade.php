@@ -5,11 +5,14 @@
     </div>
 
     @if (session()->has('message'))
-    <div class="alert alert-success">{{ session('message') }}</div>
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ session('message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
     @endif
 
     <!-- Filters -->
-    <div class="card mb-4">
+    <div class="card mb-4 border-0 shadow-sm">
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
@@ -22,28 +25,20 @@
                         <option value="0">Inactive</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <select wire:model.live="perPage" class="form-select">
-                        <option value="10">10 Per Page</option>
-                        <option value="25">25 Per Page</option>
-                        <option value="50">50 Per Page</option>
-                    </select>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Methods Table -->
+    <!-- Table -->
     <div class="table-responsive bg-white shadow-sm rounded">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th style="cursor:pointer" wire:click="sortBy('name')">
-                        Method Name @if($sortField === 'name') <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i> @endif
-                    </th>
-                    <th>Rules (Location & Cost)</th>
-                    <th style="cursor:pointer" wire:click="sortBy('is_default')">Default</th>
-                    <th style="cursor:pointer" wire:click="sortBy('status')">Status</th>
+                    <th wire:click="sortBy('name')" style="cursor:pointer">Method Name</th>
+                    <th>Rules (Cost)</th> <!-- Match the width here -->
+                    <th>Payments</th>
+                    <th>Default</th>
+                    <th>Status</th>
                     <th class="text-end">Actions</th>
                 </tr>
             </thead>
@@ -56,66 +51,60 @@
                     </td>
                     <td>
                         @foreach($method->rules as $rule)
-                        <div class="badge bg-light text-dark border mb-1 d-flex justify-content-between align-items-center" style="font-weight: 400;">
-                            <span>
-                                {{ $rule->city?->name ?? $rule->state?->name ?? $rule->country->name }}:
-                                <strong>৳{{ $rule->cost }}</strong>
-                            </span>
-                            <div class="ms-2">
-                                <button wire:click="openRuleModal({{ $method->id }}, {{ $rule->id }})" class="btn btn-sm p-0 text-info"><i class="fas fa-edit"></i></button>
-                                <button wire:click="deleteRule({{ $rule->id }})" wire:confirm="Delete this rule?" class="btn btn-sm p-0 text-danger"><i class="fas fa-times"></i></button>
+                        <div class="badge bg-light text-dark border mb-1 d-inline-block w-100 d-flex justify-content-between align-items-center" style="font-size: 13px;">
+                            {{ $rule->city?->name ?? $rule->state?->name ?? $rule->country->name }}: ৳{{ $rule->cost }}
+                            <div>
+                                <i wire:click="openRuleModal({{ $method->id }}, {{ $rule->id }})" class="fas fa-edit ms-1 text-primary cursor-pointer" style="cursor: pointer;"></i>
+                                <i wire:click="deleteRule({{ $rule->id }})" wire:confirm="Delete rule?" class="fas fa-times ms-1 text-danger cursor-pointer" style="cursor: pointer;"></i>
                             </div>
                         </div>
                         @endforeach
-                        <button wire:click="openRuleModal({{ $method->id }})" class="btn btn-sm btn-outline-primary d-block mt-1">+ Add Rule</button>
+                        <button wire:click="openRuleModal({{ $method->id }})" class="btn btn-sm btn-link p-0 d-block">+ Add Rule</button>
                     </td>
                     <td>
-                        @if($method->is_default)
-                        <span class="badge bg-success">Default</span>
-                        @else
-                        <span class="text-muted">-</span>
-                        @endif
+                        @forelse($method->paymentMethods as $pm)
+                        <span class="badge bg-info text-white">{{ $pm->name }}</span>
+                        @empty
+                        <span class="text-muted small">None Assigned</span>
+                        @endforelse
+                        <button wire:click="openPaymentModal({{ $method->id }})" class="btn btn-sm btn-link p-0 d-block">Manage Payments</button>
                     </td>
+                    <td>{!! $method->is_default ? '<span class="badge bg-success">Yes</span>' : '-' !!}</td>
                     <td>
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" wire:click="toggleStatus({{ $method->id }})" {{ $method->status ? 'checked' : '' }}>
                         </div>
                     </td>
                     <td class="text-end">
-                        <button wire:click="openMethodModal({{ $method->id }})" class="btn btn-sm btn-info text-white"><i class="fas fa-edit"></i></button>
+                        <button wire:click="openMethodModal({{ $method->id }})" class="btn btn-sm btn-outline-secondary">Edit</button>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center p-4">No shipping methods found.</td>
+                    <td colspan="6" class="text-center p-4">No methods found.</td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <div class="mt-4">
-        {{ $methods->links() }}
-    </div>
-
-    <!-- Method Modal -->
+    <!-- 1. Method Detail Modal -->
     @if($showMethodModal)
     <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5)">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ $method_id ? 'Edit' : 'Add' }} Shipping Method</h5>
+                    <h5 class="modal-title">Shipping Method Details</h5>
                     <button wire:click="$set('showMethodModal', false)" class="btn-close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label>Method Name</label>
+                        <label class="form-label">Method Name</label>
                         <input type="text" wire:model="name" class="form-control">
-                        @error('name') <span class="text-danger small">{{ $message }}</span> @enderror
                     </div>
-                    <div class="form-check mb-3">
+                    <div class="form-check mb-2">
                         <input type="checkbox" wire:model="is_default" class="form-check-input" id="def">
-                        <label for="def">Set as Default Method</label>
+                        <label for="def">Set as Default</label>
                     </div>
                     <div class="form-check">
                         <input type="checkbox" wire:model="status" class="form-check-input" id="sta">
@@ -123,20 +112,48 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button wire:click="saveMethod" class="btn btn-primary">Save Changes</button>
+                    <button wire:click="saveMethod" class="btn btn-primary w-100">Save Method</button>
                 </div>
             </div>
         </div>
     </div>
     @endif
 
-    <!-- Rule Modal -->
+    <!-- 2. Payment Assignment Modal -->
+    @if($showPaymentModal)
+    <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5)">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Assign Payment Methods</h5>
+                    <button wire:click="$set('showPaymentModal', false)" class="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small">Select which payment options are available for this shipping method:</p>
+                    <div class="list-group">
+                        @foreach($all_payment_methods as $pm)
+                        <label class="list-group-item">
+                            <input class="form-check-input me-1" type="checkbox" value="{{ $pm->id }}" wire:model="selected_payment_methods">
+                            {{ $pm->name }}
+                        </label>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button wire:click="savePaymentMethods" class="btn btn-success w-100">Update Assignments</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- 3. Shipping Rule Modal -->
     @if($showRuleModal)
     <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5)">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Shipping Rule for {{ App\Models\ShippingMethod::find($selected_method_id)->name }}</h5>
+                    <h5 class="modal-title">Shipping Rule</h5>
                     <button wire:click="$set('showRuleModal', false)" class="btn-close"></button>
                 </div>
                 <div class="modal-body">
@@ -148,27 +165,26 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label>State (Optional - Leave blank for all states)</label>
-                        <select wire:model.live="state_id" class="form-select" {{ empty($states) ? 'disabled' : '' }}>
+                        <label>State (Optional)</label>
+                        <select wire:model.live="state_id" class="form-select" wire:key="state-{{ $country_id }}">
                             <option value="">All States</option>
                             @foreach($states as $s) <option value="{{ $s->id }}">{{ $s->name }}</option> @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label>City (Optional - Leave blank for all cities)</label>
-                        <select wire:model.live="city_id" class="form-select" {{ empty($cities) ? 'disabled' : '' }}>
+                        <label>City (Optional)</label>
+                        <select wire:model.live="city_id" class="form-select" wire:key="city-{{ $state_id }}">
                             <option value="">All Cities</option>
                             @foreach($cities as $ct) <option value="{{ $ct->id }}">{{ $ct->name }}</option> @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label>Shipping Cost (৳)</label>
-                        <input type="number" wire:model="cost" class="form-control" step="0.01">
-                        @error('cost') <span class="text-danger small">{{ $message }}</span> @enderror
+                        <label>Cost (৳)</label>
+                        <input type="number" wire:model="cost" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button wire:click="saveRule" class="btn btn-primary">Save Rule</button>
+                    <button wire:click="saveRule" class="btn btn-primary w-100">Save Rule</button>
                 </div>
             </div>
         </div>

@@ -31,4 +31,9 @@ class PaymentMethod extends Model
     {
         return $query->where('status', true);
     }
+
+    public function shippingMethods()
+    {
+        return $this->belongsToMany(ShippingMethod::class, 'payment_method_shipping_method');
+    }
 }

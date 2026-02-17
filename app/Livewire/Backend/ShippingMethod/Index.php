@@ -5,11 +5,13 @@ namespace App\Livewire\Backend\ShippingMethod;
 use App\Models\City;
 use App\Models\State;
 use App\Models\Country;
-use Livewire\Component;
-use App\Models\ShippingRule;
-use Livewire\WithPagination;
+use App\Models\PaymentMethod;
 use App\Models\ShippingMethod;
+use App\Models\ShippingRule;
+use Livewire\Component;
+use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;
+use Illuminate\Support\Str;
 
 class Index extends Component
 {
@@ -22,21 +24,28 @@ class Index extends Component
     public $statusFilter = '';
     public $perPage = 10;
 
-    // Method Form Properties
+    // Method Form
     public $method_id, $name, $is_default = false, $status = true;
-    
-    // Rule Form Properties
+
+    // Payment Assignment
+    public $selected_payment_methods = [];
+
+    // Rule Form
     public $rule_id, $selected_method_id;
     public $country_id, $state_id, $city_id, $cost;
     public $states = [], $cities = [];
 
     // UI States
     public $showMethodModal = false;
+    public $showPaymentModal = false;
     public $showRuleModal = false;
 
     protected $queryString = ['search', 'statusFilter', 'sortField', 'sortDirection'];
 
-    public function updatingSearch() { $this->resetPage(); }
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     public function sortBy($field)
     {
@@ -48,7 +57,7 @@ class Index extends Component
         $this->sortField = $field;
     }
 
-    // --- Shipping Method Logic ---
+    // --- 1. Shipping Method CRUD ---
 
     public function openMethodModal($id = null)
     {
@@ -67,11 +76,7 @@ class Index extends Component
 
     public function saveMethod()
     {
-        $this->validate([
-            'name' => 'required|string|max:255',
-            'status' => 'boolean',
-            'is_default' => 'boolean'
-        ]);
+        $this->validate(['name' => 'required|string|max:255']);
 
         if ($this->is_default) {
             ShippingMethod::where('is_default', true)->update(['is_default' => false]);
@@ -79,42 +84,52 @@ class Index extends Component
 
         ShippingMethod::updateOrCreate(
             ['id' => $this->method_id],
-            [
-                'name' => $this->name,
-                'slug' => \Str::slug($this->name),
-                'is_default' => $this->is_default,
-                'status' => $this->status,
-            ]
+            ['name' => $this->name, 'slug' => Str::slug($this->name), 'is_default' => $this->is_default, 'status' => $this->status]
         );
 
         $this->showMethodModal = false;
         session()->flash('message', 'Shipping Method Saved.');
     }
 
-    public function toggleStatus($id)
+    // --- 2. Payment Assignment Logic ---
+
+    public function openPaymentModal($id)
     {
-        $method = ShippingMethod::findOrFail($id);
-        $method->update(['status' => !$method->status]);
+        $this->selected_method_id = $id;
+        $method = ShippingMethod::with('paymentMethods')->findOrFail($id);
+        $this->selected_payment_methods = $method->paymentMethods->pluck('id')->map(fn($id) => (string)$id)->toArray();
+        $this->showPaymentModal = true;
     }
 
-    // --- Shipping Rules Logic ---
+    public function savePaymentMethods()
+    {
+        $method = ShippingMethod::findOrFail($this->selected_method_id);
+        $method->paymentMethods()->sync($this->selected_payment_methods);
+
+        $this->showPaymentModal = false;
+        session()->flash('message', 'Payment Methods Updated.');
+    }
+
+    // --- 3. Shipping Rules Logic ---
 
     public function openRuleModal($methodId, $ruleId = null)
     {
         $this->resetValidation();
         $this->selected_method_id = $methodId;
         $this->rule_id = $ruleId;
-        
+
         if ($ruleId) {
             $rule = ShippingRule::findOrFail($ruleId);
             $this->country_id = $rule->country_id;
             $this->state_id = $rule->state_id;
             $this->city_id = $rule->city_id;
             $this->cost = $rule->cost;
-            $this->updatedCountryId($this->country_id);
-            $this->updatedStateId($this->state_id);
+
+            // FIX: Pre-populate arrays so select options appear
+            $this->states = State::where('country_id', $this->country_id)->get();
+            $this->cities = City::where('state_id', $this->state_id)->get();
         } else {
-            $this->reset(['country_id', 'state_id', 'city_id', 'cost']);
+            $this->reset(['country_id', 'state_id', 'city_id', 'cost', 'states', 'cities']);
         }
         $this->showRuleModal = true;
     }
@@ -135,10 +150,7 @@ class Index extends Component
 
     public function saveRule()
     {
-        $this->validate([
-            'country_id' => 'required',
-            'cost' => 'required|numeric|min:0',
-        ]);
+        $this->validate(['country_id' => 'required', 'cost' => 'required|numeric|min:0']);
 
         ShippingRule::updateOrCreate(
             ['id' => $this->rule_id],
@@ -155,6 +167,12 @@ class Index extends Component
         session()->flash('message', 'Shipping Rule Saved.');
     }
 
+    public function toggleStatus($id)
+    {
+        $method = ShippingMethod::findOrFail($id);
+        $method->update(['status' => !$method->status]);
+    }
+
     public function deleteRule($id)
     {
         ShippingRule::find($id)->delete();
@@ -162,17 +180,14 @@ class Index extends Component
 
     public function render()
     {
-        $methods = ShippingMethod::with('rules.city', 'rules.state', 'rules.country')
-            ->where('name', 'like', '%' . $this->search . '%')
-            ->when($this->statusFilter !== '', function($q) {
-                return $q->where('status', $this->statusFilter);
-            })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->perPage);
-
         return view('livewire.backend.shipping-method.index', [
-            'methods' => $methods,
-            'countries' => Country::all()
+            'methods' => ShippingMethod::with(['rules.city', 'rules.state', 'rules.country', 'paymentMethods'])
+                ->where('name', 'like', '%' . $this->search . '%')
+                ->when($this->statusFilter !== '', fn($q) => $q->where('status', $this->statusFilter))
+                ->orderBy($this->sortField, $this->sortDirection)
+                ->paginate($this->perPage),
+            'countries' => Country::all(),
+            'all_payment_methods' => PaymentMethod::active()->get()
         ]);
     }
 }
