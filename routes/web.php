@@ -10,8 +10,8 @@ Route::get('/', [App\Http\Controllers\Frontend\HomeController::class, 'index'])-
 // shop page
 Route::get('/shop', [App\Http\Controllers\Frontend\ShopController::class, 'index'])->name('shop');
 
-// lustrai-wear page
-Route::get('/lustrai-wear', [App\Http\Controllers\Frontend\ShopController::class, 'lustraiWear'])->name('lustrai-wear');
+// lustra-wear page
+Route::get('/lustra-wear', [App\Http\Controllers\Frontend\ShopController::class, 'lustraWear'])->name('lustra-wear');
 
 
 // product details page

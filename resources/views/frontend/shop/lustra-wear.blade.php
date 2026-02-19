@@ -15,7 +15,7 @@
 <!--============================
         SHOP PAGE START
     =============================-->
-<livewire:frontend.shop.lustrai-wear />
+<livewire:frontend.shop.lustra-wear />
 <!--============================
         SHOP PAGE END
     =============================-->

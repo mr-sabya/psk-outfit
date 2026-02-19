@@ -29,12 +29,23 @@
                                 </div>
                                 <div class="col-xl-10 col-lg-9 col-md-9 order-md-1">
                                     <div class="row details_slider_thumb">
+                                        {{-- Main Thumbnail Image --}}
                                         <div class="col-12">
-                                            <div class="details_slider_thumb_item"><img src="{{ $product->thumbnail_url }}" class="img-fluid w-100"></div>
+                                            <div class="details_slider_thumb_item">
+                                                <div class="ecommerce-zoom" onmousemove="zoom(event)" style="background-image: url('{{ $product->thumbnail_url }}')">
+                                                    <img src="{{ $product->thumbnail_url }}" class="img-fluid w-100">
+                                                </div>
+                                            </div>
                                         </div>
+
+                                        {{-- Gallery Images --}}
                                         @foreach($product->images as $image)
                                         <div class="col-12">
-                                            <div class="details_slider_thumb_item"><img src="{{ $image->image_url }}" class="img-fluid w-100"></div>
+                                            <div class="details_slider_thumb_item">
+                                                <div class="ecommerce-zoom" onmousemove="zoom(event)" style="background-image: url('{{ $image->image_url }}')">
+                                                    <img src="{{ $image->image_url }}" class="img-fluid w-100">
+                                                </div>
+                                            </div>
                                         </div>
                                         @endforeach
                                     </div>
@@ -178,7 +189,7 @@
                                 <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#reviews">Reviews</button></li>
                             </ul>
 
-                            <div class="tab-content" id="pills-tabContent2">
+                            <div class="tab-content mt-4" id="pills-tabContent2">
                                 <div class="tab-pane fade show active" id="description">{!! $product->long_description !!}</div>
                                 <div class="tab-pane fade" id="description2">
                                     <div class="table-responsive">
@@ -232,3 +243,33 @@
         </div>
     </div>
 </section>
+
+<script>
+    function zoom(e) {
+        var zoomer = e.currentTarget;
+
+        // Calculate mouse position relative to image
+        if (e.offsetX) {
+            offsetX = e.offsetX;
+        } else {
+            offsetX = e.touches[0].pageX;
+        }
+
+        if (e.offsetY) {
+            offsetY = e.offsetY;
+        } else {
+            offsetY = e.touches[0].pageX;
+        }
+
+        x = offsetX / zoomer.offsetWidth * 100;
+        y = offsetY / zoomer.offsetHeight * 100;
+
+        // Move the background position to follow the mouse
+        zoomer.style.backgroundPosition = x + '% ' + y + '%';
+    }
+
+    // This part ensures that when the slider changes, the zoom still works
+    document.addEventListener('livewire:navigated', () => {
+        // Re-initialize any slider logic if necessary
+    });
+</script>

@@ -21,9 +21,9 @@ class ShopController extends Controller
         return view('frontend.product.show', compact('product'));
     }
 
-    // lustrai-wear page
-    public function lustraiWear()
+    // lustra-wear page
+    public function lustraWear()
     {
-        return view('frontend.shop.lustrai-wear');
+        return view('frontend.shop.lustra-wear');
     }
 }

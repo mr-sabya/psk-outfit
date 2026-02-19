@@ -17,7 +17,7 @@ class MenuItem extends Component
         // Fetch parent categories (where parent_id is null) 
         // with their active children
         $this->categories = Category::active()
-            ->where('slug', '!=', 'lustrai-wear')
+            ->where('slug', '!=', 'lustra-wear')
             ->parentCategories()
             ->with(['children' => function ($query) {
                 $query->active()->orderBy('sort_order', 'asc');

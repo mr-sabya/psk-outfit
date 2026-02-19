@@ -132,7 +132,7 @@ class Index extends Component
     {
         $products = Product::active()
             ->whereDoesntHave('categories', function ($query) {
-                $query->where('slug', 'lustrai-wear');
+                $query->where('slug', 'lustra-wear');
             })
             // Eager load necessary relationships
             ->with(['reviews', 'variants', 'categories']);

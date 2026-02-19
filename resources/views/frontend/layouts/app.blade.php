@@ -39,9 +39,9 @@
 
 <body class="default_home">
 
-    @if(Request::is('/'))
+  
     @include('frontend.partials.preloader')
-    @endif
+    
 
     <!--=========================
         HEADER START

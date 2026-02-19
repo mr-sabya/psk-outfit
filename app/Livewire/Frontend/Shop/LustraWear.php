@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Product;
 use App\Models\Category;
 
-class LustraiWear extends Component
+class LustraWear extends Component
 {
     use WithPagination;
 
@@ -20,14 +20,14 @@ class LustraiWear extends Component
     public function mount()
     {
         // Fetch the specific category
-        $this->category = Category::where('slug', 'lustrai-wear')->active()->firstOrFail();
+        $this->category = Category::where('slug', 'lustra-wear')->active()->firstOrFail();
     }
 
     public function render()
     {
         $products = Product::active()
             ->whereHas('categories', function ($query) {
-                $query->where('slug', 'lustrai-wear');
+                $query->where('slug', 'lustra-wear');
             })
             ->with(['reviews', 'variants']);
 
@@ -44,7 +44,7 @@ class LustraiWear extends Component
                 break;
         }
 
-        return view('livewire.frontend.shop.lustrai-wear', [
+        return view('livewire.frontend.shop.lustra-wear', [
             'products' => $products->paginate($this->perPage)
         ]);
     }

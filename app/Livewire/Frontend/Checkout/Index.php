@@ -21,7 +21,7 @@ class Index extends Component
     public $payment_phone_number;
 
     public $shipping = [
-        'full_name' => '', // Single UI field
+        'full_name' => '',
         'email' => '',
         'phone' => '',
         'address_line_1' => '',
@@ -33,7 +33,7 @@ class Index extends Component
     ];
 
     public $billing = [
-        'full_name' => '', // Single UI field
+        'full_name' => '',
         'email' => '',
         'phone' => '',
         'address_line_1' => '',
@@ -80,7 +80,6 @@ class Index extends Component
         return Auth::check() ? CartItem::where('user_id', Auth::id()) : CartItem::where('session_id', Session::getId());
     }
 
-    // Dependent Dropdowns
     public function updatedShippingCountryId()
     {
         $this->shipping['state_id'] = '';
@@ -136,9 +135,6 @@ class Index extends Component
         return $rule ? $rule->cost : 0;
     }
 
-    /**
-     * Helper to split "Full Name" into "First" and "Last"
-     */
     private function splitName($fullName)
     {
         $parts = explode(' ', trim($fullName), 2);
@@ -150,10 +146,56 @@ class Index extends Component
 
     public function placeOrder()
     {
-        $this->validate([
+        // 1. Base Rules
+        $rules = [
             'shipping_method_id' => 'required',
             'payment_method_id' => 'nullable|exists:payment_methods,id',
             'agree_terms' => 'accepted',
+        ];
+
+        // 2. CHECK: If selected Payment Method BELONGS to Shipping Method AND is type 'direct'
+        $selectedShipping = ShippingMethod::find($this->shipping_method_id);
+        if ($selectedShipping) {
+            $payment = $selectedShipping->paymentMethods()->where('payment_methods.id', $this->payment_method_id)->first();
+
+            // dd($payment);
+
+            if ($payment) {
+                $rules['payment_phone_number'] = 'required|numeric|digits_between:10,15';
+                $rules['transaction_id'] = 'required|string|min:6';
+            }
+        }
+
+        // 3. Auth/Guest Shipping Rules
+        if (!Auth::check() || !$this->shipping_address_id) {
+            $rules['shipping.full_name'] = 'required|min:3';
+            $rules['shipping.email'] = 'required|email';
+            $rules['shipping.phone'] = 'required';
+            $rules['shipping.address_line_1'] = 'required';
+            $rules['shipping.country_id'] = 'required';
+        }
+
+        // 4. Billing Rules
+        if ($this->bill_to_different_address) {
+            $rules['billing.full_name'] = 'required|min:3';
+            $rules['billing.address_line_1'] = 'required';
+            $rules['billing.country_id'] = 'required';
+        }
+
+        $this->validate($rules, [
+            'agree_terms.accepted' => 'You must agree to the terms and conditions.',
+            'shipping.full_name.required' => 'Shipping full name is required.',
+            'shipping.email.required' => 'Shipping email is required.',
+            'shipping.phone.required' => 'Shipping phone number is required.',
+            'shipping.address_line_1.required' => 'Shipping address is required.',
+            'shipping.country_id.required' => 'Please select a shipping country.',
+            'billing.full_name.required' => 'Billing full name is required.',
+            'billing.address_line_1.required' => 'Billing address is required.',
+            'billing.country_id.required' => 'Please select a billing country.',
+            'payment_phone_number.required' => 'The phone number used for payment is required.',
+            'transaction_id.required' => 'The Transaction ID is required for direct payments.',
+            'shipping_method_id.required' => 'Please select a shipping method.',
+            'payment_method_id.required' => 'Please select a payment method.',
         ]);
 
         // Resolve Shipping Data
@@ -172,7 +214,6 @@ class Index extends Component
                 'zip' => $sAddr->zip_code
             ];
         } else {
-            $this->validate(['shipping.full_name' => 'required', 'shipping.phone' => 'required', 'shipping.address_line_1' => 'required', 'shipping.country_id' => 'required']);
             $names = $this->splitName($this->shipping['full_name']);
             $shipData = [
                 'first_name' => $names['first'],
@@ -190,7 +231,6 @@ class Index extends Component
 
         // Resolve Billing Data
         if ($this->bill_to_different_address) {
-            $this->validate(['billing.full_name' => 'required', 'billing.address_line_1' => 'required', 'billing.country_id' => 'required']);
             $bNames = $this->splitName($this->billing['full_name']);
             $billData = [
                 'first_name' => $bNames['first'],
@@ -221,7 +261,6 @@ class Index extends Component
                 'order_status' => 'pending',
                 'payment_status' => 'pending',
 
-                // Shipping
                 'shipping_first_name' => $shipData['first_name'],
                 'shipping_last_name' => $shipData['last_name'],
                 'shipping_email' => $shipData['email'],
@@ -233,7 +272,6 @@ class Index extends Component
                 'shipping_city_id' => $shipData['city_id'],
                 'shipping_zip_code' => $shipData['zip'],
 
-                // Billing
                 'billing_first_name' => $billData['first_name'],
                 'billing_last_name' => $billData['last_name'],
                 'billing_email' => $billData['email'],

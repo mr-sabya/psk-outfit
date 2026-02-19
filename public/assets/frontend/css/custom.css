@@ -362,3 +362,30 @@
     line-height: 40px;
     /* Fix button icon centering */
 }
+
+
+.ecommerce-zoom {
+    position: relative;
+    overflow: hidden;
+    cursor: zoom-in;
+    border-radius: 8px;
+    background-repeat: no-repeat;
+    /* This determines the zoom level (200% = 2x zoom) */
+    background-size: 0%;
+}
+
+.ecommerce-zoom img {
+    transition: opacity 0.3s;
+    display: block;
+    width: 100%;
+}
+
+/* When hovering, hide the main image slightly and show the background zoom */
+.ecommerce-zoom:hover img {
+    opacity: 0;
+}
+
+.ecommerce-zoom:hover {
+    background-size: 250%;
+    /* Adjust for more or less zoom */
+}

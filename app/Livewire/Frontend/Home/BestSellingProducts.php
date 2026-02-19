@@ -14,7 +14,7 @@ class BestSellingProducts extends Component
         // an 'order_items' table and count sales. For now, we fetch the latest/featured.
         $products = Product::active()
             ->whereDoesntHave('categories', function ($query) {
-                $query->where('slug', 'lustrai-wear');
+                $query->where('slug', 'lustra-wear');
             })
             ->latest()
             ->take(4)

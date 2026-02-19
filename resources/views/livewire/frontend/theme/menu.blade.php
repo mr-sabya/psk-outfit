@@ -3,18 +3,7 @@
         <div class="row">
             <div class="col-12 d-flex flex-wrap">
                 <div class="main_menu_area">
-                    <div class="menu_category_area">
-                        <a href="{{ route('home') }}" wire:navigate class="menu_logo d-none">
-                            <img
-                                src="{{ isset($settings['logo']) && $settings['logo'] 
-        ? asset('storage/' . $settings['logo']) 
-        : asset('assets/frontend/images/logo_2.png') 
-    }}"
-                                alt="{{ $settings['website_name'] }}"
-                                class="img-fluid w-100" />
-                        </a>
                     
-                    </div>
                     <!-- ?menu item -->
                     <livewire:frontend.theme.menu-item className="menu_item" />
                     <!-- ?menu item -->

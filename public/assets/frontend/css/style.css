@@ -1217,7 +1217,7 @@ header .header_support h3 a:hover {
 }
 
 .main_menu.menu_fix .menu_item {
-    margin-left: 50px;
+    /* margin-left: 50px; */
 }
 
 .menu_droapdown {

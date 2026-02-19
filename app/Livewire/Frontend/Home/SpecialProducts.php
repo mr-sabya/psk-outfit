@@ -14,7 +14,7 @@ class SpecialProducts extends Component
         $products = Product::active()
             ->featured()
             ->whereDoesntHave('categories', function ($query) {
-                $query->where('slug', 'lustrai-wear');
+                $query->where('slug', 'lustra-wear');
             })
             ->withAvg('reviews', 'rating')
             ->latest()
