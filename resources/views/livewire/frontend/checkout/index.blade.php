@@ -75,6 +75,7 @@
                                     <option value="">Select State</option>
                                     @foreach($shipping_states as $s) <option value="{{ $s->id }}">{{ $s->name }}</option> @endforeach
                                 </select>
+                                @error('shipping.state_id') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -83,6 +84,7 @@
                                     <option value="">Select City</option>
                                     @foreach($shipping_cities as $ct) <option value="{{ $ct->id }}">{{ $ct->name }}</option> @endforeach
                                 </select>
+                                @error('shipping.city_id') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
                     </div>
