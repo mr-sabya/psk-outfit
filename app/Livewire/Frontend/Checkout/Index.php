@@ -146,6 +146,7 @@ class Index extends Component
 
     public function placeOrder()
     {
+
         // 1. Base Rules
         $rules = [
             'shipping_method_id' => 'required',
@@ -173,6 +174,8 @@ class Index extends Component
             $rules['shipping.phone'] = 'required';
             $rules['shipping.address_line_1'] = 'required';
             $rules['shipping.country_id'] = 'required';
+            $rules['shipping.state_id'] = 'required';
+            $rules['shipping.city_id'] = 'required';
         }
 
         // 4. Billing Rules
@@ -224,7 +227,7 @@ class Index extends Component
                 'address_2' => $this->shipping['address_line_2'],
                 'country_id' => $this->shipping['country_id'],
                 'state_id' => $this->shipping['state_id'],
-                'city_id' => $this->shipping['city_id'],
+                'city_id' => $this->shipping['city_id'] ?? null,
                 'zip' => $this->shipping['zip_code']
             ];
         }
@@ -233,16 +236,16 @@ class Index extends Component
         if ($this->bill_to_different_address) {
             $bNames = $this->splitName($this->billing['full_name']);
             $billData = [
-                'first_name' => $bNames['first'],
-                'last_name' => $bNames['last'],
-                'email' => $this->billing['email'] ?: $shipData['email'],
-                'phone' => $this->billing['phone'] ?: $shipData['phone'],
-                'address_1' => $this->billing['address_line_1'],
-                'address_2' => $this->billing['address_line_2'],
-                'country_id' => $this->billing['country_id'],
-                'state_id' => $this->billing['state_id'],
-                'city_id' => $this->billing['city_id'],
-                'zip' => $this->billing['zip_code'] ?: $shipData['zip']
+                'first_name' => $names['first'],
+                'last_name' => $names['last'],
+                'email' => $this->shipping['email'],
+                'phone' => $this->shipping['phone'],
+                'address_1' => $this->shipping['address_line_1'],
+                'address_2' => $this->shipping['address_line_2'],
+                'country_id' => $this->shipping['country_id'] ?: null,
+                'state_id' => $this->shipping['state_id'] ?: null,
+                'city_id' => $this->shipping['city_id'] ?: null, // Fixes the error
+                'zip' => $this->shipping['zip_code']
             ];
         } else {
             $billData = $shipData;
