@@ -170,7 +170,7 @@ class Index extends Component
         // 3. Auth/Guest Shipping Rules
         if (!Auth::check() || !$this->shipping_address_id) {
             $rules['shipping.full_name'] = 'required|min:3';
-            $rules['shipping.email'] = 'required|email';
+            $rules['shipping.email'] = 'nullable|email';
             $rules['shipping.phone'] = 'required';
             $rules['shipping.address_line_1'] = 'required';
             $rules['shipping.country_id'] = 'required';
@@ -221,10 +221,10 @@ class Index extends Component
             $shipData = [
                 'first_name' => $names['first'],
                 'last_name' => $names['last'],
-                'email' => $this->shipping['email'],
+                'email' => $this->shipping['email']?? null,
                 'phone' => $this->shipping['phone'],
                 'address_1' => $this->shipping['address_line_1'],
-                'address_2' => $this->shipping['address_line_2'],
+                'address_2' => $this->shipping['address_line_2']?? null,
                 'country_id' => $this->shipping['country_id'],
                 'state_id' => $this->shipping['state_id'],
                 'city_id' => $this->shipping['city_id'] ?? null,
@@ -238,7 +238,7 @@ class Index extends Component
             $billData = [
                 'first_name' => $names['first'],
                 'last_name' => $names['last'],
-                'email' => $this->shipping['email'],
+                'email' => $this->shipping['email']??null,
                 'phone' => $this->shipping['phone'],
                 'address_1' => $this->shipping['address_line_1'],
                 'address_2' => $this->shipping['address_line_2'],

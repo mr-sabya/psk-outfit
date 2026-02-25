@@ -36,7 +36,7 @@
 
                 {{-- Image Upload Field --}}
                 <div class="mb-3">
-                    <label for="imageFile" class="form-label">Post Image</label>
+                    <label for="imageFile" class="form-label">Post Image (415 × 360 px)</label>
                     <div class="image-preview mb-2">
                         @if ($imageFile)
                         <img src="{{ $imageFile->temporaryUrl() }}" class="upload-image img-thumbnail" style="max-height: 150px;">
@@ -86,7 +86,9 @@
 
                 <div class="mb-3">
                     <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
-                    <textarea class="form-control @error('content') is-invalid @enderror" id="content" wire:model.blur="content" rows="10"></textarea>
+                    <livewire:quill-text-editor
+                                wire:model.live="content"
+                                theme="snow" />
                     @error('content') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 

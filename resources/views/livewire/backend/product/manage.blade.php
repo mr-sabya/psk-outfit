@@ -75,7 +75,7 @@
                         <div class="row">
                             <!-- Thumbnail Image -->
                             <div class="col-md-12 mb-3">
-                                <label for="new_thumbnail_image" class="form-label">Thumbnail Image</label>
+                                <label for="new_thumbnail_image" class="form-label">Thumbnail Image (300 × 300 px)</label>
                                 <div class="image-preview">
                                     @if ($new_thumbnail_image)
                                     <img src="{{ $new_thumbnail_image->temporaryUrl() }}" alt="Current Thumbnail" class="upload-image">

@@ -140,7 +140,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="logo" class="form-label">Brand Logo</label>
+                            <label for="logo" class="form-label">Brand Logo (135 × 45 px - Width Ratio)</label>
                             <div class="image-preview">
                                 @if ($logo)
                                 <img src="{{ $logo->temporaryUrl() }}" class="upload-image">

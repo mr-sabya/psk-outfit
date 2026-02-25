@@ -162,7 +162,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="image" class="form-label">Banner Image</label>
+                            <label for="image" class="form-label">Banner Image (1900 × 570 px)</label>
                             <div class="image-preview mb-2">
                                 @if ($image)
                                 <img src="{{ $image->temporaryUrl() }}" class="upload-image img-thumbnail" style="max-width: 200px; max-height: 150px; object-fit: contain;">

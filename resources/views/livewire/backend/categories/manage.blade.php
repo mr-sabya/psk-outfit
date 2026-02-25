@@ -98,7 +98,7 @@
                             <div class="col-lg-6">
                                 <!-- IMAGE UPLOAD -->
                                 <div class="mb-3">
-                                    <label for="image" class="form-label">Category Image</label>
+                                    <label for="image" class="form-label">Category Image (150 × 150 px)</label>
                                     <div class="image-preview border p-2 mb-2 rounded bg-light text-center">
                                         @if ($image)
                                         <img src="{{ $image->temporaryUrl() }}" class="img-fluid" style="max-height: 150px;">
@@ -116,7 +116,7 @@
                             <div class="col-lg-6">
                                 <!-- ICON UPLOAD (New Section) -->
                                 <div class="mb-3">
-                                    <label for="icon" class="form-label">Category Icon</label>
+                                    <label for="icon" class="form-label">Category Icon (32 × 32 px)</label>
                                     <div class="image-preview border p-2 mb-2 rounded bg-light text-center">
                                         @if ($icon)
                                         <img src="{{ $icon->temporaryUrl() }}" class="img-fluid" style="max-height: 64px;">

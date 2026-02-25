@@ -15,7 +15,7 @@
                 </div>
 
                 <div class="form-group mb-2">
-                    <label>Change Image</label>
+                    <label>Change Image {{ $slug == 'home-banner-1' ? '(420 × 480 px)' : ($slug == 'home-banner-2' ? '(640 × 400 px)' : '(510 × 645 px)') }}</label>
                     <input type="file" wire:model="new_images.{{ $slug }}" class="form-control">
                 </div>
 
