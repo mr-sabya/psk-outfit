@@ -58,6 +58,7 @@ class Manage extends Component
         ]);
 
         session()->flash('message', 'Order updated successfully!');
+        $this->dispatch('order-updated'); 
         $this->loadOrder(); // Refresh data
     }
 

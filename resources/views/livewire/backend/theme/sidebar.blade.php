@@ -125,10 +125,13 @@
                     </div>
                 </li>
 
+
                 <li class="nav-item {{ request()->routeIs('admin.order.index') ? 'active' : '' }}">
                     <a href="{{ route('admin.order.index') }}" wire:navigate>
                         <i class="fas fa-shopping-cart"></i>
-                        <p>Orders</p>
+                        <p class="d-flex justify-content-between align-items-center w-100">Orders <!-- Insert the Livewire Badge Component here -->
+                            <livewire:backend.components.order-count-badge />
+                        </p>
                     </a>
                 </li>
                 <li class="nav-item {{ request()->routeIs('admin.deal.index') ? 'active' : '' }}">

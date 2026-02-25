@@ -74,6 +74,7 @@ class Index extends Component
 
         // Dispatch event to close modal via Alpine
         $this->dispatch('close-modal-now');
+        $this->dispatch('order-updated'); 
         $this->showStatusUpdateModal = false;
     }
 
