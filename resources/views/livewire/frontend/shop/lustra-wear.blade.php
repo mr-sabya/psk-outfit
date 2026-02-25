@@ -48,7 +48,7 @@
         <!-- PRODUCT GRID -->
         <div class="row mt_30">
             @forelse($products as $product)
-            <div class="col-xl-3 col-lg-4 col-sm-6 col-6 mb-4">
+            <div class="col-xl-3 col-lg-3 col-sm-6 col-6 mb-4">
                 <livewire:frontend.components.product
                     :product="$product"
                     :wire:key="'lustrai-'.$product->id" />
