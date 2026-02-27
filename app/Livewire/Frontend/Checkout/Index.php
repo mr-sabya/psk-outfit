@@ -214,7 +214,7 @@ class Index extends Component
                 'address_2' => $sAddr->address_line_2,
                 'country_id' => $sAddr->country_id,
                 'state_id' => $sAddr->state_id,
-                'city_id' => $sAddr->city_id,
+                'city_id' => $sAddr->city_id ?? null,
                 'zip' => $sAddr->zip_code
             ];
         } else {
@@ -222,13 +222,13 @@ class Index extends Component
             $shipData = [
                 'first_name' => $names['first'],
                 'last_name' => $names['last'],
-                'email' => $this->shipping['email']?? null,
+                'email' => $this->shipping['email'] ?? null,
                 'phone' => $this->shipping['phone'],
                 'address_1' => $this->shipping['address_line_1'],
-                'address_2' => $this->shipping['address_line_2']?? null,
-                'country_id' => $this->shipping['country_id'],
-                'state_id' => $this->shipping['state_id'],
-                'city_id' => $this->shipping['city_id'] ?? null,
+                'address_2' => $this->shipping['address_line_2'] ?? null,
+                'country_id' => $this->shipping['country_id'] ?: null, // Use ?: here
+                'state_id' => $this->shipping['state_id'] ?: null,     // Use ?: here
+                'city_id' => $this->shipping['city_id'] ?: null,       // Use ?: here
                 'zip' => $this->shipping['zip_code']
             ];
         }
@@ -239,13 +239,13 @@ class Index extends Component
             $billData = [
                 'first_name' => $names['first'],
                 'last_name' => $names['last'],
-                'email' => $this->shipping['email']??null,
+                'email' => $this->shipping['email'] ?? null,
                 'phone' => $this->shipping['phone'],
                 'address_1' => $this->shipping['address_line_1'],
-                'address_2' => $this->shipping['address_line_2'],
-                'country_id' => $this->shipping['country_id'] ?: null,
-                'state_id' => $this->shipping['state_id'] ?: null,
-                'city_id' => $this->shipping['city_id'] ?: null, // Fixes the error
+                'address_2' => $this->billing['address_line_2'] ?? null,
+                'country_id' => $this->billing['country_id'] ?: null, // Force null if empty string
+                'state_id' => $this->billing['state_id'] ?: null,     // Force null if empty string
+                'city_id' => $this->billing['city_id'] ?: null,       // Force null if empty string
                 'zip' => $this->shipping['zip_code']
             ];
         } else {
