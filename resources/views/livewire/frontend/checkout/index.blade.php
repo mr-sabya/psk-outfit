@@ -35,29 +35,30 @@
                             <div class="single_input">
                                 <label>Full Name *</label>
                                 <input type="text" wire:model="shipping.full_name">
-                                @error('shipping.full_name') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
+                            @error('shipping.full_name') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
-                        <div class="col-md-6">
-                            <div class="single_input">
-                                <label>Email *</label>
-                                <input type="email" wire:model="shipping.email">
-                                @error('shipping.email') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
+
                         <div class="col-md-6">
                             <div class="single_input">
                                 <label>Phone *</label>
                                 <input type="text" wire:model="shipping.phone">
-                                @error('shipping.phone') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
+                            @error('shipping.phone') <span class="text-danger small">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <div class="single_input">
+                                <label>Email</label>
+                                <input type="email" wire:model="shipping.email">
+                            </div>
+                            @error('shipping.email') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-12">
                             <div class="single_input">
                                 <label>Address Line 1 *</label>
                                 <input type="text" wire:model="shipping.address_line_1">
-                                @error('shipping.address_line_1') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
+                            @error('shipping.address_line_1') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-4">
                             <div class="single_input">
@@ -66,8 +67,8 @@
                                     <option value="">Select Country</option>
                                     @foreach($countries as $c) <option value="{{ $c->id }}">{{ $c->name }}</option> @endforeach
                                 </select>
-                                @error('shipping.country_id') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
+                            @error('shipping.country_id') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-4">
                             <div class="single_input"><label>State</label>
@@ -75,8 +76,8 @@
                                     <option value="">Select State</option>
                                     @foreach($shipping_states as $s) <option value="{{ $s->id }}">{{ $s->name }}</option> @endforeach
                                 </select>
-                                @error('shipping.state_id') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
+                            @error('shipping.state_id') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-4">
                             <div class="single_input"><label>City</label>
@@ -84,8 +85,8 @@
                                     <option value="">Select City</option>
                                     @foreach($shipping_cities as $ct) <option value="{{ $ct->id }}">{{ $ct->name }}</option> @endforeach
                                 </select>
-                                @error('shipping.city_id') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
+                            @error('shipping.city_id') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                     </div>
                     @endif
@@ -103,15 +104,15 @@
                             <div class="single_input">
                                 <label>Full Name *</label>
                                 <input type="text" wire:model="billing.full_name">
-                                @error('billing.full_name') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
+                            @error('billing.full_name') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-12">
                             <div class="single_input">
                                 <label>Address Line 1 *</label>
                                 <input type="text" wire:model="billing.address_line_1">
-                                @error('billing.address_line_1') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
+                            @error('billing.address_line_1') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-4">
                             <div class="single_input">
@@ -120,8 +121,8 @@
                                     <option value="">Select</option>
                                     @foreach($countries as $c) <option value="{{ $c->id }}">{{ $c->name }}</option> @endforeach
                                 </select>
-                                @error('billing.country_id') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
+                            @error('billing.country_id') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-4">
                             <div class="single_input"><label>State</label>
@@ -212,14 +213,18 @@
                             </div>
                             @endif
                             @if($selectedPayment->type === 'direct')
-                            <div class="single_input mt-3 mb-3">
-                                <label>Payment Phone Number *</label>
-                                <input type="text" wire:model="payment_phone_number" placeholder="017XXXXXXXX">
+                            <div class="mt-3 mb-3">
+                                <div class="single_input">
+                                    <label>Payment Phone Number *</label>
+                                    <input type="text" wire:model="payment_phone_number" placeholder="017XXXXXXXX">
+                                </div>
                                 @error('payment_phone_number') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
-                            <div class="single_input mt-3">
-                                <label>Transaction ID *</label>
-                                <input type="text" wire:model="transaction_id" placeholder="Ex: TRX123456">
+                            <div class="mt-3">
+                                <div class="single_input">
+                                    <label>Transaction ID *</label>
+                                    <input type="text" wire:model="transaction_id" placeholder="Ex: TRX123456">
+                                </div>
                                 @error('transaction_id') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                             @endif

@@ -175,7 +175,7 @@ class Index extends Component
             $rules['shipping.address_line_1'] = 'required';
             $rules['shipping.country_id'] = 'required';
             $rules['shipping.state_id'] = 'required';
-            $rules['shipping.city_id'] = 'required';
+            $rules['shipping.city_id'] = 'nullable';
         }
 
         // 4. Billing Rules
@@ -187,11 +187,12 @@ class Index extends Component
 
         $this->validate($rules, [
             'agree_terms.accepted' => 'You must agree to the terms and conditions.',
-            'shipping.full_name.required' => 'Shipping full name is required.',
-            'shipping.email.required' => 'Shipping email is required.',
-            'shipping.phone.required' => 'Shipping phone number is required.',
-            'shipping.address_line_1.required' => 'Shipping address is required.',
-            'shipping.country_id.required' => 'Please select a shipping country.',
+            'shipping.full_name.required' => 'Full name is required.',
+            'shipping.email.required' => 'Email is required.',
+            'shipping.phone.required' => 'Phone number is required.',
+            'shipping.address_line_1.required' => 'Address is required.',
+            'shipping.country_id.required' => 'Please select a country.',
+            'shipping.state_id.required' => 'Please select a state.',
             'billing.full_name.required' => 'Billing full name is required.',
             'billing.address_line_1.required' => 'Billing address is required.',
             'billing.country_id.required' => 'Please select a billing country.',
