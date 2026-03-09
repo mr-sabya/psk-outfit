@@ -13,7 +13,7 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Setting List</h5>
             <button class="btn btn-primary" wire:click="createSetting">
-                <i class="fas fa-plus"></i> Add New Brand
+                <i class="fas fa-plus"></i> Add New Setting
             </button>
         </div>
         <div class="card-body">

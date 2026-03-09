@@ -35,9 +35,11 @@
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/custom.css') }}">
     @livewireStyles
+    {!! $settings['google_tag_manager(head)'] ?? '' !!}
 </head>
 
 <body class="default_home">
+    {!! $settings['google_tag_manager(body)'] ?? '' !!}
 
   
     @include('frontend.partials.preloader')
