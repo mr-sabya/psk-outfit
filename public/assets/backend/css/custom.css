@@ -46,6 +46,6 @@
     }
 }
 
-.table-responsive {
-    overflow: visible;
+.table-responsive .dropdown-menu {
+    position: fixed !important;
 }
