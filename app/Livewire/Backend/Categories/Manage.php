@@ -129,7 +129,7 @@ class Manage extends Component
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
-            'parent_id' => $this->parent_id,
+            'parent_id' => $this->parent_id ?: null,
             'is_active' => $this->is_active,
             'show_on_homepage' => $this->show_on_homepage,
             'sort_order' => $this->sort_order,

@@ -1,4 +1,7 @@
-<section class="page_banner" data-bg="{{ url('assets/frontend/images/page_banner_bg.jpg') }}">
+<section class="page_banner"
+    @if(!empty($settings['banner_background']))
+    data-bg="{{ url('storage/' . $settings['banner_background']) }}"
+    @endif>
     <div class="page_banner_overlay">
         <div class="container">
             <div class="row">

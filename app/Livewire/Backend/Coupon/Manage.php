@@ -102,7 +102,7 @@ class Manage extends Component
         ]);
     }
 
-    public function saveCoupon(): Redirector|RedirectResponse
+    public function saveCoupon()
     {
         $this->validate($this->getValidationRules());
 
@@ -119,19 +119,18 @@ class Manage extends Component
             'valid_until' => $this->valid_until ? Carbon::parse($this->valid_until) : null,
             'is_active' => $this->is_active,
         ];
-
+        $message = '';
         if ($this->isEditing) {
             $coupon = Coupon::find($this->couponId);
             $coupon->update($data);
-            session()->flash('message', 'Coupon updated successfully!');
+            $message = 'Coupon updated successfully!';
         } else {
             $coupon = Coupon::create($data);
-            session()->flash('message', 'Coupon created successfully!');
+            $message = 'Coupon created successfully!';
         }
 
-        // Removed syncing relationships here as they are managed via dedicated assignment components.
-
-        return redirect()->route('coupons.index');
+        session()->flash('message', $message);
+        return $this->redirect(route('admin.product.coupons.index'), navigate: true);
     }
 
     public function render()
