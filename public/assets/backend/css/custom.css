@@ -45,3 +45,7 @@
         /* Give the label a consistent width if desired */
     }
 }
+
+.table-responsive {
+    overflow: visible;
+}
