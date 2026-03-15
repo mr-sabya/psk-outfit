@@ -106,9 +106,9 @@
                                 <button class="btn btn-sm btn-info" wire:click="editSetting({{ $setting->id }})" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" onclick="confirm('Are you sure you want to delete this setting?') || event.stopImmediatePropagation()" wire:click="deleteSetting({{ $setting->id }})" title="Delete">
+                                <!-- <button class="btn btn-sm btn-danger" onclick="confirm('Are you sure you want to delete this setting?') || event.stopImmediatePropagation()" wire:click="deleteSetting({{ $setting->id }})" title="Delete">
                                     <i class="fas fa-trash"></i>
-                                </button>
+                                </button> -->
                             </td>
                         </tr>
                         @empty
@@ -171,7 +171,10 @@
                             </div>
                             @break
                             @case(\App\Enums\SettingType::Text->value)
-                            <textarea class="form-control @error('value') is-invalid @enderror" id="value" rows="5" wire:model.defer="value"></textarea>
+                            <textarea class="form-control @error('value') is-invalid @enderror" id="value" rows="10" cols="10" wire:model.defer="value"></textarea>
+                            <!-- <livewire:quill-text-editor
+                                wire:model.live="value"
+                                theme="snow" /> -->
                             @break
                             @case(\App\Enums\SettingType::Json->value)
                             <textarea class="form-control @error('value') is-invalid @enderror" id="value" rows="7" wire:model.defer="value"></textarea>

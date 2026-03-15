@@ -8,7 +8,7 @@
 
                     </a>
                     <p>
-                        {{ isset($settings['footer_about']) && $settings['footer_about'] ? $settings['footer_about'] : 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, distinctio molestiae error ullam obcaecati dolorem inventore.' }}
+                        {!! isset($settings['footer_about']) && $settings['footer_about'] ? $settings['footer_about'] : 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, distinctio molestiae error ullam obcaecati dolorem inventore.' !!}
                     </p>
 
                     <ul>
@@ -76,10 +76,10 @@
                 <div class="footer_link footer_logo_area">
                     <h3>Contact Us</h3>
                     <p>
-                        {{ isset($settings['footer_contact_text']) && $settings['footer_contact_text'] 
+                        {!! isset($settings['footer_contact_text']) && $settings['footer_contact_text'] 
         ? $settings['footer_contact_text']
         : 'It is a long established fact that a reader is distracted looking at the layout. It is a long established fact.'
-    }}
+    !!}
                     </p>
 
                     <span>
