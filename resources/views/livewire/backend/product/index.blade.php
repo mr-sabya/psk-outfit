@@ -125,7 +125,13 @@
                             </td>
                             <td>{{ $product->name }}</td>
                             <td>{{ $product->sku ?? 'N/A' }}</td>
-                            <td>{{ $product->category->name ?? 'N/A' }}</td>
+                            <td>
+                                @forelse ($product->categories as $category)
+                                <span class="badge bg-light text-dark border">{{ $category->name }}</span>
+                                @empty
+                                <span class="text-muted">N/A</span>
+                                @endforelse
+                            </td>
                             <td>{{ $product->brand->name ?? 'N/A' }}</td>
                             <td><span class="badge bg-primary">{{ $product->type->label() }}</span></td>
                             <td>{{ number_format($product->price, 2) }}</td>

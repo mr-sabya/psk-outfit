@@ -154,11 +154,14 @@ class Index extends Component
             ->with(['categories', 'brand', 'vendor', 'images']) // Eager load relationships for display
             ->when($this->search, function (Builder $query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('sku', 'like', '%' . $this->search . '%')
-                      ->orWhere('short_description', 'like', '%' . $this->search . '%');
+                    ->orWhere('sku', 'like', '%' . $this->search . '%')
+                    ->orWhere('short_description', 'like', '%' . $this->search . '%');
             })
+            // FIX STARTS HERE
             ->when($this->filterCategory, function (Builder $query) {
-                $query->where('category_id', $this->filterCategory);
+                $query->whereHas('categories', function ($q) {
+                    $q->where('categories.id', $this->filterCategory);
+                });
             })
             ->when($this->filterBrand, function (Builder $query) {
                 $query->where('brand_id', $this->filterBrand);
