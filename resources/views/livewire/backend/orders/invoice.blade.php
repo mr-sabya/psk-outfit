@@ -23,10 +23,9 @@
                 <p class="mb-0"><strong>Date :</strong> {{ $this->order->placed_at->format('d M, Y') }}</p>
             </div>
             <div class="col-6 text-end">
-                <h4 class="fw-bold">{{ config('app.name') }}</h4>
-                <p class="text-muted small mb-0">House #123, Road #45, Dhanmondi</p>
-                <p class="text-muted small mb-0">Dhaka, Bangladesh</p>
-                <p class="text-muted small">Phone: +880123456789</p>
+                <h4 class="fw-bold">{{ $settings['website_name'] ?? config('app.name') }}</h4>
+                <p class="text-muted small mb-0">{{ $settings['address'] ?? '' }}</p>
+                <p class="text-muted small">Phone: {{ $settings['phone'] ?? ''}}</p>
             </div>
         </div>
 
@@ -36,8 +35,8 @@
         <div class="row my-5">
             <div class="col-6">
                 <h6 class="text-muted text-uppercase small fw-bold">Sold By:</h6>
-                <p class="mb-1 fw-bold text-dark">{{ $this->order->vendor->name ?? 'Main Store' }}</p>
-                <p class="mb-1 small text-muted">Phone: {{ $this->order->vendor->phone ?? 'N/A' }}</p>
+                <p class="mb-1 fw-bold text-dark">{{ $settings['website_name'] ?? config('app.name') }}</p>
+                <p class="mb-1 small text-muted">Phone: {{ $settings['phone'] ?? ''}}/p>
             </div>
             <div class="col-6 text-end">
                 <h6 class="text-muted text-uppercase small fw-bold">Customer Details:</h6>

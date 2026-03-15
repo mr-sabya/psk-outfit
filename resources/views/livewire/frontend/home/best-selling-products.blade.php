@@ -73,12 +73,7 @@
                         {{-- Dynamic Title and Link --}}
                         <a class="title" href="{{ $ad2->link }}">{{ $ad2->title }}</a>
 
-                        {{--
-                    Note: Since your current AdBanner model doesn't have price fields, 
-                    this remains static. You can put the discount text in the 'title' 
-                    field from the admin panel if you want it to be dynamic.
-                --}}
-                        <p class="price">$89.00 <del>$12.00</del></p>
+                        <p>{{ $ad2->banner_text }}</p>
 
                         <a class="common_btn" href="{{ $ad2->link }}">
                             buy now <i class="fas fa-long-arrow-right"></i>
@@ -92,7 +87,7 @@
                     <img src="{{ url('assets/frontend/images/best_sell_pro_img_4.jpg') }}" alt="best sell" class="img-fluid w-100">
                     <div class="text">
                         <a class="title" href="shop_details.html">Best Sales Discount And Offers</a>
-                        <p class="price">$89.00 <del>$12.00</del></p>
+                        <p class="price">৳89.00 <del>৳12.00</del></p>
                         <a class="common_btn" href="shop_details.html">buy now <i
                                 class="fas fa-long-arrow-right"></i></a>
                     </div>

@@ -37,11 +37,10 @@ class Invoice extends Component
         $pdf->setOption([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
-            'defaultFont' => 'DejaVu Sans', // Force fallback font
-            'isFontSubsettingEnabled' => true,
+            'isFontSubsettingEnabled' => true, // CRITICAL FOR BENGALI
         ]);
 
-        $pdf->setPaper('a4', 'portrait');
+        $pdf->setPaper('a5', 'portrait');
 
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();

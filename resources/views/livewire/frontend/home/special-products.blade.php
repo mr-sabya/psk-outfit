@@ -30,12 +30,7 @@
                         {{-- Dynamic Heading from the Title field --}}
                         <h3>{{ $ad3->title }}</h3>
 
-                        {{--
-                    Note: If you want this sub-text to be dynamic, you can add a 'description' 
-                    column to your AdBanner model, or simply type it into the title field 
-                    separated by a symbol and explode it. 
-                --}}
-                        <p>Get 50% Off on Selected Clothing Items</p>
+                        <p>{{ $ad3->banner_text }}</p>
 
                         <a class="common_btn" href="{{ $ad3->link }}">
                             shop now <i class="fas fa-long-arrow-right"></i>
@@ -115,9 +110,9 @@
 
                                 {{-- Price Display --}}
                                 <p>
-                                    ${{ number_format($price, 2) }}
+                                    ৳{{ number_format($price, 2) }}
                                     @if($comparePrice > $price)
-                                    <del>${{ number_format($comparePrice, 2) }}</del>
+                                    <del>৳{{ number_format($comparePrice, 2) }}</del>
                                     @endif
                                 </p>
                             </div>

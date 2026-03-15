@@ -7,7 +7,14 @@ use Illuminate\Support\Facades\Storage;
 
 class AdBanner extends Model
 {
-    protected $fillable = ['title', 'image_path', 'link', 'slug', 'is_active'];
+    protected $fillable = [
+        'title',
+        'banner_text', // Add this
+        'image_path',
+        'link',
+        'slug',
+        'is_active'
+    ];
 
     /**
      * Get the full URL for the banner image.
