@@ -2,12 +2,14 @@
     <div class="main-header-logo">
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
-            <a href="index.html" class="logo">
+            <a href="{{ route('admin.home') }}" class="logo" wire:navigate>
                 <img
-                    src="{{ url('assets/backend/img/kaiadmin/logo_light.svg') }}"
+                    src="{{ isset($settings['white_logo']) && $settings['white_logo'] 
+        ? asset('storage/' . $settings['white_logo']) 
+        : asset('assets/backend/img/kaiadmin/logo_light.svg') }}"
                     alt="navbar brand"
                     class="navbar-brand"
-                    height="20" />
+                    height="40" />
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
@@ -27,11 +29,11 @@
     <nav
         class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
         <div class="container-fluid">
-            
+
 
             <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                
-              
+
+
                 <!-- <li class="nav-item topbar-icon dropdown hidden-caret">
                     <a
                         class="nav-link dropdown-toggle"
@@ -106,7 +108,7 @@
                         </li>
                     </ul>
                 </li> -->
-                
+
 
                 <li class="nav-item topbar-user dropdown hidden-caret">
                     <a

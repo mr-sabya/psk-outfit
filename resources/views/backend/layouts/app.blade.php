@@ -109,7 +109,7 @@
     <script data-navigate-once src="{{ asset('assets/backend/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
 
     <!-- Kaiadmin JS -->
-    <script data-navigate-once src="{{ asset('assets/backend/js/kaiadmin.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/kaiadmin.min.js') }}"></script>
 
 
     <script>
