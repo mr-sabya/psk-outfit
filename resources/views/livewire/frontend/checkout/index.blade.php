@@ -160,6 +160,15 @@
                             <div class="img"><img src="{{ $item->product->thumbnail_url }}" class="img-fluid"></div>
                             <div class="text">
                                 <a class="title">{{ Str::limit($item->product->name, 30) }}</a>
+
+                                <!-- Variations -->
+                                @if($item->options && count($item->options) > 0)
+                                <small class="text-muted d-block">
+                                    {{ collect($item->options)->map(fn($v, $k) => ucfirst($k) . ": " . $v)->implode(', ') }}
+                                </small>
+                                @endif
+
+
                                 <div class="checkout_qty_wrapper d-flex align-items-center justify-content-between mt-2">
                                     <p class="mb-0">৳{{ number_format($item->product->effective_price, 2) }}</p>
                                     <div class="d-flex align-items-center border rounded">
