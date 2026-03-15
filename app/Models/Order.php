@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use App\Enums\PaymentStatus;
 use App\Enums\OrderStatus;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -197,5 +198,37 @@ class Order extends Model
             return $this->user->name;
         }
         return $this->billing_first_name . ' ' . $this->billing_last_name . ' (Guest)';
+    }
+
+
+    public function decrementItemStock()
+    {
+        DB::transaction(function () {
+            // Load relationships if not already loaded to prevent N+1 queries
+            $this->loadMissing('orderItems.product', 'orderItems.productVariant');
+
+            foreach ($this->orderItems as $item) {
+
+                // CASE 1: It's a Variant Product
+                if ($item->product_variant_id) {
+                    $variant = $item->productVariant;
+
+                    if ($variant) {
+                        // We assume variants always manage stock if they exist
+                        $variant->decrement('quantity', $item->quantity);
+                    }
+                }
+
+                // CASE 2: It's a Simple (Normal) Product
+                else {
+                    $product = $item->product;
+
+                    // Only decrement if 'is_manage_stock' is enabled for this product
+                    if ($product && $product->is_manage_stock) {
+                        $product->decrement('quantity', $item->quantity);
+                    }
+                }
+            }
+        });
     }
 }

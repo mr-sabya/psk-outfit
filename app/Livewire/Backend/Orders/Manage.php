@@ -47,18 +47,27 @@ class Manage extends Component
             'trackingNumber' => 'nullable|string|max:100',
         ]);
 
+        // 1. Capture the OLD status before updating
+        $oldStatus = $this->order->order_status;
+        $newStatus = OrderStatus::from($this->orderStatus);
+
+        // 2. Perform the update
         $this->order->update([
             'order_status' => $this->orderStatus,
             'payment_status' => $this->paymentStatus,
             'tracking_number' => $this->trackingNumber,
-            // Update timestamps based on status
             'shipped_at' => ($this->orderStatus === OrderStatus::Shipped->value) ? now() : $this->order->shipped_at,
             'delivered_at' => ($this->orderStatus === OrderStatus::Delivered->value) ? now() : $this->order->delivered_at,
             'cancelled_at' => ($this->orderStatus === OrderStatus::Cancelled->value) ? now() : $this->order->cancelled_at,
         ]);
 
+        // 3. Logic: If it WAS NOT delivered, and NOW IT IS delivered, deduct stock
+        if ($oldStatus !== OrderStatus::Delivered && $newStatus === OrderStatus::Delivered) {
+            $this->order->decrementItemStock();
+        }
+
         session()->flash('message', 'Order updated successfully!');
-        $this->dispatch('order-updated'); 
+        $this->dispatch('order-updated');
         $this->loadOrder(); // Refresh data
     }
 

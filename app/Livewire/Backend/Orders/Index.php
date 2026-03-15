@@ -65,16 +65,22 @@ class Index extends Component
         ]);
 
         $order = Order::findOrFail($this->updateOrderId);
+        $oldStatus = $order->order_status;
+        $newStatus = OrderStatus::from($this->newOrderStatus);
+
         $order->update([
             'order_status' => $this->newOrderStatus,
             'payment_status' => $this->newPaymentStatus,
+            'delivered_at' => ($newStatus === OrderStatus::Delivered) ? now() : $order->delivered_at,
         ]);
 
-        session()->flash('message', 'Order status updated successfully.');
+        // Deduct stock if status changed to Delivered
+        if ($oldStatus !== OrderStatus::Delivered && $newStatus === OrderStatus::Delivered) {
+            $order->decrementItemStock();
+        }
 
-        // Dispatch event to close modal via Alpine
+        session()->flash('message', 'Order status updated successfully.');
         $this->dispatch('close-modal-now');
-        $this->dispatch('order-updated'); 
         $this->showStatusUpdateModal = false;
     }
 
