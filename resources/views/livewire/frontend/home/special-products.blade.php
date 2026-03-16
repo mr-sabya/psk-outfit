@@ -76,7 +76,7 @@
                                 @endphp
 
                                 @if($saveAmount > 0)
-                                <span class="discount">save ${{ number_format($saveAmount, 0) }}</span>
+                                <span class="discount">save ৳{{ number_format($saveAmount, 0) }}</span>
                                 @endif
                             </div>
 
