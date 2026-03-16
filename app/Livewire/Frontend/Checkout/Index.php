@@ -303,7 +303,11 @@ class Index extends Component
                     'subtotal' => ($cartItem->price ?? $cartItem->product->effective_price) * $cartItem->quantity,
                 ]);
             }
+            // 1. Clear the Cart items
             $this->getCartQuery()->delete();
+
+            // 2. REMOVE COUPON FROM SESSION HERE
+            Session::forget('coupon');
             return $newOrder;
         });
 
