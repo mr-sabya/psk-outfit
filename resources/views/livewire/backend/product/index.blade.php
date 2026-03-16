@@ -113,9 +113,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($products as $product)
+                        @forelse ($products as $index => $product)
                         <tr>
-                            <td>{{ $product->id }}</td>
+                            <td>{{ $products->firstItem() + $index }}</td>
                             <td>
                                 @if ($product->thumbnail_url)
                                 <img src="{{ $product->thumbnail_url }}" alt="{{ $product->name }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">

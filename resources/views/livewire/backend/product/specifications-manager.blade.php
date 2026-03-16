@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div>
     <div class="card">
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h3 class="mb-0">Technical Specifications: {{ $product->name }}</h3>

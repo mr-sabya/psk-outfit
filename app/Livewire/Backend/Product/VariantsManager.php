@@ -6,7 +6,6 @@ use App\Models\Product;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
 use App\Models\ProductVariant;
-use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -14,204 +13,138 @@ use Illuminate\Support\Facades\DB;
 class VariantsManager extends Component
 {
     public Product $product;
-    public $availableAttributes;
-    public $selectedAttributeIds = [];
-    public $attributeValuesToManage = [];
-    public $newAttributeValueNames = [];
-
-    // Form state arrays
-    public $variantSku = [];
-    public $variantPrice = [];
-    public $variantCompareAtPrice = [];
-    public $variantCostPrice = [];
-    public $variantQuantity = [];
-    public $variantWeight = [];
-    public $variantIsActive = [];
+    public $allAttributes;
+    public $selectedValues = [];
+    public $variants = [];
 
     public function mount(Product $product)
     {
         $this->product = $product;
-        $this->availableAttributes = Attribute::active()->get();
-        $this->loadExistingVariantData();
+        // Get attributes with their values
+        $this->allAttributes = Attribute::with('values')->where('is_active', true)->get();
+        $this->loadVariants();
     }
 
-    private function loadExistingVariantData()
+    public function loadVariants()
     {
-        $variants = $this->product->variants()->with('attributeValues')->get();
+        $this->variants = [];
+        $existing = $this->product->variants()->with('attributeValues')->get();
 
-        $attrIds = [];
-        foreach ($variants as $variant) {
-            $key = (string) $variant->id;
-
-            foreach ($variant->attributeValues as $val) {
-                $attrIds[$val->attribute_id] = true;
-                $this->attributeValuesToManage[$val->attribute_id][$val->id] = $val;
-            }
-
-            $this->variantSku[$key] = $variant->sku;
-            $this->variantPrice[$key] = $variant->price;
-            $this->variantCompareAtPrice[$key] = $variant->compare_at_price;
-            $this->variantCostPrice[$key] = $variant->cost_price;
-            $this->variantQuantity[$key] = $variant->quantity;
-            $this->variantWeight[$key] = $variant->weight;
-            $this->variantIsActive[$key] = (bool)$variant->is_active;
-        }
-        $this->selectedAttributeIds = array_keys($attrIds);
-    }
-
-    /**
-     * Helper to generate a consistent key for any combination
-     */
-    private function getComboKey($combination)
-    {
-        $vIds = collect($combination)->pluck('id')->sort()->values()->all();
-        return 'combo_' . implode('_', $vIds);
-    }
-
-    /**
-     * Computed property for the Blade view
-     */
-    public function getComputedVariantsProperty()
-    {
-        $combinations = $this->getAttributeValueCombinations();
-        $list = [];
-
-        foreach ($combinations as $combination) {
-            $comboHash = $this->getComboKey($combination);
-
-            // Check if this exists in the DB already
-            $existing = $this->product->variants->first(function ($v) use ($combination) {
-                $dbIds = $v->attributeValues->pluck('id')->sort()->values()->all();
-                $currentIds = collect($combination)->pluck('id')->sort()->values()->all();
-                return $dbIds === $currentIds;
-            });
-
-            $key = $existing ? (string)$existing->id : $comboHash;
-
-            // Initialize state safely if missing
-            if (!array_key_exists($key, $this->variantSku)) {
-                $this->variantSku[$key] = $this->product->sku . '-' . strtoupper(Str::random(4));
-                $this->variantPrice[$key] = $this->product->price ?? 0;
-                $this->variantQuantity[$key] = 0;
-                $this->variantIsActive[$key] = true;
-            }
-
-            $list[] = [
-                'key' => $key,
-                'exists' => (bool)$existing,
-                'display_name' => collect($combination)->pluck('value')->implode(' / '),
+        foreach ($existing as $variant) {
+            $this->variants[] = [
+                'id' => $variant->id,
+                'name' => $variant->attributeValues->pluck('value')->implode(' / '),
+                'value_ids' => $variant->attributeValues->pluck('id')->toArray(),
+                'sku' => $variant->sku,
+                'price' => $variant->price,
+                'quantity' => $variant->quantity,
+                'is_active' => (bool)$variant->is_active,
+                'is_saved' => true
             ];
         }
-
-        return $list;
     }
 
-    public function saveVariants()
+    public function generateVariants()
+    {
+        $groups = [];
+        foreach ($this->selectedValues as $attrId => $values) {
+            $activeInGroup = array_filter($values);
+            if (!empty($activeInGroup)) {
+                $groups[] = array_keys($activeInGroup);
+            }
+        }
+
+        if (empty($groups)) {
+            session()->flash('error', 'Please select at least one value first.');
+            return;
+        }
+
+        $combinations = [[]];
+        foreach ($groups as $values) {
+            $temp = [];
+            foreach ($combinations as $combo) {
+                foreach ($values as $valueId) {
+                    $temp[] = array_merge($combo, [$valueId]);
+                }
+            }
+            $combinations = $temp;
+        }
+
+        foreach ($combinations as $combo) {
+            if ($this->isComboInList($combo)) continue;
+
+            $names = AttributeValue::whereIn('id', $combo)->pluck('value')->implode(' / ');
+
+            $this->variants[] = [
+                'id' => null,
+                'name' => $names,
+                'value_ids' => $combo,
+                'sku' => $this->product->sku . '-' . strtoupper(Str::random(4)),
+                'price' => $this->product->price,
+                'quantity' => 0,
+                'is_active' => true,
+                'is_saved' => false
+            ];
+        }
+    }
+
+    private function isComboInList($combo)
+    {
+        foreach ($this->variants as $v) {
+            if (count(array_diff($v['value_ids'], $combo)) === 0 && count($v['value_ids']) === count($combo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function deleteVariant($index)
+    {
+        $variantData = $this->variants[$index];
+
+        if (isset($variantData['id']) && $variantData['id']) {
+            // PERMANENT DELETE CHECK:
+            // Check if this variant exists in order_items table
+            $hasOrders = DB::table('order_items')->where('product_variant_id', $variantData['id'])->exists();
+
+            if ($hasOrders) {
+                session()->flash('error', "CRITICAL: Cannot delete '{$variantData['name']}'. It is linked to existing orders. Please DEACTIVATE it instead.");
+                return;
+            }
+
+            ProductVariant::find($variantData['id'])->delete();
+        }
+
+        unset($this->variants[$index]);
+        $this->variants = array_values($this->variants);
+        session()->flash('message', 'Variant removed permanently.');
+    }
+
+    public function save()
     {
         $this->validate([
-            'variantSku.*' => 'required|string|max:255',
-            'variantPrice.*' => 'required|numeric|min:0',
-            'variantQuantity.*' => 'required|integer|min:0',
+            'variants.*.sku' => 'required',
+            'variants.*.price' => 'required|numeric',
         ]);
 
-        try {
-            DB::transaction(function () {
-                $currentIterationIds = [];
-                $combinations = $this->getAttributeValueCombinations();
-
-                foreach ($combinations as $combination) {
-                    $vIds = collect($combination)->pluck('id')->sort()->values()->all();
-                    $comboHash = $this->getComboKey($combination);
-
-                    // Find if it exists in DB
-                    $existing = $this->product->variants()->whereHas('attributeValues', function ($q) use ($vIds) {
-                        $q->whereIn('attribute_value_id', $vIds);
-                    }, '=', count($vIds))->first();
-
-                    $key = $existing ? (string)$existing->id : $comboHash;
-
-                    // SAFE ACCESS: Use null-coalescing to prevent "Undefined array key"
-                    $data = [
+        DB::transaction(function () {
+            foreach ($this->variants as $v) {
+                $variant = ProductVariant::updateOrCreate(
+                    ['id' => $v['id']],
+                    [
                         'product_id' => $this->product->id,
-                        'sku' => $this->variantSku[$key] ?? ($this->product->sku . '-' . strtoupper(Str::random(4))),
-                        'price' => $this->variantPrice[$key] ?? ($this->product->price ?? 0),
-                        'compare_at_price' => ($this->variantCompareAtPrice[$key] ?? null) ?: null,
-                        'cost_price' => ($this->variantCostPrice[$key] ?? null) ?: null,
-                        'quantity' => $this->variantQuantity[$key] ?? 0,
-                        'weight' => ($this->variantWeight[$key] ?? null) ?: null,
-                        'is_active' => (bool)($this->variantIsActive[$key] ?? true),
-                    ];
-
-                    if ($existing) {
-                        $existing->update($data);
-                        $currentIterationIds[] = $existing->id;
-                    } else {
-                        $newV = ProductVariant::create($data);
-                        $newV->attributeValues()->attach($vIds);
-                        $currentIterationIds[] = $newV->id;
-                    }
-                }
-
-                // Delete variants no longer selected
-                $this->product->variants()->whereNotIn('id', $currentIterationIds)->delete();
-            });
-
-            $this->loadExistingVariantData();
-            session()->flash('message', 'All variants successfully saved.');
-        } catch (\Exception $e) {
-            session()->flash('error', 'Critical Error: ' . $e->getMessage());
-        }
-    }
-
-    private function getAttributeValueCombinations($index = 0, $currentCombination = [])
-    {
-        $selected = [];
-        foreach ($this->selectedAttributeIds as $id) {
-            if (!empty($this->attributeValuesToManage[$id])) {
-                $selected[] = array_values($this->attributeValuesToManage[$id]);
+                        'sku' => $v['sku'],
+                        'price' => $v['price'],
+                        'quantity' => $v['quantity'],
+                        'is_active' => $v['is_active'],
+                    ]
+                );
+                $variant->attributeValues()->sync($v['value_ids']);
             }
-        }
-        if (empty($selected)) return [];
-        if ($index === count($selected)) return [$currentCombination];
+        });
 
-        $results = [];
-        foreach ($selected[$index] as $value) {
-            $results = array_merge($results, $this->getAttributeValueCombinations($index + 1, array_merge($currentCombination, [$value])));
-        }
-        return $results;
-    }
-
-    public function updatedSelectedAttributeIds()
-    {
-        foreach ($this->selectedAttributeIds as $id) {
-            if (!isset($this->attributeValuesToManage[$id])) {
-                $attr = Attribute::find($id);
-                if ($attr) $this->attributeValuesToManage[$id] = $attr->values()->get()->keyBy('id')->all();
-            }
-        }
-    }
-
-    public function addAttributeValue($attributeId)
-    {
-        $this->validate(["newAttributeValueNames.$attributeId" => 'required|string']);
-        $attr = Attribute::find($attributeId);
-        $val = $attr->values()->create([
-            'value' => $this->newAttributeValueNames[$attributeId],
-            'slug' => Str::slug($this->newAttributeValueNames[$attributeId])
-        ]);
-        $this->attributeValuesToManage[$attributeId][$val->id] = $val;
-        $this->newAttributeValueNames[$attributeId] = '';
-    }
-
-    public function removeAttributeValue($attributeId, $attributeValueId)
-    {
-        unset($this->attributeValuesToManage[$attributeId][$attributeValueId]);
-    }
-
-    public function deleteVariant($id)
-    {
-        ProductVariant::destroy($id);
-        $this->loadExistingVariantData();
+        $this->loadVariants();
+        session()->flash('message', 'All variants saved successfully.');
     }
 
     public function render()

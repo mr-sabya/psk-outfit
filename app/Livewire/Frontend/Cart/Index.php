@@ -4,6 +4,7 @@ namespace App\Livewire\Frontend\Cart;
 
 use Livewire\Component;
 use App\Models\CartItem;
+use App\Models\Coupon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\On;
@@ -11,61 +12,68 @@ use Livewire\Attributes\On;
 class Index extends Component
 {
     public $cartItems;
+    public $couponCode;
 
     #[On('cartUpdated')]
     public function render()
     {
-        // 1. Get items based on Auth or Session
-        $query = CartItem::with(['product.vendor']);
-
-        if (Auth::check()) {
-            $query->where('user_id', Auth::id());
-        } else {
-            $query->where('session_id', Session::getId());
-        }
-
+        $query = CartItem::with(['product.categories']);
+        Auth::check() ? $query->where('user_id', Auth::id()) : $query->where('session_id', Session::getId());
         $this->cartItems = $query->get();
 
-        // 2. Group items by Vendor Name
-        $groupedItems = $this->cartItems->groupBy(function ($item) {
-            // Use 'Global Store' if vendor or vendor name is missing
-            return $item->product->vendor->name ?? 'Global Store';
-        });
+        $subtotal = $this->cartItems->sum(fn($i) => ($i->price ?? $i->product->effective_price) * $i->quantity);
 
-        // 3. Financial Calculations
-        $subtotal = $this->cartItems->sum(function ($item) {
-            // Priority: Item price (if snapshotted) or product effective price
-            $price = $item->price ?? $item->product->effective_price ?? 0;
-            return $price * $item->quantity;
-        });
+        $discount = 0;
+        $appliedCoupon = null;
+
+        if (Session::has('coupon')) {
+            $appliedCoupon = Coupon::where('code', Session::get('coupon')['code'])->active()->first();
+            if ($appliedCoupon && $subtotal >= $appliedCoupon->min_spend) {
+                $discount = $appliedCoupon->calculateDiscountForCart($this->cartItems, Auth::id());
+            } else {
+                Session::forget('coupon');
+            }
+        }
 
         return view('livewire.frontend.cart.index', [
-            'groupedItems' => $groupedItems,
             'subtotal' => $subtotal,
-            'tax' => 0, // Implement your tax logic here
-            'discount' => 0, // Implement your coupon/discount logic here
-            'total' => $subtotal // Calculation: ($subtotal + $tax) - $discount
+            'discount' => $discount,
+            'appliedCoupon' => $appliedCoupon,
+            'tax' => 0,
+            'total' => max(0, $subtotal - $discount)
         ]);
     }
 
-    /**
-     * Security Helper: Ensures the user/guest owns the item they are trying to modify
-     */
-    private function getAuthorizedItem($id)
+    public function applyCoupon()
     {
-        $query = CartItem::where('id', $id);
+        $this->validate(['couponCode' => 'required']);
+        $coupon = Coupon::active()->where('code', $this->couponCode)->first();
 
-        if (Auth::check()) {
-            return $query->where('user_id', Auth::id())->firstOrFail();
+        if (!$coupon) {
+            $this->dispatch('notify', ['type' => 'error', 'message' => 'Invalid coupon code.']);
+            return;
         }
 
-        return $query->where('session_id', Session::getId())->firstOrFail();
+        $subtotal = $this->cartItems->sum(fn($i) => ($i->price ?? $i->product->effective_price) * $i->quantity);
+        if ($subtotal < $coupon->min_spend) {
+            $this->dispatch('notify', ['type' => 'error', 'message' => 'Minimum spend of ৳' . $coupon->min_spend . ' required.']);
+            return;
+        }
+
+        Session::put('coupon', ['code' => $coupon->code]);
+        $this->couponCode = '';
+        $this->dispatch('cartUpdated');
+    }
+
+    public function removeCoupon()
+    {
+        Session::forget('coupon');
+        $this->dispatch('cartUpdated');
     }
 
     public function increment($id)
     {
-        $item = $this->getAuthorizedItem($id);
-        $item->increment('quantity');
+        $this->getAuthorizedItem($id)->increment('quantity');
         $this->dispatch('cartUpdated');
     }
 
@@ -82,14 +90,13 @@ class Index extends Component
 
     public function removeItem($id)
     {
-        $item = $this->getAuthorizedItem($id);
-        $item->delete();
-
+        $this->getAuthorizedItem($id)->delete();
         $this->dispatch('cartUpdated');
+    }
 
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Item removed from cart'
-        ]);
+    private function getAuthorizedItem($id)
+    {
+        $query = CartItem::where('id', $id);
+        return Auth::check() ? $query->where('user_id', Auth::id())->firstOrFail() : $query->where('session_id', Session::getId())->firstOrFail();
     }
 }

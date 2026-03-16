@@ -79,6 +79,19 @@
                                     <td colspan="3" class="text-end fw-bold">Subtotal:</td>
                                     <td class="text-end">৳{{ number_format($order->subtotal, 2) }}</td>
                                 </tr>
+                                <!-- Inside your <tfoot> -->
+                                @if($order->discount_amount > 0)
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold text-success"
+                                        wire:click="viewCoupon"
+                                        style="cursor: pointer;"
+                                        title="Click to view coupon details">
+                                        <i class="fas fa-info-circle me-1 small"></i>
+                                        Discount {{ $order->coupon_code ? '('.$order->coupon_code.')' : '' }}:
+                                    </td>
+                                    <td class="text-end text-success">- ৳{{ number_format($order->discount_amount, 2) }}</td>
+                                </tr>
+                                @endif
                                 <tr>
                                     <td colspan="3" class="text-end fw-bold">Shipping:</td>
                                     <td class="text-end">৳{{ number_format($order->shipping_cost, 2) }}</td>
@@ -161,6 +174,19 @@
                                 <span class="badge bg-secondary">{{ $order->payment_method_name }}</span>
                             </div>
 
+                            <!-- ADD THIS BLOCK -->
+                            @if($order->coupon_code)
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Coupon Used:</span>
+                                <span class="text-success fw-bold">{{ $order->coupon_code }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Saved:</span>
+                                <span class="text-success small">- ৳{{ number_format($order->discount_amount, 2) }}</span>
+                            </div>
+                            @endif
+                            <!-- END ADD -->
+
                             @if($order->payment_phone_number)
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Paid From:</span>
@@ -238,4 +264,107 @@
             </div>
         </div>
     </div>
+
+    <!-- Coupon Details Modal -->
+    <div wire:ignore.self class="modal fade" id="couponInfoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content border-0 shadow-lg">
+                @if($couponDetails)
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-ticket-alt me-2"></i> Coupon: {{ $couponDetails->code }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="text-muted small d-block">Description</label>
+                        <p class="mb-0 fw-bold">{{ $couponDetails->description ?? 'No description.' }}</p>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="text-muted small d-block">Min Spend Required</label>
+                            <p class="mb-0 fw-bold">৳{{ number_format($couponDetails->min_spend, 2) }}</p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <label class="text-muted small d-block">Coupon Type</label>
+                            <p class="mb-0 fw-bold text-uppercase text-primary">{{ $couponDetails->type->value }}
+                                @if($couponDetails->type == \App\Enums\CouponType::Percentage)
+                                ({{ number_format($couponDetails->value, 0) }}%)
+                                @elseif($couponDetails->type == \App\Enums\CouponType::FixedAmount)
+                                (${{ number_format($couponDetails->value, 2) }})
+                                @else
+                                (N/A)
+                                @endif</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Restriction Logic -->
+                    <div class="restrictions mt-3">
+                        <h6 class="fw-bold mb-3 small text-muted text-uppercase">Applied Restrictions:</h6>
+
+                        <!-- Products -->
+                        <div class="mb-3">
+                            <small class="d-block fw-bold {{ $couponDetails->products->count() > 0 ? 'text-danger' : 'text-muted' }}">
+                                <i class="fas fa-box me-1"></i> Specific Products:
+                            </small>
+                            @if($couponDetails->products->count() > 0)
+                            <div class="mt-1 ps-3 border-start border-2 border-danger">
+                                @foreach($couponDetails->products as $p)
+                                <small class="d-block text-muted">• {{ $p->name }}</small>
+                                @endforeach
+                            </div>
+                            @else
+                            <small class="ps-3 text-muted">No specific product restriction.</small>
+                            @endif
+                        </div>
+
+                        <!-- Categories -->
+                        <div class="mb-3">
+                            <small class="d-block fw-bold {{ $couponDetails->categories->count() > 0 ? 'text-primary' : 'text-muted' }}">
+                                <i class="fas fa-th-large me-1"></i> Specific Categories:
+                            </small>
+                            @if($couponDetails->categories->count() > 0)
+                            <div class="mt-1 ps-3 border-start border-2 border-primary">
+                                @foreach($couponDetails->categories as $c)
+                                <small class="d-block text-muted">• {{ $c->name }}</small>
+                                @endforeach
+                            </div>
+                            @else
+                            <small class="ps-3 text-muted">No category restriction.</small>
+                            @endif
+                        </div>
+
+                        <!-- Users -->
+                        <div class="mb-0">
+                            <small class="d-block fw-bold {{ $couponDetails->users->count() > 0 ? 'text-warning' : 'text-muted' }}">
+                                <i class="fas fa-user-lock me-1"></i> User Specific:
+                            </small>
+                            @if($couponDetails->users->count() > 0)
+                            <small class="ps-3 text-muted">This coupon was restricted to a specific list of users.</small>
+                            @else
+                            <small class="ps-3 text-muted">Available to all users.</small>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">Close</button>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
 </div>
+
+
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('open-coupon-modal', (event) => {
+            var myModal = new bootstrap.Modal(document.getElementById('couponInfoModal'));
+            myModal.show();
+        });
+    });
+</script>

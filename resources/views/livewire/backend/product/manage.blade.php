@@ -375,31 +375,119 @@
 
 
     @if ($product->exists)
-    <div class="card mt-4">
-        <div class="card-header bg-transparent border-bottom-0 pt-3 pb-0">
-            <h5 class="mb-3">Additional Product Management</h5>
-            <ul class="nav nav-tabs" id="productTabs" role="tablist">
-                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#images" type="button"><i class="fas fa-images me-1"></i> Images</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#specs" type="button"><i class="fas fa-list-ul me-1"></i> Specifications</button></li>
-                @if ($product->isVariable())
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#variants" type="button"><i class="fas fa-tags me-1"></i> Variants</button></li>
-                @endif
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tags" type="button"><i class="fas fa-tag me-1"></i> Tags</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#seo" type="button"><i class="fas fa-search me-1"></i> SEO</button></li>
-            </ul>
-        </div>
+    <div class="card mt-4 shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="d-flex align-items-start">
+                <!-- Sidebar Navigation -->
+                <div class="nav flex-column nav-pills border-end bg-light" id="productTabs" role="tablist" aria-orientation="vertical" style="min-width: 220px; min-height: 500px;">
+                    <h6 class="text-uppercase small fw-bold text-white bg-dark p-3 text-center m-0">Manage Product</h6>
 
-        <div class="card-body">
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="images"><livewire:backend.product.images-manager :product="$product" /></div>
-                <div class="tab-pane fade" id="specs"><livewire:backend.product.specifications-manager :product="$product" /></div>
-                @if ($product->isVariable())
-                <div class="tab-pane fade" id="variants"><livewire:backend.product.variants-manager :product="$product" /></div>
-                @endif
-                <div class="tab-pane fade" id="tags"><livewire:backend.product.tags-manager :product="$product" /></div>
-                <div class="tab-pane fade" id="seo"><livewire:backend.product.seo-manager :product="$product" /></div>
+                    <button class="nav-link active text-start p-2 shadow-sm" data-bs-toggle="tab" data-bs-target="#images" type="button">
+                        <i class="fas fa-images me-2"></i> Gallery Images
+                    </button>
+
+                    <button class="nav-link text-start p-2 shadow-sm" data-bs-toggle="tab" data-bs-target="#specs" type="button">
+                        <i class="fas fa-list-ul me-2"></i> Specifications
+                    </button>
+
+                    @if ($product->isVariable())
+                    <button class="nav-link text-start p-2 shadow-sm" data-bs-toggle="tab" data-bs-target="#variants" type="button">
+                        <i class="fas fa-tags me-2"></i> Product Variants
+                    </button>
+                    @endif
+
+                    <button class="nav-link text-start p-2 shadow-sm" data-bs-toggle="tab" data-bs-target="#tags" type="button">
+                        <i class="fas fa-tag me-2"></i> Search Tags
+                    </button>
+
+                    <button class="nav-link text-start p-2 shadow-sm" data-bs-toggle="tab" data-bs-target="#seo" type="button">
+                        <i class="fas fa-search me-2"></i> SEO Settings
+                    </button>
+                </div>
+
+                <!-- Content Area -->
+                <div class="tab-content flex-grow-1 p-4" id="productTabsContent">
+                    <div class="tab-pane fade show active" id="images" role="tabpanel">
+                        <h5 class="mb-4 border-bottom pb-2 text-primary">Image Gallery</h5>
+                        <livewire:backend.product.images-manager :product="$product" />
+                    </div>
+
+                    <div class="tab-pane fade" id="specs" role="tabpanel">
+                        <h5 class="mb-4 border-bottom pb-2 text-primary">Technical Specifications</h5>
+                        <livewire:backend.product.specifications-manager :product="$product" />
+                    </div>
+
+                    @if ($product->isVariable())
+                    <div class="tab-pane fade" id="variants" role="tabpanel">
+                        <h5 class="mb-4 border-bottom pb-2 text-primary">Variants & Stock Manager</h5>
+                        <livewire:backend.product.variants-manager :product="$product" />
+                    </div>
+                    @endif
+
+                    <div class="tab-pane fade" id="tags" role="tabpanel">
+                        <h5 class="mb-4 border-bottom pb-2 text-primary">Product Tags</h5>
+                        <livewire:backend.product.tags-manager :product="$product" />
+                    </div>
+
+                    <div class="tab-pane fade" id="seo" role="tabpanel">
+                        <h5 class="mb-4 border-bottom pb-2 text-primary">Search Engine Optimization</h5>
+                        <livewire:backend.product.seo-manager :product="$product" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <style>
+        /* Styling for the Sidebar Tabs */
+        #productTabs .nav-link {
+            color: #495057;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            background: #fff;
+        }
+
+        #productTabs .nav-link:hover {
+            background-color: #e9ecef;
+            color: #0d6efd;
+        }
+
+        #productTabs .nav-link.active {
+            background-color: #0d6efd !important;
+            color: #fff !important;
+            border-color: #0d6efd;
+        }
+
+        /* Tab Content Styling */
+        .tab-content h5 {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .d-flex.align-items-start {
+                flex-direction: column !important;
+            }
+
+            #productTabs {
+                width: 100% !important;
+                min-width: 100% !important;
+                min-height: auto !important;
+                border-end: none !important;
+                border-bottom: 1px solid #dee2e6;
+                flex-direction: row !important;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            #productTabs .nav-link {
+                margin-right: 10px;
+                margin-bottom: 0 !important;
+            }
+        }
+    </style>
     @endif
 </div>

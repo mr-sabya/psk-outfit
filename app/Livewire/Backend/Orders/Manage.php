@@ -16,6 +16,7 @@ class Manage extends Component
     public $orderStatus;
     public $paymentStatus;
     public $trackingNumber;
+    public $couponDetails;
 
     public function mount($orderId)
     {
@@ -69,6 +70,22 @@ class Manage extends Component
         session()->flash('message', 'Order updated successfully!');
         $this->dispatch('order-updated');
         $this->loadOrder(); // Refresh data
+    }
+
+
+    public function viewCoupon()
+    {
+        if ($this->order->coupon_code) {
+            $this->couponDetails = \App\Models\Coupon::with(['products', 'categories', 'users'])
+                ->where('code', $this->order->coupon_code)
+                ->first();
+
+            if ($this->couponDetails) {
+                $this->dispatch('open-coupon-modal');
+            } else {
+                session()->flash('error', 'Original coupon data has been deleted.');
+            }
+        }
     }
 
     public function render()

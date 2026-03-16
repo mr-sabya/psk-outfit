@@ -1,6 +1,5 @@
 <section class="checkout_page mt_100 mb_100">
     <div class="container">
-
         <div class="row">
             <div class="col-lg-8 wow fadeInUp">
                 <div class="checkout_header mb-3">
@@ -19,7 +18,7 @@
                                     <input class="form-check-input" type="radio" wire:model.live="shipping_address_id" value="{{ $address->id }}">
                                     <label class="form-check-label w-100">
                                         <strong>{{ $address->first_name }} {{ $address->last_name }}</strong>
-                                        <small class="text-muted">{{ $address->address_line_1 }}, {{ $address->city?->name }}</small>
+                                        <small class="text-muted d-block">{{ $address->address_line_1 }}, {{ $address->city?->name }}</small>
                                     </label>
                                 </div>
                             </div>
@@ -32,43 +31,27 @@
                     @if(!Auth::check() || !$shipping_address_id)
                     <div class="row wow fadeIn bg-light p-4 rounded mb-3">
                         <div class="col-md-12">
-                            <div class="single_input">
-                                <label>Full Name *</label>
-                                <input type="text" wire:model="shipping.full_name">
-                            </div>
+                            <div class="single_input"><label>Full Name *</label><input type="text" wire:model="shipping.full_name"></div>
                             @error('shipping.full_name') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
-
                         <div class="col-md-6">
-                            <div class="single_input">
-                                <label>Phone *</label>
-                                <input type="text" wire:model="shipping.phone">
-                            </div>
+                            <div class="single_input"><label>Phone *</label><input type="text" wire:model="shipping.phone"></div>
                             @error('shipping.phone') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-6">
-                            <div class="single_input">
-                                <label>Email</label>
-                                <input type="email" wire:model="shipping.email">
-                            </div>
-                            @error('shipping.email') <span class="text-danger small">{{ $message }}</span> @enderror
+                            <div class="single_input"><label>Email</label><input type="email" wire:model="shipping.email"></div>
                         </div>
                         <div class="col-md-12">
-                            <div class="single_input">
-                                <label>Address Line 1 *</label>
-                                <input type="text" wire:model="shipping.address_line_1">
-                            </div>
+                            <div class="single_input"><label>Address Line 1 *</label><input type="text" wire:model="shipping.address_line_1"></div>
                             @error('shipping.address_line_1') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-4">
                             <div class="single_input">
                                 <label>Country *</label>
                                 <select wire:model.live="shipping.country_id" class="form-select">
-                                    <option value="">Select Country</option>
                                     @foreach($countries as $c) <option value="{{ $c->id }}">{{ $c->name }}</option> @endforeach
                                 </select>
                             </div>
-                            @error('shipping.country_id') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-4">
                             <div class="single_input"><label>State</label>
@@ -77,7 +60,6 @@
                                     @foreach($shipping_states as $s) <option value="{{ $s->id }}">{{ $s->name }}</option> @endforeach
                                 </select>
                             </div>
-                            @error('shipping.state_id') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-4">
                             <div class="single_input"><label>City</label>
@@ -86,7 +68,6 @@
                                     @foreach($shipping_cities as $ct) <option value="{{ $ct->id }}">{{ $ct->name }}</option> @endforeach
                                 </select>
                             </div>
-                            @error('shipping.city_id') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                     </div>
                     @endif
@@ -101,33 +82,22 @@
                     @if($bill_to_different_address)
                     <div class="row wow fadeIn bg-light p-4 rounded mb-3">
                         <div class="col-md-12">
-                            <div class="single_input">
-                                <label>Full Name *</label>
-                                <input type="text" wire:model="billing.full_name">
-                            </div>
-                            @error('billing.full_name') <span class="text-danger small">{{ $message }}</span> @enderror
+                            <div class="single_input"><label>Full Name *</label><input type="text" wire:model="billing.full_name"></div>
                         </div>
                         <div class="col-md-12">
-                            <div class="single_input">
-                                <label>Address Line 1 *</label>
-                                <input type="text" wire:model="billing.address_line_1">
-                            </div>
-                            @error('billing.address_line_1') <span class="text-danger small">{{ $message }}</span> @enderror
+                            <div class="single_input"><label>Address Line 1 *</label><input type="text" wire:model="billing.address_line_1"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="single_input">
                                 <label>Country *</label>
                                 <select wire:model.live="billing.country_id" class="form-select">
-                                    <option value="">Select</option>
                                     @foreach($countries as $c) <option value="{{ $c->id }}">{{ $c->name }}</option> @endforeach
                                 </select>
                             </div>
-                            @error('billing.country_id') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-4">
                             <div class="single_input"><label>State</label>
                                 <select wire:model.live="billing.state_id" class="form-select">
-                                    <option value="">Select</option>
                                     @foreach($billing_states as $s) <option value="{{ $s->id }}">{{ $s->name }}</option> @endforeach
                                 </select>
                             </div>
@@ -135,7 +105,6 @@
                         <div class="col-md-4">
                             <div class="single_input"><label>City</label>
                                 <select wire:model.live="billing.city_id" class="form-select">
-                                    <option value="">Select</option>
                                     @foreach($billing_cities as $ct) <option value="{{ $ct->id }}">{{ $ct->name }}</option> @endforeach
                                 </select>
                             </div>
@@ -152,22 +121,20 @@
             <div class="col-lg-4">
                 <div class="cart_page_summary">
                     <h3>Billing summary</h3>
-                    @foreach($groupedItems as $vendorName => $items)
-                    <div class="vendor_name mt-3" style="font-weight: 700; color: #ff3c00;">{{ $vendorName }}</div>
+
+                    <!-- Vendor names removed, single list used -->
                     <ul>
-                        @foreach($items as $item)
+                        @foreach($cartItems as $item)
                         <li>
                             <div class="img"><img src="{{ $item->product->thumbnail_url }}" class="img-fluid"></div>
                             <div class="text">
                                 <a class="title">{{ Str::limit($item->product->name, 30) }}</a>
 
-                                <!-- Variations -->
                                 @if($item->options && count($item->options) > 0)
                                 <small class="text-muted d-block">
                                     {{ collect($item->options)->map(fn($v, $k) => ucfirst($k) . ": " . $v)->implode(', ') }}
                                 </small>
                                 @endif
-
 
                                 <div class="checkout_qty_wrapper d-flex align-items-center justify-content-between mt-2">
                                     <p class="mb-0">৳{{ number_format($item->product->effective_price, 2) }}</p>
@@ -181,10 +148,14 @@
                         </li>
                         @endforeach
                     </ul>
-                    @endforeach
 
                     <div class="summary_info mt-4">
                         <h6>subtotal <span>৳{{ number_format($subtotal, 2) }}</span></h6>
+
+                        @if($discount > 0)
+                        <h6 class="text-success fw-bold">Discount ({{ $coupon_code_display }}) <span>(-) ৳{{ number_format($discount, 2) }}</span></h6>
+                        @endif
+
                         <div class="checkout_shipping mt-3 mb-3 border-top pt-3">
                             <h6>Shipping Method</h6>
                             @foreach($shippingMethods as $method)
@@ -195,7 +166,6 @@
                                 </label>
                             </div>
                             @endforeach
-                            @error('shipping_method_id') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
                         <h4 class="border-top pt-3">Total <span style="color: #ff3c00;">৳{{ number_format($total, 2) }}</span></h4>
                     </div>
@@ -211,30 +181,16 @@
                             <label class="form-check-label" for="pay{{ $pay->id }}">{{ $pay->name }}</label>
                         </div>
                         @endforeach
-                        @error('payment_method_id') <span class="text-danger small">{{ $message }}</span> @enderror
 
                         @if($selectedPayment)
                         <div class="p-3 bg-light border rounded mb-3 mt-2">
                             @if($selectedPayment->instructions)
-                            <div class="payment_instructions mb-2">
-                                <p class="mb-1" style="font-size: 14px; font-weight: 600;">Instructions:</p>
-                                <div class="text-muted" style="font-size: 13px;">{!! nl2br(e($selectedPayment->instructions)) !!}</div>
-                            </div>
+                            <div class="text-muted small mb-2">{!! nl2br(e($selectedPayment->instructions)) !!}</div>
                             @endif
                             @if($selectedPayment->type === 'direct')
-                            <div class="mt-3 mb-3">
-                                <div class="single_input">
-                                    <label>Payment Phone Number *</label>
-                                    <input type="text" wire:model="payment_phone_number" placeholder="017XXXXXXXX">
-                                </div>
-                                @error('payment_phone_number') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
                             <div class="mt-3">
-                                <div class="single_input">
-                                    <label>Transaction ID *</label>
-                                    <input type="text" wire:model="transaction_id" placeholder="Ex: TRX123456">
-                                </div>
-                                @error('transaction_id') <span class="text-danger small">{{ $message }}</span> @enderror
+                                <div class="single_input"><label>Payment Phone *</label><input type="text" wire:model="payment_phone_number"></div>
+                                <div class="single_input mt-2"><label>Transaction ID *</label><input type="text" wire:model="transaction_id"></div>
                             </div>
                             @endif
                         </div>
@@ -244,8 +200,7 @@
 
                     <div class="form-check mt-3">
                         <input class="form-check-input" type="checkbox" wire:model="agree_terms" id="agree">
-                        <label class="form-check-label small" for="agree">I have read and agree to the <a href="{{ route('page.show', 'terms-and-conditions') }}" target="_blank">Terms & Conditions</a> and <a href="{{ route('page.show', 'return-exchange-policy') }}" target="_blank">Return Policy</a></label>
-                        <br>@error('agree_terms') <span class="text-danger small">{{ $message }}</span> @enderror
+                        <label class="form-check-label small" for="agree">I agree to the Terms and Conditions</label>
                     </div>
 
                     <button type="button" wire:click="placeOrder" class="common_btn w-100 mt-3" wire:loading.attr="disabled">

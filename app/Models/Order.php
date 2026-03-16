@@ -44,6 +44,7 @@ class Order extends Model
 
         // Money
         'subtotal',
+        'coupon_code',
         'discount_amount',
         'shipping_cost',
         'tax_amount',
@@ -63,6 +64,7 @@ class Order extends Model
 
         'tracking_number',
         'notes',
+        'order_notes',
         'placed_at',
         'shipped_at',
         'delivered_at',

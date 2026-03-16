@@ -5,7 +5,7 @@ namespace App\Livewire\Frontend\Checkout;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use Livewire\Component;
-use App\Models\{CartItem, Order, OrderItem, Address, ShippingMethod, ShippingRule, PaymentMethod, Country, State, City};
+use App\Models\{CartItem, Order, OrderItem, Address, ShippingMethod, ShippingRule, PaymentMethod, Country, State, City, Coupon};
 use Illuminate\Support\Facades\{Auth, DB, Session};
 use Illuminate\Support\Str;
 
@@ -146,7 +146,6 @@ class Index extends Component
 
     public function placeOrder()
     {
-
         // 1. Base Rules
         $rules = [
             'shipping_method_id' => 'required',
@@ -154,20 +153,15 @@ class Index extends Component
             'agree_terms' => 'accepted',
         ];
 
-        // 2. CHECK: If selected Payment Method BELONGS to Shipping Method AND is type 'direct'
         $selectedShipping = ShippingMethod::find($this->shipping_method_id);
         if ($selectedShipping) {
             $payment = $selectedShipping->paymentMethods()->where('payment_methods.id', $this->payment_method_id)->first();
-
-            // dd($payment);
-
             if ($payment) {
                 $rules['payment_phone_number'] = 'required|numeric|digits_between:10,15';
                 $rules['transaction_id'] = 'required|string|min:6';
             }
         }
 
-        // 3. Auth/Guest Shipping Rules
         if (!Auth::check() || !$this->shipping_address_id) {
             $rules['shipping.full_name'] = 'required|min:3';
             $rules['shipping.email'] = 'nullable|email';
@@ -178,29 +172,13 @@ class Index extends Component
             $rules['shipping.city_id'] = 'nullable';
         }
 
-        // 4. Billing Rules
         if ($this->bill_to_different_address) {
             $rules['billing.full_name'] = 'required|min:3';
             $rules['billing.address_line_1'] = 'required';
             $rules['billing.country_id'] = 'required';
         }
 
-        $this->validate($rules, [
-            'agree_terms.accepted' => 'You must agree to the terms and conditions.',
-            'shipping.full_name.required' => 'Full name is required.',
-            'shipping.email.required' => 'Email is required.',
-            'shipping.phone.required' => 'Phone number is required.',
-            'shipping.address_line_1.required' => 'Address is required.',
-            'shipping.country_id.required' => 'Please select a country.',
-            'shipping.state_id.required' => 'Please select a state.',
-            'billing.full_name.required' => 'Billing full name is required.',
-            'billing.address_line_1.required' => 'Billing address is required.',
-            'billing.country_id.required' => 'Please select a billing country.',
-            'payment_phone_number.required' => 'The phone number used for payment is required.',
-            'transaction_id.required' => 'The Transaction ID is required for direct payments.',
-            'shipping_method_id.required' => 'Please select a shipping method.',
-            'payment_method_id.required' => 'Please select a payment method.',
-        ]);
+        $this->validate($rules);
 
         // Resolve Shipping Data
         if (Auth::check() && $this->shipping_address_id) {
@@ -226,26 +204,25 @@ class Index extends Component
                 'phone' => $this->shipping['phone'],
                 'address_1' => $this->shipping['address_line_1'],
                 'address_2' => $this->shipping['address_line_2'] ?? null,
-                'country_id' => $this->shipping['country_id'] ?: null, // Use ?: here
-                'state_id' => $this->shipping['state_id'] ?: null,     // Use ?: here
-                'city_id' => $this->shipping['city_id'] ?: null,       // Use ?: here
+                'country_id' => $this->shipping['country_id'] ?: null,
+                'state_id' => $this->shipping['state_id'] ?: null,
+                'city_id' => $this->shipping['city_id'] ?: null,
                 'zip' => $this->shipping['zip_code']
             ];
         }
 
-        // Resolve Billing Data
         if ($this->bill_to_different_address) {
             $bNames = $this->splitName($this->billing['full_name']);
             $billData = [
-                'first_name' => $names['first'],
-                'last_name' => $names['last'],
+                'first_name' => $bNames['first'],
+                'last_name' => $bNames['last'],
                 'email' => $this->shipping['email'] ?? null,
                 'phone' => $this->shipping['phone'],
-                'address_1' => $this->shipping['address_line_1'],
+                'address_1' => $this->billing['address_line_1'],
                 'address_2' => $this->billing['address_line_2'] ?? null,
-                'country_id' => $this->billing['country_id'] ?: null, // Force null if empty string
-                'state_id' => $this->billing['state_id'] ?: null,     // Force null if empty string
-                'city_id' => $this->billing['city_id'] ?: null,       // Force null if empty string
+                'country_id' => $this->billing['country_id'] ?: null,
+                'state_id' => $this->billing['state_id'] ?: null,
+                'city_id' => $this->billing['city_id'] ?: null,
                 'zip' => $this->shipping['zip_code']
             ];
         } else {
@@ -253,11 +230,25 @@ class Index extends Component
         }
 
         $order = DB::transaction(function () use ($shipData, $billData) {
-            $cartItems = $this->getCartQuery()->with('product')->get();
+            $cartItems = $this->getCartQuery()->with('product.categories')->get();
             $payment = PaymentMethod::find($this->payment_method_id);
             $shipMethod = ShippingMethod::findOrFail($this->shipping_method_id);
-            $subtotal = $cartItems->sum(fn($i) => $i->product->effective_price * $i->quantity);
+            $subtotal = $cartItems->sum(fn($i) => ($i->price ?? $i->product->effective_price) * $i->quantity);
             $shippingCost = $this->calculateShipping();
+
+            // Final Coupon check
+            $discount = 0;
+            $couponCode = null;
+            if (Session::has('coupon')) {
+                $coupon = Coupon::where('code', Session::get('coupon')['code'])->active()->first();
+                if ($coupon && $subtotal >= $coupon->min_spend) {
+                    $discount = $coupon->calculateDiscountForCart($cartItems, Auth::id());
+                    if ($discount > 0) {
+                        $couponCode = $coupon->code;
+                        $coupon->increment('usage_count');
+                    }
+                }
+            }
 
             $newOrder = Order::create([
                 'user_id' => Auth::id(),
@@ -288,8 +279,10 @@ class Index extends Component
                 'billing_zip_code' => $billData['zip'],
 
                 'subtotal' => $subtotal,
+                'coupon_code' => $couponCode,
+                'discount_amount' => $discount,
                 'shipping_cost' => $shippingCost,
-                'total_amount' => $subtotal + $shippingCost,
+                'total_amount' => ($subtotal + $shippingCost) - $discount,
                 'payment_method_id' => $payment?->id,
                 'payment_method_name' => $payment?->name ?? 'None',
                 'transaction_id' => $this->transaction_id,
@@ -306,8 +299,8 @@ class Index extends Component
                     'product_id' => $cartItem->product_id,
                     'item_name' => $cartItem->product->name,
                     'quantity' => $cartItem->quantity,
-                    'unit_price' => $cartItem->product->effective_price,
-                    'subtotal' => $cartItem->product->effective_price * $cartItem->quantity,
+                    'unit_price' => $cartItem->price ?? $cartItem->product->effective_price,
+                    'subtotal' => ($cartItem->price ?? $cartItem->product->effective_price) * $cartItem->quantity,
                 ]);
             }
             $this->getCartQuery()->delete();
@@ -321,9 +314,23 @@ class Index extends Component
 
     public function render()
     {
-        $cartItems = $this->getCartQuery()->with(['product.vendor'])->get();
-        $subtotal = $cartItems->sum(fn($i) => $i->product->effective_price * $i->quantity);
+        $cartItems = $this->getCartQuery()->with(['product.categories'])->get();
+        $subtotal = $cartItems->sum(fn($i) => ($i->price ?? $i->product->effective_price) * $i->quantity);
         $shipping_cost = $this->calculateShipping();
+
+        // Coupon display logic
+        $discount = 0;
+        $coupon_code_display = null;
+        if (Session::has('coupon')) {
+            $coupon = Coupon::where('code', Session::get('coupon')['code'])->active()->first();
+            if ($coupon && $subtotal >= $coupon->min_spend) {
+                $discount = $coupon->calculateDiscountForCart($cartItems, Auth::id());
+                $coupon_code_display = $coupon->code;
+            } else {
+                Session::forget('coupon');
+            }
+        }
+
         $selectedShipping = ShippingMethod::with('paymentMethods')->find($this->shipping_method_id);
 
         return view('livewire.frontend.checkout.index', [
@@ -336,10 +343,12 @@ class Index extends Component
             'shippingMethods' => ShippingMethod::where('status', true)->get(),
             'paymentMethods' => $selectedShipping ? $selectedShipping->paymentMethods->where('status', true) : collect(),
             'selectedPayment' => PaymentMethod::find($this->payment_method_id),
-            'groupedItems' => $cartItems->groupBy(fn($item) => $item->product->vendor->name ?? 'Global Store'),
+            'cartItems' => $cartItems, // Changed from groupedItems
             'subtotal' => $subtotal,
+            'discount' => $discount,
+            'coupon_code_display' => $coupon_code_display,
             'shipping_cost' => $shipping_cost,
-            'total' => $subtotal + $shipping_cost,
+            'total' => ($subtotal + $shipping_cost) - $discount,
         ]);
     }
 

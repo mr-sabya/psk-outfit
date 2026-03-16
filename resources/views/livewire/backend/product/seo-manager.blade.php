@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div>
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">Manage SEO for "{{ $product->name }}"</h3>
