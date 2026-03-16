@@ -12,4 +12,11 @@ class HomeController extends Controller
     {
         return view('frontend.home.index');
     }
+
+
+    // coupon
+    public function coupon()
+    {
+        return view('frontend.coupon.index');
+    }
 }

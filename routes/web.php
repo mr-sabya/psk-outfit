@@ -35,6 +35,9 @@ Route::get('/contact', [App\Http\Controllers\Frontend\ContactController::class, 
 // about page
 Route::get('/about', [App\Http\Controllers\Frontend\AboutController::class, 'index'])->name('about');
 
+// coupon
+Route::get('/coupons', [App\Http\Controllers\Frontend\HomeController::class, 'coupon'])->name('coupon');
+
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [App\Http\Controllers\Frontend\AuthController::class, 'login'])->name('login');

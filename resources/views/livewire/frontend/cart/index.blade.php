@@ -124,6 +124,14 @@
                         </div>
                         @endif
 
+                        <!-- SHOW COUPON BUTTON -->
+                        <div class="mb-4">
+                            <button type="button" class="btn btn-outline-primary btn-sm w-100 rounded-pill fw-bold border-dashed shadow-sm py-2" data-bs-toggle="modal" data-bs-target="#availableCouponsModal">
+                                <i class="fas fa-stars me-1 text-warning"></i> View Available Offers
+                            </button>
+                        </div>
+
+
                         <a href="{{ route('checkout') }}" wire:navigate class="btn btn-success w-100 py-3 rounded-pill fw-bold shadow-sm">
                             Proceed to Checkout <i class="fas fa-long-arrow-right ms-2"></i>
                         </a>
@@ -156,6 +164,30 @@
             </div>
         </div>
         @endif
+    </div>
+
+    <!-- AVAILABLE COUPONS MODAL -->
+    <div class="modal fade" id="availableCouponsModal" tabindex="-1" aria-labelledby="availableCouponsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="availableCouponsModalLabel">
+                        <i class="fas fa-gift text-primary me-2"></i> Available Offers
+                    </h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-4">Copy a code and paste it in the box to apply your discount.</p>
+
+                    <!-- Inclusion of the Coupon List Component -->
+                    <livewire:frontend.coupon.index />
+
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <style>

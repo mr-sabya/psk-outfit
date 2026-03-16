@@ -389,3 +389,163 @@
     background-size: 250%;
     /* Adjust for more or less zoom */
 }
+
+.coupon-container {
+    padding: 5px;
+}
+
+.coupon-card {
+    display: flex;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #eef0f2;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    min-height: 120px;
+}
+
+.coupon-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* Left Section - Compact and Bold */
+.coupon-badge {
+    background: linear-gradient(135deg, #0062ff, #004ecc);
+    color: white;
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    flex-shrink: 0;
+}
+
+.is-exclusive .coupon-badge {
+    background: linear-gradient(135deg, #00b09b, #96c93d);
+}
+
+.coupon-badge .value {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.coupon-badge .value span {
+    font-size: 14px;
+    margin-left: 2px;
+    color: #fff;
+}
+
+.coupon-badge .label {
+    font-size: 10px;
+    font-weight: 600;
+    opacity: 0.9;
+    margin-top: 4px;
+    letter-spacing: 1px;
+}
+
+/* Separator */
+.coupon-separator {
+    width: 20px;
+    position: relative;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.coupon-separator .dot-line {
+    border-left: 2px dashed #e0e6ed;
+    height: 70%;
+}
+
+/* Semi-circle cutouts */
+.cutout {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #f8f9fa;
+    /* Matches modal background */
+    border: 1px solid #eef0f2;
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.cutout.top {
+    top: -10px;
+}
+
+.cutout.bottom {
+    bottom: -10px;
+}
+
+/* Right Section Details */
+.coupon-info {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.exclusive-tag {
+    font-size: 9px;
+    font-weight: 700;
+    color: #00b09b;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.coupon-code {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1d23;
+    letter-spacing: 0.5px;
+}
+
+.coupon-desc {
+    font-size: 11px;
+    color: #64748b;
+    margin: 4px 0 12px 0;
+    line-height: 1.4;
+}
+
+.coupon-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.expiry {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* The Correctpill button */
+.copy-btn {
+    background: #f1f5f9;
+    border: none;
+    color: #0062ff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 50px;
+    transition: all 0.2s;
+}
+
+.copy-btn:hover {
+    background: #e2e8f0;
+}
+
+.copy-btn.copied {
+    background: #00b09b;
+    color: white;
+}
