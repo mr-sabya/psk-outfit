@@ -344,6 +344,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item {{ request()->routeIs('admin.cache.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.cache.index') }}" wire:navigate>
+                        <i class="fas fa-broom"></i>
+                        <p>Clear Cache</p>
+                    </a>
+                </li>
+
 
             </ul>
         </div>

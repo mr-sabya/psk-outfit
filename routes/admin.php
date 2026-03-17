@@ -164,4 +164,9 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::get('/profile', [App\Http\Controllers\Backend\AdminController::class, 'profile'])->name('profile');
     Route::get('/change-password', [App\Http\Controllers\Backend\AdminController::class, 'changePassword'])->name('change-password');
+
+
+    Route::get('/cache', function () {
+        return view('backend.cache.index');
+    })->name('cache.index');
 });

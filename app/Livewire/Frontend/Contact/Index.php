@@ -24,21 +24,11 @@ class Index extends Component
     #[Validate('required|min:10')]
     public $message = '';
 
-    // Mock settings (Ensure these come from your database in real usage)
-    public $settings;
 
     public function mount()
     {
         // This is where you'd normally fetch your settings from the DB
         // $this->settings = \App\Models\Setting::first()->toArray();
-
-        // Placeholder so your current blade doesn't crash:
-        $this->settings = [
-            'phone' => '+1 234 567 890',
-            'email' => 'contact@zenis.com',
-            'address' => '123 Street, New York, USA',
-            'map' => '<iframe src="..."></iframe>'
-        ];
     }
 
     public function sendMessage()
