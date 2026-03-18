@@ -57,9 +57,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($admins as $admin)
+                        @forelse ($admins as $index => $admin)
                         <tr>
-                            <td>{{ $admin->id }}</td>
+                            <td>{{ $admins->firstItem() + $index }}</td>
                             <td>{{ $admin->name }}</td>
                             <td>{{ $admin->email }}</td>
                             <td>{{ $admin->created_at->format('M d, Y') }}</td>
