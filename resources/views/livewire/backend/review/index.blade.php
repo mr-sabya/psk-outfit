@@ -25,14 +25,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($reviews as $review)
+                    @foreach($reviews as $index => $review)
                     <tr>
                         <td>
                             <div class="d-flex align-items-center">
                                 <img src="{{ $review->product->thumbnail_url }}" class="rounded me-2" style="width:40px;height:40px;object-fit:cover">
                                 <div>
                                     <div class="fw-bold">{{ $review->product->name }}</div>
-                                    <small class="text-muted">ID: #{{ $review->id }}</small>
+                                    <small class="text-muted">ID: #{{ $reviews->firstItem() + $index }}</small>
                                 </div>
                             </div>
                         </td>

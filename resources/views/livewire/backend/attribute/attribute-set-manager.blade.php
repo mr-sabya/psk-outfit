@@ -58,9 +58,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($attributeSets as $attributeSet)
+                        @forelse ($attributeSets as $index => $attributeSet)
                         <tr>
-                            <td>{{ $attributeSet->id }}</td>
+                            <td>{{ $attributeSets->firstItem() + $index }}</td>
                             <td>{{ $attributeSet->name }}</td>
                             <td>{{ Str::limit($attributeSet->description, 70, '...') }}</td>
                             <td>

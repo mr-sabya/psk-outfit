@@ -84,9 +84,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($pages as $page)
+                        @forelse ($pages as $index => $page)
                         <tr>
-                            <td>{{ $page->id }}</td>
+                            <td>{{ $pages->firstItem() + $index }}</td>
                             <td>
                                 @if ($page->banner_image)
                                 <img src="{{ asset('storage/' . $page->banner_image) }}" alt="Banner" class="img-thumbnail" style="width: 80px; height: 40px; object-fit: cover;">

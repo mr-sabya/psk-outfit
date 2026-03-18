@@ -45,14 +45,6 @@
                     <thead>
                         <tr>
                             <th style="width: 50px;">ID</th>
-                            <th wire:click="sortBy('sort_order')" role="button" style="width: 100px;">
-                                Order
-                                @if ($sortField == 'sort_order')
-                                <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                                @else
-                                <i class="fas fa-sort text-muted"></i>
-                                @endif
-                            </th>
                             <th style="width: 100px;">Icon</th>
                             <th wire:click="sortBy('title')" role="button">Title
                                 @if ($sortField == 'title')
@@ -62,6 +54,14 @@
                                 @endif
                             </th>
                             <th>Subtitle</th>
+                            <th wire:click="sortBy('sort_order')" role="button" style="width: 100px;">
+                                Order
+                                @if ($sortField == 'sort_order')
+                                <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
+                                @else
+                                <i class="fas fa-sort text-muted"></i>
+                                @endif
+                            </th>
                             <th wire:click="sortBy('is_active')" role="button" style="width: 120px;">Active
                                 @if ($sortField == 'is_active')
                                 <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
@@ -73,10 +73,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($features as $feature)
+                        @forelse ($features as $index => $feature)
                         <tr>
-                            <td>{{ $feature->id }}</td>
-                            <td>{{ $feature->sort_order }}</td>
+                            <td>{{ $features->firstItem() + $index }}</td>
                             <td class="text-center">
                                 @if ($feature->icon)
                                 {{-- Using asset() assuming you have a symbolic link or public path --}}
@@ -87,6 +86,7 @@
                             </td>
                             <td>{{ $feature->title }}</td>
                             <td>{{ $feature->subtitle ?? '-' }}</td>
+                            <td>{{ $feature->sort_order }}</td>
                             <td>
                                 @if ($feature->is_active)
                                 <span class="badge bg-success">Yes</span>

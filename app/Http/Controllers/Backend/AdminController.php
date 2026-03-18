@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function showForgotPassword()
+
+    public function index()
     {
-        return view('backend.pages.auth.forgot-password');
+        return view('backend.admin.index');
     }
+
+    public function showForgotPassword() {}
 
     public function showResetPassword($token)
     {

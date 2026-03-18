@@ -162,16 +162,11 @@
                                     <span class="sub-item">Customers</span>
                                 </a>
                             </li>
-                            <!-- investors -->
-                            <!-- <li class="{{ request()->routeIs('admin.users.investors.*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.users.investors.index') }}" wire:navigate>
-                                    <span class="sub-item">Investors</span>
-                                </a>
-                            </li> -->
-                            <!-- vendors -->
-                            <li class="{{ request()->routeIs('admin.users.vendors.*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.users.vendors.index') }}" wire:navigate>
-                                    <span class="sub-item">Vendors</span>
+                            
+                            <!-- admins -->
+                            <li class="{{ request()->routeIs('admin.users.admin.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.users.admin.index') }}" wire:navigate>
+                                    <span class="sub-item">Admins</span>
                                 </a>
                             </li>
                         </ul>

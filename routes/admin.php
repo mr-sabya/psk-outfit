@@ -59,19 +59,10 @@ Route::middleware('auth:admin')->group(function () {
 
 
         // investors
-        Route::prefix('investors')->name('investors.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Backend\UserController::class, 'investors'])->name('index');
-            Route::get('/create', [App\Http\Controllers\Backend\UserController::class, 'createInvestor'])->name('create');
-            Route::get('/{id}/edit', [App\Http\Controllers\Backend\UserController::class, 'editInvestor'])->name('edit');
+        Route::prefix('admin')->name('admin.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Backend\AdminController::class, 'index'])->name('index');
         });
 
-
-        // vendors
-        Route::prefix('vendors')->name('vendors.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Backend\UserController::class, 'vendors'])->name('index');
-            Route::get('/create', [App\Http\Controllers\Backend\UserController::class, 'createVendors'])->name('create');
-            Route::get('/{id}/edit', [App\Http\Controllers\Backend\UserController::class, 'editVendors'])->name('edit');
-        });
     });
 
 

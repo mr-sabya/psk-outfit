@@ -59,9 +59,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($attributeValues as $attributeValue)
+                        @forelse ($attributeValues as $index => $attributeValue)
                         <tr>
-                            <td>{{ $attributeValue->id }}</td>
+                            <td>{{ $attributeValues->firstItem() + $index }}</td>
                             <td>{{ $attributeValue->value }}</td>
                             <td>
                                 @if ($attributeValue->attribute)

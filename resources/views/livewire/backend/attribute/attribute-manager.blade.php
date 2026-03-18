@@ -72,9 +72,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($attributes as $attribute)
+                        @forelse ($attributes as $index => $attribute)
                         <tr>
-                            <td>{{ $attribute->id }}</td>
+                            <td>{{ $attributes->firstItem() + $index }}</td>
                             <td>{{ $attribute->name }}</td>
                             <td>{{ $attribute->slug }}</td>
                             <td><span class="badge bg-secondary">{{ $attribute->display_type->label() }}</span></td>

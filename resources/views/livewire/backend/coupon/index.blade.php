@@ -68,9 +68,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($coupons as $coupon)
+                        @forelse ($coupons as $index => $coupon)
                         <tr>
-                            <td>{{ $coupon->id }}</td>
+                            <td>{{ $coupons->firstItem() + $index }}</td>
                             <td>{{ $coupon->code }}</td>
                             <td>{{ Str::limit($coupon->description, 50) }}</td>
                             <td>{{ $coupon->type->label() }}</td>

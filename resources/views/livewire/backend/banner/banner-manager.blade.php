@@ -73,9 +73,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($banners as $banner)
+                        @forelse ($banners as $index => $banner)
                         <tr>
-                            <td>{{ $banner->id }}</td>
+                            <td>{{ $banners->firstItem() + $index }}</td>
                             <td>
                                 @if ($banner->image)
                                 <img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->title }} Image" class="img-thumbnail" style="width: 80px; height: 50px; object-fit: cover;">

@@ -72,7 +72,7 @@
                         <tr>
                             <td>
                                 <strong>{{ $customer->name }}</strong>
-                                <br><small class="text-muted">{{ $customer->address }} {{ $customer->city }}</small>
+                                <br><small class="text-muted">{{ $customer->address }}, {{ $customer->city['name'] }}</small>
                             </td>
                             <td>
                                 <img src="{{ $customer->avatar_url }}" alt="{{ $customer->name }}" class="img-thumbnail rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">

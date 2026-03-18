@@ -64,9 +64,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($tags as $tag)
+                        @forelse ($tags as $index => $tag)
                         <tr>
-                            <td>{{ $tag->id }}</td>
+                            <td>{{ $tags->firstItem() + $index }}</td>
                             <td>{{ $tag->name }}</td>
                             <td>{{ $tag->slug }}</td>
                             <td>{{ $tag->created_at->format('Y-m-d H:i') }}</td>

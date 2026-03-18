@@ -66,10 +66,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($brands as $brand)
+                        @forelse ($brands as $index => $brand)
                         <tr>
                             <td>{{ $brand->id }}</td>
-                            <td>{{ $brand->name }}</td>
+                            <td>{{ $brand->firstItem() + $index }}</td>
                             <td>
                                 @if ($brand->logo)
                                 <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }} Logo" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: contain;">
