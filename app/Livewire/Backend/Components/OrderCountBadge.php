@@ -27,7 +27,7 @@ class OrderCountBadge extends Component
     {
         return <<<'HTML'
         <span class="badge bg-danger rounded-pill">
-            {{ $count > 0 ? $count : '' }}
+            {{ $count > 0 ? $count : '0' }}
         </span>
         HTML;
     }
