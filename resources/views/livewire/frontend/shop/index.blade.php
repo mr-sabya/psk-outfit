@@ -22,8 +22,8 @@
                             <h3>Price Range</h3>
                             <div class="range_slider"></div>
                             <div class="d-flex justify-content-between mt-2">
-                                <span id="min_price_display">${{ $minPrice }}</span>
-                                <span id="max_price_display">${{ $maxPrice }}</span>
+                                <span id="min_price_display">৳{{ $minPrice }}</span>
+                                <span id="max_price_display">৳{{ $maxPrice }}</span>
                             </div>
                             <!-- Hidden inputs to sync JS slider with Livewire -->
                             <input type="hidden" id="minPriceInput" wire:model.live.debounce.500ms="minPrice">
