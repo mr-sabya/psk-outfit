@@ -12,6 +12,7 @@ class Category extends Component
         // Fetch active parent categories (where parent_id is NULL)
         $categories = CategoryModel::query()
             ->active() // Scoped from your model
+            ->where('slug', '!=', 'lustra-wear')
             ->parentCategories() // Scoped from your model (whereNull('parent_id'))
             ->orderBy('sort_order', 'asc')
             ->get();

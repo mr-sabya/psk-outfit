@@ -68,6 +68,7 @@ class Index extends Component
 
         // 2. Categories
         $this->categories = Category::active()
+            ->where('slug', '!=', 'lustra-wear')
             ->withCount(['products' => function (Builder $query) {
                 $query->active();
             }])

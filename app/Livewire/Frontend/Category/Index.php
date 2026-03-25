@@ -15,6 +15,7 @@ class Index extends Component
     {
         // Fetch active categories, sorted by your preference (e.g., sort_order or name)
         $categories = Category::active()
+            ->where('slug', '!=', 'lustra-wear')
             ->orderBy('sort_order', 'asc') // Change to 'name' if you prefer alphabetical
             ->paginate(12); // Adjust the number of items per page here
 
